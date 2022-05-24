@@ -1,4 +1,3 @@
-import { colors } from "@material-ui/core";
 import {
   alpha,
   createStyles,
@@ -22,6 +21,7 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
       color: "black",
       fontWeight: "bold",
       marginRight: "5%",
+      fontSize: 16,
     },
     option: {
       display: "none",

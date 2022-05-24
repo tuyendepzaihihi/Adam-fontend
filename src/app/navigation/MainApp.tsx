@@ -6,13 +6,8 @@ import {
   PRIVATE_ROUTE,
 } from "../../route/DefineRoute";
 
-const MainApp = (props: { open: boolean }) => {
+const MainApp = () => {
   return (
-    // <main
-    //   className={clsx(classes.content, {
-    //     [classes.contentActive]: open,
-    //   })}
-    // >
     <Routes>
       {PRIVATE_ROUTE.map((e) => {
         return (
@@ -28,7 +23,6 @@ const MainApp = (props: { open: boolean }) => {
         );
       })}
     </Routes>
-    // </main>
   );
 };
 export default MainApp;

@@ -5,7 +5,6 @@ import InputBase from "@material-ui/core/InputBase";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Favorite from "@material-ui/icons/FavoriteBorder";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -13,14 +12,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
-import {
-  AuthRoute,
-  AUTH_ROUTE,
-  PrivateRoute,
-  PRIVATE_ROUTE,
-} from "../../../route/DefineRoute";
-import LoginScreen from "../../auth/LoginScreen";
+import { Link, useNavigate } from "react-router-dom";
+import { ROUTE } from "../../contant/Contant";
 import MainApp from "../MainApp";
 import { useNavBarStyles } from "./styles";
 
@@ -149,10 +142,16 @@ export default function NavBar() {
           >
             <MenuIcon />
           </IconButton> */}
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Button
+            className={classes.title}
+            onClick={() => navigate(ROUTE.HOME)}
+          >
             Adam store
-          </Typography>
-          <Button className={classes.button} onClick={() => navigate("/admin")}>
+          </Button>
+          <Button
+            className={classes.button}
+            onClick={() => navigate(ROUTE.HOME)}
+          >
             Áo
           </Button>
           <Button className={classes.button}>
@@ -228,8 +227,7 @@ export default function NavBar() {
         </Toolbar>
       </AppBar>
       <div style={{ flex: 1, paddingTop: 65 }}>
-        <MainApp open={open} />
-        {/* <LoginScreen /> */}
+        <MainApp />
       </div>
       {renderMobileMenu}
       {renderMenu}
