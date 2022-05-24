@@ -2,9 +2,7 @@ import {
   Button,
   createStyles,
   Grid,
-  IconButton,
   makeStyles,
-  TextField,
   Theme,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
@@ -12,15 +10,17 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import R from "../assets/R";
 import TextInputComponent from "../component/TextInputComponent";
-import { UserInterface } from "../screen/setting/account/Account.props";
-import { requestLogin } from "./AuthApi";
+import { ROUTE } from "../contant/Contant";
+import { colors } from "../utils/color";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
       paddingLeft: "20%",
       paddingRight: "20%",
+      paddingTop: 100,
     },
     container: {
       flexFlow: "row",
@@ -31,23 +31,30 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 8,
       marginTop: 20,
       width: "100%",
-      borderColor: "black",
-      color: "black",
+      borderColor: colors.black,
+      color: colors.black,
+      fontWeight: "bold",
     },
     textForgotPass: {
-      color: "black",
-      fontSize: 15,
+      color: colors.gray59,
+      fontSize: 16,
       marginTop: 15,
+      textAlign: "right",
+      fontWeight: "bolder",
     },
     textCreateAccount: {
-      color: "black",
+      color: colors.black,
       fontSize: 15,
       marginTop: 15,
     },
     title: {
-      textAlign: "center",
-      fontSize: 45,
-      fontWeight: "revert",
+      textAlign: "left",
+      fontSize: 36,
+      fontWeight: "bold",
+    },
+    descriptionText: {
+      fontSize: 15,
+      color: colors.gray59,
     },
   })
 );
@@ -81,21 +88,25 @@ const LoginScreen = () => {
   });
 
   const handleSubmit = async (data: LoginInterface) => {
-    try {
-      const responseLogin: { data: { data: UserInterface } } =
-        await requestLogin(data);
-      if (responseLogin) {
-        // setToken(responseLogin.data.data.token);
-        navigate("/");
-      }
-    } catch (e) {}
+    // try {
+    //   const responseLogin: { data: { data: UserInterface } } =
+    //     await requestLogin(data);
+    //   if (responseLogin) {
+    //     // setToken(responseLogin.data.data.token);
+    //     navigate("/");
+    //   }
+    // } catch (e) {}
   };
 
   return (
     <div className={className.root}>
-      <p className={className.title}>Đăng nhập</p>
       <Grid container spacing={1}>
         <div style={{ width: "50%" }}>
+          <p className={className.title}>Đăng nhập</p>
+          <p className={className.descriptionText}>
+            Hãy đăng nhập để hưởng nhiều ưu đãi khác nhau của chúng tôi,
+            AdamStore
+          </p>
           <TextInputComponent
             error={formik.errors.user_name}
             touched={formik.touched.user_name}
@@ -117,25 +128,15 @@ const LoginScreen = () => {
               setShowPass(!showPass);
             }}
           />
-
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <button onClick={() => {}}>
-                <p className={className.textForgotPass}>Quên mật khẩu?</p>
-              </button>
-            </Grid>
-            <Grid item xs={6}>
-              <button
-                onClick={() => {
-                  navigate("/register");
-                }}
-              >
-                <p className={className.textCreateAccount}>
-                  Bạn chưa có tài khoản? Tạo tài khoản mới
-                </p>
-              </button>
-            </Grid>
-          </Grid>
+          <p className={className.textForgotPass}>
+            <button
+              onClick={() => {
+                navigate(ROUTE.EMAIL_INPUT);
+              }}
+            >
+              Quên mật khẩu?
+            </button>
+          </p>
 
           <Button
             variant="outlined"
@@ -145,6 +146,7 @@ const LoginScreen = () => {
           >
             Login
           </Button>
+
           <Button
             variant="outlined"
             color="primary"
@@ -158,6 +160,7 @@ const LoginScreen = () => {
           >
             Google
           </Button>
+
           <Button
             variant="outlined"
             color="primary"
@@ -171,11 +174,29 @@ const LoginScreen = () => {
           >
             Fb
           </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              navigate(ROUTE.REGISTER);
+            }}
+            className={className.button}
+            style={{
+              backgroundColor: colors.black,
+              borderColor: colors.black,
+              color: colors.white,
+            }}
+          >
+            Tạo tài khoản mới
+          </Button>
         </div>
-        <div style={{ paddingLeft: "3%", width: "50%", paddingTop: 20 }}>
-          <div
-            style={{ backgroundColor: "gray", width: "100%", height: "100%" }}
-          />
+        <div
+          style={{
+            paddingLeft: "3%",
+            width: "50%",
+          }}
+        >
+          <img style={{ width: "95%" }} src={R.images.img_banner_fashion} />
         </div>
       </Grid>
     </div>

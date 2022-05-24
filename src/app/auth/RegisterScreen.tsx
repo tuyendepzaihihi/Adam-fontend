@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import R from "../assets/R";
 import TextInputComponent from "../component/TextInputComponent";
 import {
   NAME_REGEX,
@@ -17,14 +18,14 @@ import {
   REG_EMAIL,
   textValidate,
 } from "../contant/Contant";
-import { UserInterface } from "../screen/setting/account/Account.props";
-import { requestLogin } from "./AuthApi";
+import { colors } from "../utils/color";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
       paddingLeft: "20%",
       paddingRight: "20%",
+      paddingTop: 100,
     },
     container: {
       flexFlow: "row",
@@ -49,9 +50,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 15,
     },
     title: {
-      textAlign: "center",
-      fontSize: 45,
-      fontWeight: "revert",
+      textAlign: "left",
+      fontSize: 40,
+      fontWeight: "bold",
+    },
+    descriptionText: {
+      fontSize: 15,
+      color: colors.gray59,
     },
   })
 );
@@ -74,6 +79,7 @@ const RegisterScreen = () => {
   const className = useStyles();
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(true);
+  const [showRePass, setShowRePass] = useState(true);
   const validateLogin = Yup.object({
     phone: Yup.string()
       .min(10, textValidate.phone.error_validate)
@@ -122,9 +128,12 @@ const RegisterScreen = () => {
 
   return (
     <div className={className.root}>
-      <p className={className.title}>Đăng ký</p>
       <Grid container spacing={1}>
         <div style={{ width: "50%" }}>
+          <p className={className.title}>Đăng ký</p>
+          <p className={className.descriptionText}>
+            Hãy đăng ký để hưởng nhiều ưu đãi khác nhau của chúng tôi, AdamStore
+          </p>
           <TextInputComponent
             error={formik.errors.email}
             touched={formik.touched.email}
@@ -146,8 +155,8 @@ const RegisterScreen = () => {
             touched={formik.touched.fullname}
             value={formik.values.fullname}
             label={"Tên họ đầy đủ"}
-            onChange={formik.handleChange(".fullname")}
-            onBlur={formik.handleBlur(".fullname")}
+            onChange={formik.handleChange("fullname")}
+            onBlur={formik.handleBlur("fullname")}
           />
           <TextInputComponent
             error={formik.errors.password}
@@ -167,12 +176,12 @@ const RegisterScreen = () => {
             touched={formik.touched.re_password}
             value={formik.values.re_password}
             label={"Xác nhận mật khẩu"}
-            onChange={formik.handleChange(".re_password")}
-            onBlur={formik.handleBlur(".re_password")}
-            rightIcon={showPass ? <Visibility /> : <VisibilityOff />}
-            type={!showPass ? "text" : "password"}
+            onChange={formik.handleChange("re_password")}
+            onBlur={formik.handleBlur("re_password")}
+            rightIcon={showRePass ? <Visibility /> : <VisibilityOff />}
+            type={!showRePass ? "text" : "password"}
             onRightIcon={() => {
-              setShowPass(!showPass);
+              setShowRePass(!showRePass);
             }}
           />
 
@@ -187,21 +196,28 @@ const RegisterScreen = () => {
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => {}}
+            onClick={() => {
+              navigate("/login");
+            }}
             className={className.button}
             style={{
-              backgroundColor: "gray",
-              borderColor: "gray",
-              color: "white",
+              backgroundColor: colors.black,
+              borderColor: colors.black,
+              color: colors.white,
             }}
           >
             Quay lại đăng nhập
           </Button>
         </div>
-        <div style={{ paddingLeft: "3%", width: "50%", paddingTop: 20 }}>
-          <div
-            style={{ backgroundColor: "gray", width: "100%", height: "100%" }}
-          />
+        <div
+          style={{
+            paddingLeft: "3%",
+            width: "50%",
+            paddingTop: 20,
+            alignSelf: "center",
+          }}
+        >
+          <img style={{ width: "95%" }} src={R.images.img_banner_fashion} />
         </div>
       </Grid>
     </div>

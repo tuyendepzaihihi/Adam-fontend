@@ -1,28 +1,39 @@
 import { Navigate } from "react-router-dom";
 import LoginScreen from "../app/auth/LoginScreen";
 import RegisterScreen from "../app/auth/RegisterScreen";
+import { ROUTE } from "../app/contant/Contant";
 import HomeScreen from "../app/screen/home/HomeScreen";
 import ProductScreen from "../app/screen/product/ProductScreen";
+import EmailInputScreen from "../app/auth/EmailInputScreen";
 import { getToken } from "../app/service/StorageService";
+import ForgotPasswordScreen from "../app/auth/ForgotPasswordScreen";
 
 export const AUTH_ROUTE = [
   {
-    route: "/login",
+    route: ROUTE.LOGIN,
     screen: <LoginScreen />,
   },
   {
-    route: "/register",
+    route: ROUTE.REGISTER,
     screen: <RegisterScreen />,
+  },
+  {
+    route: ROUTE.EMAIL_INPUT,
+    screen: <EmailInputScreen />,
+  },
+  {
+    route: ROUTE.FORGOT_PASS,
+    screen: <ForgotPasswordScreen />,
   },
 ];
 
 export const PRIVATE_ROUTE = [
   {
-    route: "/",
+    route: ROUTE.HOME,
     screen: <HomeScreen />,
   },
   {
-    route: "/product",
+    route: ROUTE.PRODUCT,
     screen: <ProductScreen />,
   },
 ];

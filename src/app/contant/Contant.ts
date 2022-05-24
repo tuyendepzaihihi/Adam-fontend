@@ -36,8 +36,12 @@ export const textValidate = {
 };
 
 export const ROUTE = {
-  HOME: "HOME",
-  PRODUCT: "PRODUCT",
+  HOME: "/",
+  PRODUCT: "/product",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  FORGOT_PASS: "/forgotPassword",
+  EMAIL_INPUT: "/emailInput",
 };
 
 export const DEFINE_ROUTE = {
