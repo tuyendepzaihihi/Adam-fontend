@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_CART, LIST_PRODUCT } from "../../../contant/Contant";
+import { ItemCart, LIST_CART, LIST_PRODUCT } from "../../../contant/Contant";
 
 interface DataState<T> {
   data?: T;
@@ -7,7 +7,7 @@ interface DataState<T> {
   isError?: boolean;
 }
 
-const initialState: DataState<any[]> = {
+const initialState: DataState<ItemCart[]> = {
   data: LIST_CART,
   isError: false,
   isLoading: false,
@@ -20,7 +20,22 @@ export const incrementAsyncCart = createAsyncThunk("getCart", async () => {
 export const cartSlice = createSlice({
   name: "getCart",
   initialState,
-  reducers: {},
+  reducers: {
+    updateQuantity: (state, action) => {
+      let array = state.data;
+      const { id, new_quantity } = action.payload;
+      state.data = array?.map((e) => {
+        if (e.id === id) {
+          return {
+            ...e,
+            count: new_quantity,
+            totalPrice: new_quantity * e.price,
+          };
+        }
+        return e;
+      });
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(incrementAsyncCart.pending, (state) => {
@@ -39,5 +54,5 @@ export const cartSlice = createSlice({
       });
   },
 });
-
+export const { updateQuantity } = cartSlice.actions;
 export default cartSlice.reducer;

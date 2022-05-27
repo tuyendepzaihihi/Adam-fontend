@@ -1,5 +1,6 @@
 import Product from "@material-ui/icons/Computer";
 import Home from "@material-ui/icons/HomeSharp";
+import { ItemProduct } from "../component/product_item/ProductItemComponent";
 
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
@@ -42,6 +43,7 @@ export const ROUTE = {
   REGISTER: "/register",
   FORGOT_PASS: "/forgotPassword",
   EMAIL_INPUT: "/emailInput",
+  PRODUCT_DETAIL: "/productDetail",
 };
 
 export const DEFINE_ROUTE = {
@@ -157,6 +159,11 @@ export const LIST_PRODUCT = [
       "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
 ];
+export interface ItemCart extends ItemProduct {
+  totalPrice: number;
+
+  count: number;
+}
 export const LIST_CART = [
   {
     id: 0,

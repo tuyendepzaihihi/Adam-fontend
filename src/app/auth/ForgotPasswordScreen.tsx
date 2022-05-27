@@ -1,7 +1,3 @@
-// const EmailInputScreen = () => {
-//   return <div>khanh</div>;
-// };
-// export default EmailInputScreen;
 import {
   Button,
   createStyles,
@@ -21,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      paddingLeft: "40%",
-      paddingRight: "40%",
+      paddingLeft: "30%",
+      paddingRight: "30%",
       paddingTop: 100,
     },
     button: {

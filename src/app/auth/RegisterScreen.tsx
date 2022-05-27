@@ -23,8 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      paddingLeft: "20%",
-      paddingRight: "20%",
+
       paddingTop: 100,
     },
     container: {

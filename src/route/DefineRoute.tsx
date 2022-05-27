@@ -7,6 +7,7 @@ import ProductScreen from "../app/screen/product/ProductScreen";
 import EmailInputScreen from "../app/auth/EmailInputScreen";
 import { getToken } from "../app/service/StorageService";
 import ForgotPasswordScreen from "../app/auth/ForgotPasswordScreen";
+import ProductDetailScreen from "../app/screen/product/ProductDetailScreen";
 
 export const AUTH_ROUTE = [
   {
@@ -35,6 +36,10 @@ export const PRIVATE_ROUTE = [
   {
     route: ROUTE.PRODUCT,
     screen: <ProductScreen />,
+  },
+  {
+    route: ROUTE.PRODUCT_DETAIL,
+    screen: <ProductDetailScreen />,
   },
 ];
 

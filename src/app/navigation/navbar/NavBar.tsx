@@ -16,7 +16,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { ItemProduct } from "../../component/product_item/ProductItemComponent";
 import TextInputComponent from "../../component/TextInputComponent";
 import { ROUTE } from "../../contant/Contant";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { updateQuantity } from "../../screen/cart/slice/CartSlice";
 import { colors } from "../../utils/color";
 import MainApp from "../MainApp";
 import { useNavBarStyles } from "./styles";
@@ -25,8 +26,7 @@ export default function NavBar() {
   const classes = useNavBarStyles();
   const navigate = useNavigate();
   const { data } = useAppSelector((state) => state.cart);
-  console.log({ data });
-
+  const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -109,19 +109,38 @@ export default function NavBar() {
         return (
           <div className={classes.containerItemCart} key={index}>
             <div className={classes.containerInfoCart}>
-              <img src={e.url_image} style={{ width: 25 }} />
+              <img src={e.url_image} style={{ width: 25 }} alt="" />
             </div>
             <div className={classes.containerInfoCart}>
               <p className={classes.textNameProductCart}>{e.name}</p>
               <p className={classes.textPriceCart}> {e.price}đ</p>
             </div>
             <div className={classes.containerQuantity}>
-              <button className={classes.buttonChangeQuantityCart}>-</button>
+              <button
+                className={classes.buttonChangeQuantityCart}
+                onClick={() => {
+                  e.count > 1 &&
+                    dispatch(
+                      updateQuantity({ id: e.id, new_quantity: e.count - 1 })
+                    );
+                }}
+              >
+                -
+              </button>
               <input
                 value={e.count}
                 style={{ width: 50, height: 40, textAlign: "center" }}
               />
-              <button className={classes.buttonChangeQuantityCart}>+</button>
+              <button
+                className={classes.buttonChangeQuantityCart}
+                onClick={() => {
+                  dispatch(
+                    updateQuantity({ id: e.id, new_quantity: e.count + 1 })
+                  );
+                }}
+              >
+                +
+              </button>
             </div>
           </div>
         );

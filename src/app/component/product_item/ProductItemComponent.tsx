@@ -48,6 +48,7 @@ const ProductItemComponent = (props: Props) => {
             color="primary"
             className={className.button}
             onClick={() => {
+              // navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
               navigate(ROUTE.PRODUCT);
             }}
           >
