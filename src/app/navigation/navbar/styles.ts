@@ -4,6 +4,7 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
+import { colors } from "../../utils/color";
 const drawerWidth = 240;
 export const useNavBarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -127,6 +128,41 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
     },
     contentActive: {
       paddingLeft: theme.spacing(32),
+    },
+    containerItemCart: {
+      padding: 5,
+      paddingRight: 20,
+      paddingLeft: 10,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexDirection: "row",
+    },
+    buttonChangeQuantityCart: {
+      width: 25,
+      height: 25,
+      borderColor: colors.grayC4,
+      borderWidth: 0.8,
+      borderRadius: 5,
+    },
+    containerQuantity: {
+      paddingLeft: 10,
+    },
+    containerInfoCart: {
+      paddingLeft: 5,
+      paddingRight: 5,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexDirection: "row",
+    },
+    textPriceCart: {
+      color: colors.black,
+      marginLeft: 5,
+      fontStyle: "italic",
+    },
+    textNameProductCart: {
+      fontWeight: "bold",
     },
   })
 );

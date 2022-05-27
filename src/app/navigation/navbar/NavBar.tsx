@@ -13,13 +13,19 @@ import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ItemProduct } from "../../component/product_item/ProductItemComponent";
+import TextInputComponent from "../../component/TextInputComponent";
 import { ROUTE } from "../../contant/Contant";
+import { useAppSelector } from "../../hooks";
+import { colors } from "../../utils/color";
 import MainApp from "../MainApp";
 import { useNavBarStyles } from "./styles";
 
 export default function NavBar() {
   const classes = useNavBarStyles();
   const navigate = useNavigate();
+  const { data } = useAppSelector((state) => state.cart);
+  console.log({ data });
 
   const [open, setOpen] = React.useState(false);
 
@@ -30,16 +36,26 @@ export default function NavBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
+  const [cartMoreAnchorEl, setCartMoreAnchorEl] =
+    React.useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
+  const isCartOpen = Boolean(cartMoreAnchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleCartOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setCartMoreAnchorEl(event.currentTarget);
+  };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
+  };
+
+  const handleCartClose = () => {
+    setCartMoreAnchorEl(null);
   };
 
   const handleMenuClose = () => {
@@ -73,6 +89,56 @@ export default function NavBar() {
       >
         Log out
       </MenuItem>
+    </Menu>
+  );
+
+  const renderCart = (
+    <Menu
+      anchorEl={cartMoreAnchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isCartOpen}
+      onClose={handleCartClose}
+    >
+      <MenuItem>
+        <p>Giỏ hàng của bạn</p>
+      </MenuItem>
+      {data?.map((e, index) => {
+        return (
+          <div className={classes.containerItemCart} key={index}>
+            <div className={classes.containerInfoCart}>
+              <img src={e.url_image} style={{ width: 25 }} />
+            </div>
+            <div className={classes.containerInfoCart}>
+              <p className={classes.textNameProductCart}>{e.name}</p>
+              <p className={classes.textPriceCart}> {e.price}đ</p>
+            </div>
+            <div className={classes.containerQuantity}>
+              <button className={classes.buttonChangeQuantityCart}>-</button>
+              <input
+                value={e.count}
+                style={{ width: 50, height: 40, textAlign: "center" }}
+              />
+              <button className={classes.buttonChangeQuantityCart}>+</button>
+            </div>
+          </div>
+        );
+      })}
+
+      <div style={{ padding: 5 }}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          style={{
+            width: "100%",
+            display: "flex",
+          }}
+        >
+          Mua hàng
+        </Button>
+      </div>
     </Menu>
   );
 
@@ -195,7 +261,7 @@ export default function NavBar() {
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={() => {}}
+              onClick={handleCartOpen}
               color="default"
             >
               <Cart />
@@ -239,6 +305,7 @@ export default function NavBar() {
       </div>
       {renderMobileMenu}
       {renderMenu}
+      {renderCart}
     </div>
   );
 }

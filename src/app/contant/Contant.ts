@@ -157,6 +157,41 @@ export const LIST_PRODUCT = [
       "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
 ];
+export const LIST_CART = [
+  {
+    id: 0,
+    name: "Áo sơ mi",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    totalPrice: 628000 * 2,
+    count: 2,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+  },
+  {
+    id: 1,
+    name: "Áo sơ mi",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    totalPrice: 628000 * 2,
+    count: 2,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+  },
+  {
+    id: 2,
+    name: "Áo sơ mi",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    totalPrice: 628000 * 2,
+    count: 2,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+  },
+];
 
 export interface Category {
   id: any;
