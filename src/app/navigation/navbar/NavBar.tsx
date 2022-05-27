@@ -67,6 +67,8 @@ export default function NavBar() {
       <MenuItem
         onClick={() => {
           localStorage.clear();
+          navigate(ROUTE.LOGIN, { replace: true });
+          handleMenuClose();
         }}
       >
         Log out
@@ -225,7 +227,14 @@ export default function NavBar() {
           </div>
         </Toolbar>
       </AppBar>
-      <div style={{ flex: 1, marginTop: 70 }}>
+      <div
+        style={{
+          flex: 1,
+          marginTop: 70,
+          paddingRight: "18%",
+          paddingLeft: "18%",
+        }}
+      >
         <MainApp />
       </div>
       {renderMobileMenu}

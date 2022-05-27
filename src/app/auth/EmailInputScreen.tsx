@@ -67,8 +67,8 @@ const EmailInputScreen = () => {
   const validateLogin = Yup.object({
     email: Yup.string()
       .matches(REG_EMAIL, textValidate.email.error_validate)
-      .min(2, "Mininum 2 characters")
-      .max(15, "Maximum 15 characters")
+      .min(10, "Mininum 2 characters")
+      .max(100, "Maximum 15 characters")
       .required("Required!"),
   });
 
@@ -81,14 +81,8 @@ const EmailInputScreen = () => {
   });
 
   const handleSubmit = async (data: LoginInterface) => {
-    // try {
-    //   const responseLogin: { data: { data: UserInterface } } =
-    //     await requestLogin(data);
-    //   if (responseLogin) {
-    //     // setToken(responseLogin.data.data.token);
-    //     navigate("/");
-    //   }
-    // } catch (e) {}
+    console.log({ data });
+    navigate(ROUTE.FORGOT_PASS, { state: { email: data.email } });
   };
 
   return (
@@ -122,7 +116,7 @@ const EmailInputScreen = () => {
               variant="outlined"
               color="primary"
               onClick={() => {
-                navigate(ROUTE.FORGOT_PASS);
+                formik.handleSubmit();
               }}
               className={className.button}
               style={{

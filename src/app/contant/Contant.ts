@@ -129,4 +129,41 @@ export const LIST_PRODUCT = [
     url_image:
       "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
+  {
+    id: 5,
+    name: "Áo sơ mi ",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+  },
+  {
+    id: 6,
+    name: "Áo sơ mi ",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+  },
+  {
+    id: 7,
+    name: "Áo sơ mi ",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+  },
+];
+
+export interface Category {
+  id: any;
+  name: string;
+}
+export const LIST_CATEGORY: Category[] = [
+  { id: 1, name: "Thu đông" },
+  { id: 2, name: "Nam hàn" },
+  { id: 3, name: "Nam trung" },
 ];

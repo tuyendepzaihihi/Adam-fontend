@@ -1,7 +1,8 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
-import { createRef, useEffect, useRef, useState } from "react";
+import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTE } from "../../contant/Contant";
 import { colors } from "../../utils/color";
-
 export interface ItemProduct {
   id: number;
 
@@ -15,55 +16,45 @@ export interface ItemProduct {
 
 interface Props {
   item: ItemProduct;
+  width?: number | string;
 }
 
 const ProductItemComponent = (props: Props) => {
   const className = useStyles();
-  const { item } = props;
+  const navigate = useNavigate();
+  const { item, width } = props;
   const [show, setShow] = useState(false);
-  const mouseMoveRef = useRef<any>();
-  useEffect(() => {
-    window.addEventListener("mousemove", checkHover, true);
-  }, []);
-  useEffect(() => {
-    return () => window.removeEventListener("mousemove", checkHover, true);
-  }, []);
-  const checkHover = (e: any) => {
-    if (mouseMoveRef.current) {
-      const mouseOver = mouseMoveRef?.current?.contains(e.target);
-      if (!show && mouseOver) {
-        setHover();
-      }
 
-      if (show && !mouseOver) {
-        setUnhover();
-      }
-    }
-  };
-  const setHover = () => setShow(true);
-  const setUnhover = () => setShow(false);
   return (
-    <div className={className.container}>
-      <img
-        src={item.url_image}
-        ref={mouseMoveRef}
-        alt=""
-        className={className.image_banner}
-        onMouseEnter={() => {
-          console.log("enter");
-          setShow(true);
-        }}
-        onMouseLeave={() => {
-          console.log("leave");
-          setShow(false);
-        }}
-      />
+    <div
+      className={className.container}
+      onMouseEnter={() => {
+        setShow(true);
+      }}
+      onMouseLeave={() => {
+        setShow(false);
+      }}
+      style={{ width: width }}
+    >
+      <img src={item.url_image} alt="" className={className.image_banner} />
       <div className={className.containerInfo}>
         <p className={className.textDiscount}>{item.descriptionDiscount}</p>
         <p className={className.textName}>{item.name}</p>
         <p className={className.textPrice}>{item.price} đ</p>
       </div>
-      {show && <div className={className.positionContainer} />}
+      {show && (
+        <div className={className.positionContainer}>
+          <Button
+            color="primary"
+            className={className.button}
+            onClick={() => {
+              navigate(ROUTE.PRODUCT);
+            }}
+          >
+            Mua ngay
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -72,13 +63,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       width: "23%",
+      position: "relative",
     },
     image_banner: {
       width: "100%",
       height: 350,
-      "&:hover": {
-        height: 360,
-      },
     },
     textDiscount: {
       color: colors.white,
@@ -102,9 +91,16 @@ const useStyles = makeStyles((theme: Theme) =>
     positionContainer: {
       position: "absolute",
       backgroundColor: "rgba(0,0,0,0.5)",
-      width: "23%",
+      width: "100%",
       height: 350,
       top: 0,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    button: {
+      backgroundColor: colors.gray59,
+      color: colors.white,
     },
   })
 );

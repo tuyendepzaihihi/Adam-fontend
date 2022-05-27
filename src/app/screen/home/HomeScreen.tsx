@@ -11,8 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       width: "100%",
       scrollBehavior: "auto",
-      paddingRight: "20%",
-      paddingLeft: "20%",
     },
     image_banner: {
       width: "100%",
@@ -20,6 +18,13 @@ const useStyles = makeStyles((theme: Theme) =>
     listImage: {
       display: "flex",
       justifyContent: "space-between",
+    },
+    textTitle: {
+      paddingTop: 5,
+      paddingBottom: 10,
+      fontWeight: "bold",
+      fontSize: 20,
+      textAlign: "center",
     },
   })
 );
@@ -60,6 +65,33 @@ const HomeScreen = () => {
         </Carousel>
       </div>
       <div style={{ width: "100%", height: 500 }}>
+        <p className={className.textTitle}>Sản phẩm bán chạy</p>
+        <Carousel
+          autoPlay
+          animation="slide"
+          timeout={500}
+          IndicatorIcon={<div />}
+          cycleNavigation
+          reverseEdgeAnimationDirection
+          interval={6000}
+        >
+          {[1, 2].map((e) => {
+            const list =
+              e === 1
+                ? LIST_PRODUCT.slice(0, 4)
+                : LIST_PRODUCT.slice(4, LIST_PRODUCT.length);
+            return (
+              <div className={className.listImage}>
+                {list.map((value, idx) => {
+                  return <ProductItemComponent item={value} key={idx} />;
+                })}
+              </div>
+            );
+          })}
+        </Carousel>
+      </div>
+      <div style={{ width: "100%", height: 500 }}>
+        <p className={className.textTitle}>Sản phẩm mới</p>
         <Carousel
           autoPlay
           animation="slide"
