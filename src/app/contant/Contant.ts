@@ -1,5 +1,6 @@
 import Product from "@material-ui/icons/Computer";
 import Home from "@material-ui/icons/HomeSharp";
+import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
 
 export const BaseUrl = "http://localhost:3001/";
@@ -209,3 +210,133 @@ export const LIST_CATEGORY: Category[] = [
   { id: 2, name: "Nam hàn" },
   { id: 3, name: "Nam trung" },
 ];
+
+export const data_detail = {
+  id: 1,
+  options: [
+    {
+      id: 1,
+      name: "Color",
+      option_values: [
+        {
+          id: 1,
+          name: "red",
+        },
+        {
+          id: 2,
+          name: "blue",
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: "Size",
+      option_values: [
+        {
+          id: 1,
+          name: "X",
+        },
+        {
+          id: 2,
+          name: "M",
+        },
+      ],
+    },
+  ],
+};
+export const dataFilter = {
+  data: [
+    {
+      id: 1,
+      url: R.images.img_product,
+      price: 450000,
+      option: [
+        {
+          id: 1,
+          name: "Color",
+          option_values: {
+            id: 1,
+            name: "red",
+          },
+        },
+        {
+          id: 2,
+          name: "Size",
+          option_values: {
+            id: 1,
+            name: "X",
+          },
+        },
+      ],
+    },
+    {
+      id: 2,
+      url: R.images.img_product,
+      price: 6500000,
+      option: [
+        {
+          id: 1,
+          name: "Color",
+          option_values: {
+            id: 1,
+            name: "red",
+          },
+        },
+        {
+          id: 2,
+          name: "Size",
+          option_values: {
+            id: 2,
+            name: "L",
+          },
+        },
+      ],
+    },
+    {
+      id: 3,
+      url: R.images.img_product,
+      price: 500000,
+      option: [
+        {
+          id: 1,
+          name: "Color",
+          option_values: {
+            id: 2,
+            name: "blue",
+          },
+        },
+        {
+          id: 2,
+          name: "Size",
+          option_values: {
+            id: 1,
+            name: "X",
+          },
+        },
+      ],
+    },
+    {
+      id: 4,
+      url: R.images.img_product,
+      price: 500000,
+      option: [
+        {
+          id: 1,
+          name: "Color",
+          option_values: {
+            id: 2,
+            name: "blue",
+          },
+        },
+        {
+          id: 2,
+          name: "Size",
+          option_values: {
+            id: 2,
+            name: "L",
+          },
+        },
+      ],
+    },
+  ],
+};

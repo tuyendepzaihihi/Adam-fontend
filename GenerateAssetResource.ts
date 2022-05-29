@@ -18,6 +18,7 @@ function renderImageResource() {
     ${iconName
       .replace(".png", "")
       .replace(".gif", "")
+      .replace(".jpg", "")
       .replace(".jpeg", "")}: require("./images/${iconName}")`;
         // eslint-disable-next-line no-undef
         return path;
