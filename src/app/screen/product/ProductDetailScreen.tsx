@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
@@ -8,6 +8,22 @@ import R from "../../assets/R";
 import { dataFilter, data_detail } from "../../contant/Contant";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
+
+export const sortPriceToMax = () => {
+  let array = dataFilter.data;
+  for (let i = 0; i < array.length - 1; i++) {
+    for (let j = i + 1; j < array.length; j++) {
+      if (array[i].price > array[j].price) {
+        let a = array[i].price;
+        array[i].price = array[j].price;
+        array[j].price = a;
+      }
+    }
+  }
+  return `${formatPrice(array[0].price)} - ${formatPrice(
+    array[array.length - 1].price
+  )}`;
+};
 
 interface DataFilter {
   url: any;
@@ -98,20 +114,29 @@ const ProductDetailScreen = () => {
       <div className={className.containerImage}>
         <img alt="" src={dataF ? dataF.url : R.images.img_product} />
       </div>
+
       <div className={className.containerInfo}>
         <p className={className.title}>
           {`${state?.item?.name}`.toUpperCase()}
         </p>
+
         <p className={className.price}>
-          {formatPrice(dataF ? dataF.price : state?.item?.price)} đ
+          {dataF ? formatPrice(dataF.price) : sortPriceToMax()} đ
         </p>
+
         {data_detail.options.map((option, index) => {
           return (
             <div key={index}>
-              {option.name}
-              {selection.find((e) => e.optionId === option.id)
-                ? `: ${selection.find((e) => e.optionId === option.id)?.value}`
-                : ""}
+              <p className={className.containerUpdateQuantity}>
+                {option.name}
+                <p className={className.price}>
+                  {selection.find((e) => e.optionId === option.id)
+                    ? `: ${
+                        selection.find((e) => e.optionId === option.id)?.value
+                      }`
+                    : ""}
+                </p>
+              </p>
               <div className={className.containerUpdateQuantity}>
                 {option.option_values.map((optionValue, idx) => {
                   return (
@@ -122,6 +147,7 @@ const ProductDetailScreen = () => {
                           optionValueId: optionValue.id,
                           value: optionValue.name,
                         }),
+                        [className.marginLeft]: idx > 0,
                       })}
                       onClick={() =>
                         handleOption({
@@ -141,31 +167,57 @@ const ProductDetailScreen = () => {
           );
         })}
 
-        <div className={className.containerUpdateQuantity}>
-          <button
-            className={className.buttonUpdate}
-            onClick={() => {
-              if (count > 1) setCount(count - 1);
-            }}
+        {selection.length === data_detail.options.length && (
+          <div className={className.containerDescription}>
+            <p className={className.price}>Số lượng</p>
+            <div className={className.containerUpdateQuantity}>
+              <button
+                className={className.buttonUpdate}
+                onClick={() => {
+                  if (count > 1) setCount(count - 1);
+                }}
+              >
+                -
+              </button>
+              <p className={className.textCount}>{count}</p>
+              <button
+                className={className.buttonUpdate}
+                onClick={() => {
+                  setCount(count + 1);
+                }}
+                style={{ marginLeft: 15 }}
+              >
+                +
+              </button>
+            </div>
+          </div>
+        )}
+
+        {selection.length === data_detail.options.length && (
+          <p
+            className={clsx(
+              className.containerUpdateQuantity,
+              className.containerDescription
+            )}
           >
-            -
-          </button>
-          <p className={className.textCount}>{count}</p>
-          <button
-            className={className.buttonUpdate}
-            onClick={() => {
-              setCount(count + 1);
-            }}
-            style={{ marginLeft: 15 }}
-          >
-            +
-          </button>
+            Total
+            <p className={className.price}>
+              :{" "}
+              {formatPrice((dataF ? dataF.price : state?.item?.price) * count)}đ
+            </p>
+          </p>
+        )}
+
+        {selection.length === data_detail.options.length && (
+          <Button variant="outlined" className={className.buttonBuy}>
+            Mua hàng
+          </Button>
+        )}
+
+        <div className={className.containerDescription}>
+          <p className={className.price}>Mô tả</p>
+          <p className={className.description}>khanh</p>
         </div>
-        <p className={className.price}>
-          total:{" "}
-          {formatPrice((dataF ? dataF.price : state?.item?.price) * count)} đ
-        </p>
-        <p className={className.description}>khanh</p>
       </div>
     </div>
   );
@@ -181,11 +233,11 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: 20,
     },
     containerImage: {
-      width: "50%",
+      width: "45%",
       height: 600,
     },
     containerInfo: {
-      width: "40%",
+      width: "48%",
     },
     img: {
       width: "100%",
@@ -193,25 +245,25 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontSize: 18,
       fontWeight: "bold",
-      color: colors.black,
+      color: colors.gray59,
     },
     description: {
-      fontSize: 18,
+      fontSize: 16,
       color: colors.gray59,
       fontStyle: "italic",
-      marginTop: 10,
+      marginTop: 5,
     },
     price: {
-      color: colors.black,
-      fontSize: 18,
-      marginTop: 10,
+      color: colors.gray59,
+      fontSize: 16,
+      fontWeight: "bolder",
     },
 
     containerUpdateQuantity: {
       flexDirection: "row",
       display: "flex",
       alignItems: "center",
-      marginTop: 10,
+      marginTop: 5,
     },
     buttonUpdate: {
       width: 30,
@@ -234,10 +286,31 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       borderWidth: 1,
       borderRadius: 5,
-      marginLeft: 10,
+      borderColor: colors.grayC4,
+      color: colors.gray59,
+      fontSize: 15,
     },
     buttonActive: {
       backgroundColor: colors.orange,
+      borderColor: colors.orange,
+      color: colors.white,
+    },
+    buttonBuy: {
+      width: "100%",
+      borderRadius: 5,
+      borderColor: colors.grayC4,
+      color: colors.gray59,
+      "&:hover": {
+        borderColor: colors.orange,
+        color: colors.orange,
+      },
+      marginTop: 10,
+    },
+    containerDescription: {
+      marginTop: 15,
+    },
+    marginLeft: {
+      marginLeft: 10,
     },
   })
 );

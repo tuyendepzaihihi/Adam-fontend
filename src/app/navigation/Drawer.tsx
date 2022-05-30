@@ -6,12 +6,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import clsx from "clsx";
@@ -91,10 +86,9 @@ interface Props {
 export default function MiniDrawer(props: Props) {
   const { open, setOpen } = props;
   const classes = useStyles();
-  const theme = useTheme();
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setOpen(!open);
   };
 
   return (
@@ -115,11 +109,7 @@ export default function MiniDrawer(props: Props) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
         <Divider />
@@ -142,7 +132,6 @@ export default function MiniDrawer(props: Props) {
             );
           })}
         </List>
-        {/* <Divider /> */}
       </Drawer>
     </div>
   );

@@ -164,5 +164,9 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
     textNameProductCart: {
       fontWeight: "bold",
     },
+    containerAdmin: {
+      display: "flex",
+      flexDirection: "row",
+    },
   })
 );

@@ -1,5 +1,7 @@
 import Product from "@material-ui/icons/Computer";
-import Home from "@material-ui/icons/HomeSharp";
+import Dashboard from "@material-ui/icons/Dashboard";
+import User from "@material-ui/icons/AccountBalance";
+
 import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
 
@@ -40,34 +42,36 @@ export const textValidate = {
 export const ROUTE = {
   HOME: "/",
   PRODUCT: "/product",
-  LOGIN: "/login",
-  REGISTER: "/register",
-  FORGOT_PASS: "/forgotPassword",
-  EMAIL_INPUT: "/emailInput",
-  PRODUCT_DETAIL: "/productDetail",
+  LOGIN: "/auth/login",
+  REGISTER: "/auth/register",
+  FORGOT_PASS: "/auth/forgotPassword",
+  EMAIL_INPUT: "/auth/emailInput",
+  PRODUCT_DETAIL: "/product/detail",
 };
 
-export const DEFINE_ROUTE = {
-  [ROUTE.HOME]: {
-    name: "Home",
-    route: "/",
-  },
-  [ROUTE.PRODUCT]: {
-    name: "Product",
-    route: "/product",
-  },
+export const ROUTE_ADMIN = {
+  DASHBOARD: "/DASHBOARD_ADMIN",
+  USER: "/USER_AMDIN",
+  PRODUCT: "/PRODUCT_ADMIN",
+  ORDER: "/ORDER_ADMIN",
+  SETTING: "/SETTING_ADMIN",
 };
 
 export const LIST_MENU_DRAWER = [
   {
-    name: ROUTE.HOME,
-    route: DEFINE_ROUTE[ROUTE.HOME].route,
-    icon: Home,
+    name: "Dashboard",
+    route: ROUTE_ADMIN.DASHBOARD,
+    icon: Dashboard,
   },
   {
-    name: ROUTE.PRODUCT,
-    route: DEFINE_ROUTE[ROUTE.PRODUCT].route,
+    name: "Product",
+    route: ROUTE_ADMIN.PRODUCT,
     icon: Product,
+  },
+  {
+    name: "User",
+    route: ROUTE_ADMIN.USER,
+    icon: User,
   },
 ];
 
