@@ -12,4 +12,5 @@ export interface UserAdminInteface {
   position: string;
   first_name: string;
   last_name: string;
+  active: number;
 }

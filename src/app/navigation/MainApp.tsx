@@ -11,26 +11,32 @@ const MainApp = (props: { isAdmin: boolean }) => {
   const { isAdmin } = props;
   return (
     <Routes>
-      {PRIVATE_ROUTE.map((e) => {
+      {PRIVATE_ROUTE.map((e, index) => {
         return (
           <Route
             path={e.route}
             element={<PrivateRoute>{e.screen}</PrivateRoute>}
+            key={index}
           />
         );
       })}
       {!isAdmin &&
-        AUTH_ROUTE.map((e) => {
+        AUTH_ROUTE.map((e, index) => {
           return (
-            <Route path={e.route} element={<AuthRoute>{e.screen}</AuthRoute>} />
+            <Route
+              path={e.route}
+              element={<AuthRoute>{e.screen}</AuthRoute>}
+              key={index}
+            />
           );
         })}
       {isAdmin &&
-        PRIVATE_ROUTE_ADMIN.map((e) => {
+        PRIVATE_ROUTE_ADMIN.map((e, index) => {
           return (
             <Route
               path={e.route}
               element={<PrivateRoute>{e.screen}</PrivateRoute>}
+              key={index}
             />
           );
         })}

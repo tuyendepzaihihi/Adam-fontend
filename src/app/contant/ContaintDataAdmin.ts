@@ -1,4 +1,4 @@
-import { UserAdminInteface } from "./IntefaceContaint";
+import { HeadCell, UserAdminInteface } from "./IntefaceContaint";
 
 export const rows_example_user: UserAdminInteface[] = [
   {
@@ -8,14 +8,16 @@ export const rows_example_user: UserAdminInteface[] = [
     position: "Admin",
     first_name: "Pham",
     last_name: "Van Khanh",
+    active: 1,
   },
   {
     id: 2,
     email: "phamvankhanh962001@gmail.com",
-    phone: "0965259441",
-    position: "Admin",
-    first_name: "Pham",
+    phone: "097940215",
+    position: "User",
+    first_name: "Le",
     last_name: "Van Khanh",
+    active: 1,
   },
   {
     id: 3,
@@ -23,7 +25,8 @@ export const rows_example_user: UserAdminInteface[] = [
     phone: "0965259441",
     position: "Admin",
     first_name: "Pham",
-    last_name: "Van Khanh",
+    last_name: "Van Tam",
+    active: 1,
   },
   {
     id: 4,
@@ -32,6 +35,7 @@ export const rows_example_user: UserAdminInteface[] = [
     position: "Admin",
     first_name: "Pham",
     last_name: "K Khanh",
+    active: 0,
   },
   {
     id: 5,
@@ -40,5 +44,53 @@ export const rows_example_user: UserAdminInteface[] = [
     position: "Admin",
     first_name: "Pham",
     last_name: "Van Khanh",
+    active: 1,
   },
+  {
+    id: 6,
+    email: "phamvankhanh962001@gmail.com",
+    phone: "0965259441",
+    position: "Admin",
+    first_name: "Pham",
+    last_name: "Van Khanh",
+    active: 1,
+  },
+  {
+    id: 7,
+    email: "phamvankhanh962001@gmail.com",
+    phone: "0965259441",
+    position: "Admin",
+    first_name: "Pham",
+    last_name: "K Khanh",
+    active: 0,
+  },
+  {
+    id: 8,
+    email: "phamvankhanh962001@gmail.com",
+    phone: "0965259441",
+    position: "Admin",
+    first_name: "Pham",
+    last_name: "Van Khanh",
+    active: 1,
+  },
+];
+
+export const headCells: HeadCell<UserAdminInteface>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  { id: "email", numeric: true, disablePadding: false, label: "Email" },
+  { id: "phone", numeric: true, disablePadding: false, label: "Phone" },
+  { id: "position", numeric: true, disablePadding: false, label: "Position" },
+  {
+    id: "first_name",
+    numeric: true,
+    disablePadding: false,
+    label: "First Name",
+  },
+  { id: "last_name", numeric: true, disablePadding: false, label: "Last Name" },
+  { id: "active", numeric: true, disablePadding: false, label: "Active" },
 ];
