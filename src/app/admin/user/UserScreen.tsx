@@ -1,15 +1,9 @@
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   IconButton,
   Menu,
   MenuItem,
   Switch,
-  TextField,
   Tooltip,
 } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -23,20 +17,17 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import { Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import TextInputComponent from "../../component/TextInputComponent";
-import { headCells, rows_example_user } from "../../contant/ContaintDataAdmin";
+import { headCells } from "../../contant/ContaintDataAdmin";
+import { TYPE_DIALOG } from "../../contant/Contant";
 import { UserAdminInteface } from "../../contant/IntefaceContaint";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-const initValuesUser = {
-  email: "",
-  fullname: "",
-  phone: "",
-};
+import { deleteUser, updateUser } from "./slice/UserAdminSlice";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -65,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function UserScreen() {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof UserAdminInteface>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
@@ -78,6 +70,8 @@ export default function UserScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
+  const { data } = useAppSelector((state) => state.userAdmin);
+  const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
@@ -106,8 +100,7 @@ export default function UserScreen() {
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, rows_example_user.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -146,6 +139,7 @@ export default function UserScreen() {
       </MenuItem>
       <MenuItem
         onClick={() => {
+          setTypeDialog(TYPE_DIALOG.UPDATE);
           setOpen(!open);
         }}
       >
@@ -162,7 +156,17 @@ export default function UserScreen() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onCreate={() => {
+            setTypeDialog(TYPE_DIALOG.CREATE);
+            setOpen(!open);
+          }}
+          onDelete={() => {
+            dispatch(deleteUser({ array: selected }));
+            setSelected([]);
+          }}
+        />
         <TableContainer>
           <Table
             className={classes.table}
@@ -176,81 +180,86 @@ export default function UserScreen() {
               order={order}
               orderBy={orderBy}
               onSelectAllClick={(event) => {
-                setSelected(
-                  FunctionUtil.handleSelectAllClick(event, rows_example_user)
-                );
+                setSelected(FunctionUtil.handleSelectAllClick(event, data));
               }}
-              rowCount={rows_example_user.length}
+              rowCount={data.length}
               headCells={headCells}
               createSortHandler={createSortHandler}
             />
             <TableBody>
-              {FunctionUtil.stableSort(
-                rows_example_user,
-                FunctionUtil.getComparator(order, orderBy)
-              )
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(`${row.id}`);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={`${row.id}`}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                          onClick={(event) => {
-                            setSelected(
-                              FunctionUtil.handleClick(
-                                event,
-                                `${row.id}`,
-                                selected
-                              )
-                            );
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+              {data.length > 0 &&
+                FunctionUtil.stableSort(
+                  data,
+                  FunctionUtil.getComparator(order, orderBy)
+                )
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(`${row.id}`);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={`${row.id}`}
+                        selected={isItemSelected}
                       >
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.phone}</TableCell>
-                      <TableCell align="right">{row.position}</TableCell>
-                      <TableCell align="right">{row.first_name}</TableCell>
-                      <TableCell align="right">{row.last_name}</TableCell>
-                      <TableCell align="right">
-                        <Switch
-                          checked={row.active === 1 ? true : false}
-                          onChange={(data) => {}}
-                          name={labelId}
-                          inputProps={{ "aria-label": labelId }}
-                          color="primary"
-                        />
-                      </TableCell>
-                      <TableCell align="right">
-                        <Button
-                          onClick={(event) => {
-                            handleProfileMenuOpen(event, row);
-                          }}
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ "aria-labelledby": labelId }}
+                            onClick={(event) => {
+                              setSelected(
+                                FunctionUtil.handleClick(
+                                  event,
+                                  `${row.id}`,
+                                  selected
+                                )
+                              );
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
                         >
-                          ...
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                          {row.id}
+                        </TableCell>
+                        <TableCell align="right">{row.email}</TableCell>
+                        <TableCell align="right">{row.phone}</TableCell>
+                        <TableCell align="right">{row.position}</TableCell>
+                        <TableCell align="right">{row.first_name}</TableCell>
+                        <TableCell align="right">{row.last_name}</TableCell>
+                        <TableCell align="right">
+                          <Switch
+                            checked={row.active === 1 ? true : false}
+                            onChange={(data) => {
+                              let item = {
+                                ...row,
+                                active: row.active === 1 ? 0 : 1,
+                              };
+                              dispatch(updateUser({ item: item }));
+                            }}
+                            name={labelId}
+                            inputProps={{ "aria-label": labelId }}
+                            color="primary"
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <Button
+                            onClick={(event) => {
+                              handleProfileMenuOpen(event, row);
+                            }}
+                          >
+                            ...
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
@@ -262,7 +271,7 @@ export default function UserScreen() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows_example_user.length}
+          count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -274,6 +283,8 @@ export default function UserScreen() {
         open={open}
         handleClose={handleClose}
         anchorElData={anchorElData}
+        type={typeDialog}
+        data={data}
       />
     </div>
   );

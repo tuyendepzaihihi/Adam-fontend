@@ -14,20 +14,25 @@ import {
   PHONE_REGEX,
   REG_EMAIL,
   textValidate,
+  TYPE_DIALOG,
 } from "../../../contant/Contant";
+import { useAppDispatch } from "../../../hooks";
+import { createUser, updateUser } from "../slice/UserAdminSlice";
+import { UserAdminInteface } from "../../../contant/IntefaceContaint";
 interface Props {
   open: any;
   handleClose: any;
-  anchorElData?: any;
+  anchorElData: any;
+  type: number;
+  data: UserAdminInteface[];
 }
-const validateRegister = Yup.object({
+const validateUser = Yup.object({
   phone: Yup.string()
     .min(10, textValidate.phone.error_validate)
     .max(11, textValidate.phone.error_validate)
     .matches(PHONE_REGEX, textValidate.phone.error_validate)
     .required()
     .trim(),
-
   email: Yup.string()
     .matches(REG_EMAIL, textValidate.email.error_validate)
     .required(textValidate.email.require)
@@ -37,8 +42,54 @@ const validateRegister = Yup.object({
     .matches(NAME_REGEX, textValidate.full_name.error_validate)
     .trim(),
 });
+
+interface PropsCreateUser {
+  email: string;
+  phone: string;
+  fullname: string;
+  position: string;
+}
+const initialValues: PropsCreateUser = {
+  email: "",
+  phone: "",
+  fullname: "",
+  position: "",
+};
 const FormDialog = (props: Props) => {
-  const { handleClose, open, anchorElData } = props;
+  const dispatch = useAppDispatch();
+  const { handleClose, open, anchorElData, type, data } = props;
+
+  const onSubmit = (data: {
+    email: string;
+    phone: string;
+    fullname: string;
+  }) => {
+    const { email, fullname, phone } = data;
+    const item: UserAdminInteface = {
+      ...anchorElData.item,
+      email: email,
+      last_name: fullname,
+      phone: phone,
+    };
+    dispatch(updateUser({ item: item }));
+    handleClose();
+  };
+
+  const onSubmitCreate = (dataCreate: PropsCreateUser) => {
+    const { email, fullname, phone, position } = dataCreate;
+    const item: UserAdminInteface = {
+      active: 1,
+      email: email,
+      first_name: fullname,
+      last_name: fullname,
+      phone: phone,
+      position: position,
+      id: data[data.length - 1].id + 1,
+    };
+    dispatch(createUser({ item: item }));
+    handleClose();
+  };
+
   return (
     <Dialog
       open={open}
@@ -46,18 +97,26 @@ const FormDialog = (props: Props) => {
       aria-labelledby="form-dialog-title"
       style={{ width: "100%" }}
     >
-      <DialogTitle id="form-dialog-title">Cập nhật user</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        {TYPE_DIALOG.CREATE === type ? "Tạo mới User" : `Cập nhật User`}
+      </DialogTitle>
       <Formik
-        initialValues={{
-          email: anchorElData?.item.email ?? "",
-          phone: anchorElData?.item.phone ?? "",
-          fullname: anchorElData?.item.last_name ?? "",
-        }}
-        onSubmit={() => {
-          handleClose();
+        initialValues={
+          type === TYPE_DIALOG.CREATE
+            ? initialValues
+            : {
+                email: anchorElData?.item.email ?? "",
+                phone: anchorElData?.item.phone ?? "",
+                fullname: anchorElData?.item.last_name ?? "",
+              }
+        }
+        onSubmit={(data) => {
+          type === TYPE_DIALOG.CREATE
+            ? onSubmitCreate({ ...data, position: "Admin" })
+            : onSubmit(data);
         }}
         validateOnChange
-        validationSchema={validateRegister}
+        validationSchema={validateUser}
       >
         {({
           values,

@@ -58,6 +58,7 @@ const TextInputComponent = (props: Props) => {
           onChange={onChange}
           onBlur={onBlur}
           required={require}
+          style={{ height: 50 }}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -98,6 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 20,
       borderColor: "white",
       width: "100%",
+      height: 50,
     },
     withoutLabel: {
       marginTop: theme.spacing(3),

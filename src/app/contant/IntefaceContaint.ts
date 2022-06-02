@@ -14,3 +14,9 @@ export interface UserAdminInteface {
   last_name: string;
   active: number;
 }
+
+export interface DataState<T> {
+  data: T;
+  isLoading?: boolean;
+  isError?: boolean;
+}

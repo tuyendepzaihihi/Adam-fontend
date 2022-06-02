@@ -75,6 +75,11 @@ export const LIST_MENU_DRAWER = [
   },
 ];
 
+export const TYPE_DIALOG = {
+  CREATE: 1,
+  UPDATE: 2,
+};
+
 export const LIST_IMAGE_BANNER = [
   {
     url: "https://owen.vn/media/codazon/slideshow/l/_/l_1366_x_532_1_.jpg",

@@ -22,11 +22,13 @@ import moment from "moment";
 import { colors } from "../utils/color";
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  onCreate: Function;
+  onDelete: Function;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, onCreate, onDelete } = props;
   const [textFilter, setTextFilter] = useState("");
   const [status, setStatus] = useState(`0`);
 
@@ -97,49 +99,52 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
             variant="contained"
             color="primary"
             style={{ marginLeft: 10 }}
+            onClick={() => onCreate()}
           >
             Tạo mới thông tin
           </Button>
         </div>
       </div>
-      <Toolbar
-        className={clsx(classes.root, {
-          [classes.highlight]: numSelected > 0,
-        })}
-      >
-        {numSelected > 0 ? (
-          <Typography
-            className={classes.title}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            {numSelected} Bản ghi
-          </Typography>
-        ) : (
-          <Typography
-            className={classes.title}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Chưa chọn bản ghi nào
-          </Typography>
-        )}
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </Toolbar>
+      {numSelected > 0 && (
+        <Toolbar
+          className={clsx(classes.root, {
+            [classes.highlight]: numSelected > 0,
+          })}
+        >
+          {numSelected > 0 ? (
+            <Typography
+              className={classes.title}
+              color="inherit"
+              variant="subtitle1"
+              component="div"
+            >
+              {numSelected} Bản ghi
+            </Typography>
+          ) : (
+            <Typography
+              className={classes.title}
+              variant="h6"
+              id="tableTitle"
+              component="div"
+            >
+              Chưa chọn bản ghi nào
+            </Typography>
+          )}
+          {numSelected > 0 ? (
+            <Tooltip title="Delete">
+              <IconButton aria-label="delete" onClick={() => onDelete()}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Filter list">
+              <IconButton aria-label="filter list">
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Toolbar>
+      )}
     </div>
   );
 };
