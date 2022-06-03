@@ -5,9 +5,17 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import R from "../../assets/R";
-import { dataFilter, data_detail } from "../../contant/Contant";
+import { ItemProduct } from "../../component/product_item/ProductItemComponent";
+import {
+  dataFilter,
+  data_detail,
+  ItemCart,
+  LIST_CART,
+} from "../../contant/Contant";
+import { useAppDispatch } from "../../hooks";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
+import { addProductToCart } from "../cart/slice/CartSlice";
 
 export const sortPriceToMax = () => {
   let array = dataFilter.data;
@@ -36,6 +44,7 @@ interface Selection {
 }
 const ProductDetailScreen = () => {
   const className = useStyles();
+  const dispatch = useAppDispatch();
   const state: any = useLocation().state;
   const [count, setCount] = useState(1);
   const [selection, setSelection] = useState<Selection[]>([]);
@@ -109,6 +118,23 @@ const ProductDetailScreen = () => {
     if (dataExist) return true;
     else return false;
   };
+
+  const handleBuyProduct = () => {
+    const itemProduct: ItemProduct = state?.item;
+    const item: ItemCart = {
+      id: LIST_CART.length,
+      count: count,
+      name: itemProduct?.name,
+      price: itemProduct?.price,
+      totalPrice: count * itemProduct?.price,
+      url_image: itemProduct.url_image,
+      descriptionDiscount: itemProduct.descriptionDiscount,
+      discountPersent: itemProduct.discountPersent,
+      product_id: itemProduct.id,
+    };
+    dispatch(addProductToCart({ item: item }));
+  };
+
   return (
     <div className={className.container}>
       <div className={className.containerImage}>
@@ -209,14 +235,27 @@ const ProductDetailScreen = () => {
         )}
 
         {selection.length === data_detail.options.length && (
-          <Button variant="outlined" className={className.buttonBuy}>
+          <Button
+            variant="outlined"
+            className={className.buttonBuy}
+            onClick={handleBuyProduct}
+          >
             Mua hàng
           </Button>
         )}
 
         <div className={className.containerDescription}>
-          <p className={className.price}>Mô tả</p>
-          <p className={className.description}>khanh</p>
+          <p
+            className={className.price}
+            style={{ borderBottomWidth: 1.5, borderBottomColor: colors.gray59 }}
+          >
+            Mô tả
+          </p>
+          <p className={className.description}>
+            Áo sơ mi ngắn tay, form Body Fit dễ mặc, hợp form dáng. Màu sắc và
+            kiểu dáng trẻ trung, hiện đại, dễ phối đồ. Chất liệu bạc hà kháng
+            khuẩn tự nhiên, mát lạnh, mềm mượt, thân thiện với làn da.
+          </p>
         </div>
       </div>
     </div>
@@ -234,7 +273,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     containerImage: {
       width: "45%",
-      height: 600,
     },
     containerInfo: {
       width: "48%",
@@ -273,7 +311,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 18,
       borderColor: colors.gray59,
       borderWidth: 1,
-      borderRadius: 10,
+      borderRadius: 5,
     },
     textCount: {
       color: colors.gray59,
@@ -285,7 +323,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 1,
-      borderRadius: 5,
+      borderRadius: 3,
       borderColor: colors.grayC4,
       color: colors.gray59,
       fontSize: 15,

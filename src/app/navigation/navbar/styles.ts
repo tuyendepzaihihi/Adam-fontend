@@ -11,6 +11,9 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
+    margin: {
+      marginLeft: "5%",
+    },
     menuButton: {
       marginRight: theme.spacing(2),
     },
@@ -35,7 +38,7 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
     },
     button: {
       // width: "5%",
-      marginLeft: "1%",
+      marginLeft: "2%",
     },
     optionView: {
       flexDirection: "row",

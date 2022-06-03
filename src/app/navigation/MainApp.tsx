@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { PRIVATE_ROUTE_ADMIN } from "../../route/AdminRoute";
+import { PrivateRouteAdmin, PRIVATE_ROUTE_ADMIN } from "../../route/AdminRoute";
 import {
   AuthRoute,
   AUTH_ROUTE,
@@ -11,16 +11,15 @@ const MainApp = (props: { isAdmin: boolean }) => {
   const { isAdmin } = props;
   return (
     <Routes>
-      {!isAdmin &&
-        PRIVATE_ROUTE.map((e, index) => {
-          return (
-            <Route
-              path={e.route}
-              element={<PrivateRoute>{e.screen}</PrivateRoute>}
-              key={index}
-            />
-          );
-        })}
+      {PRIVATE_ROUTE.map((e, index) => {
+        return (
+          <Route
+            path={e.route}
+            element={<PrivateRoute isAdmin={isAdmin}>{e.screen}</PrivateRoute>}
+            key={index}
+          />
+        );
+      })}
       {AUTH_ROUTE.map((e, index) => {
         return (
           <Route
@@ -30,16 +29,19 @@ const MainApp = (props: { isAdmin: boolean }) => {
           />
         );
       })}
-      {isAdmin &&
-        PRIVATE_ROUTE_ADMIN.map((e, index) => {
-          return (
-            <Route
-              path={e.route}
-              element={<PrivateRoute>{e.screen}</PrivateRoute>}
-              key={index}
-            />
-          );
-        })}
+      {PRIVATE_ROUTE_ADMIN.map((e, index) => {
+        return (
+          <Route
+            path={e.route}
+            element={
+              <PrivateRouteAdmin isAdmin={isAdmin}>
+                {e.screen}
+              </PrivateRouteAdmin>
+            }
+            key={index}
+          />
+        );
+      })}
     </Routes>
   );
 };

@@ -47,6 +47,7 @@ export const ROUTE = {
   FORGOT_PASS: "/auth/forgotPassword",
   EMAIL_INPUT: "/auth/emailInput",
   PRODUCT_DETAIL: "/product/detail",
+  CART: "cart",
 };
 
 export const ROUTE_ADMIN = {
@@ -82,16 +83,26 @@ export const TYPE_DIALOG = {
 
 export const LIST_IMAGE_BANNER = [
   {
-    url: "https://owen.vn/media/codazon/slideshow/l/_/l_1366_x_532_1_.jpg",
+    url: R.images.img_banner1,
     caption: "Slide 1",
   },
   {
-    url: "https://owen.vn/media/codazon/slideshow/1/3/1366_x_532_34_1_.jpg",
+    url: R.images.img_banner2,
     caption: "Slide 2",
   },
   {
-    url: "https://owen.vn/media/codazon/slideshow/1/3/1366_x_532_20_1__1.jpg",
+    url: R.images.img_banner3,
     caption: "Slide 3",
+  },
+];
+export const LIST_IMAGE_BANNER_SECOND = [
+  {
+    url: R.images.img_banner_second,
+    caption: "Slide 1",
+  },
+  {
+    url: R.images.img_banner_second1,
+    caption: "Slide 2",
   },
 ];
 
@@ -171,10 +182,10 @@ export const LIST_PRODUCT = [
 ];
 export interface ItemCart extends ItemProduct {
   totalPrice: number;
-
   count: number;
+  product_id?: number;
 }
-export const LIST_CART = [
+export const LIST_CART: ItemCart[] = [
   {
     id: 0,
     name: "Áo sơ mi",
@@ -185,6 +196,7 @@ export const LIST_CART = [
     count: 2,
     url_image:
       "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    product_id: 7,
   },
   {
     id: 1,
@@ -196,6 +208,7 @@ export const LIST_CART = [
     count: 2,
     url_image:
       "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    product_id: 5,
   },
   {
     id: 2,
@@ -207,6 +220,7 @@ export const LIST_CART = [
     count: 2,
     url_image:
       "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    product_id: 2,
   },
 ];
 
