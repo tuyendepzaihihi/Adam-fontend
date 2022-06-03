@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import LoginScreen from "../app/auth/LoginScreen";
 import RegisterScreen from "../app/auth/RegisterScreen";
-import { ROUTE } from "../app/contant/Contant";
+import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
 import HomeScreen from "../app/screen/home/HomeScreen";
 import ProductScreen from "../app/screen/product/ProductScreen";
 import EmailInputScreen from "../app/auth/EmailInputScreen";
@@ -48,8 +48,12 @@ export function PrivateRoute(props: { children: any }) {
   return children;
 }
 
-export function AuthRoute(props: { children: any }) {
-  const { children } = props;
+export function AuthRoute(props: { children: any; isAdmin: boolean }) {
+  const { children, isAdmin } = props;
   const token = getToken();
-  return !token ? children : <Navigate replace to="/" />;
+  return !token ? (
+    children
+  ) : (
+    <Navigate replace to={isAdmin ? ROUTE_ADMIN.DASHBOARD : ROUTE.HOME} />
+  );
 }
