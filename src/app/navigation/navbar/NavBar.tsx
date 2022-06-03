@@ -23,12 +23,14 @@ import {
   updateQuantity,
 } from "../../screen/cart/slice/CartSlice";
 import { colors } from "../../utils/color";
+import { useWindowSize } from "../../utils/helper";
 import ActiveBreadcrumbs from "../Breadcrumbs";
 import MiniDrawer from "../Drawer";
 import MainApp from "../MainApp";
 import { useNavBarStyles } from "./styles";
 
 export default function NavBar() {
+  const size = useWindowSize();
   const classes = useNavBarStyles();
   const navigate = useNavigate();
   const { data } = useAppSelector((state) => state.cart);
@@ -264,152 +266,162 @@ export default function NavBar() {
           </div>
         </div>
       ) : (
-        <div className={classes.grow}>
-          <AppBar
-            position="fixed"
-            className={clsx(classes.appBar, {
-              [classes.appBarShift]: open,
-            })}
-          >
-            <Toolbar>
-              <Button
-                className={classes.title}
-                onClick={() => navigate(ROUTE.HOME)}
-              >
-                Adam store
-              </Button>
-              <div className={classes.margin} />
-              <Button
-                className={classes.button}
-                onClick={() => navigate(ROUTE.PRODUCT)}
-              >
-                Áo
-              </Button>
-              <Button
-                className={classes.button}
-                onClick={() => navigate(ROUTE.PRODUCT)}
-              >
-                <Link to={"/product"}>Quần</Link>
-              </Button>
-              <Button
-                className={classes.button}
-                onClick={() => navigate(ROUTE.PRODUCT)}
-              >
-                Phụ kiện
-              </Button>
-              <Button
-                className={classes.button}
-                onClick={() => navigate(ROUTE.PRODUCT)}
-              >
-                Ưu đãi
-              </Button>
-              <Button
-                className={classes.button}
-                onClick={() => navigate(ROUTE.PRODUCT)}
-              >
-                Liên hệ
-              </Button>
-
-              <div className={classes.grow} />
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  placeholder="Search…"
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ "aria-label": "search" }}
-                />
-              </div>
-
-              <div className={classes.sectionDesktop}>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={() => {}}
-                  color="default"
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "column",
+            flex: 1,
+          }}
+        >
+          <div className={classes.grow}>
+            <AppBar
+              position="fixed"
+              className={clsx(classes.appBar, {
+                [classes.appBarShift]: open,
+              })}
+            >
+              <Toolbar>
+                <Button
+                  className={classes.title}
+                  onClick={() => navigate(ROUTE.HOME)}
                 >
-                  <Favorite />
-                </IconButton>
-              </div>
-              <div
-                className={classes.sectionDesktop}
-                style={{ position: "relative" }}
-              >
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleCartOpen}
-                  color="default"
+                  Adam store
+                </Button>
+                <div className={classes.margin} />
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
                 >
-                  <Cart />
-                </IconButton>
-                {data && data?.length > 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 1,
-                      right: -5,
-                      backgroundColor: colors.gray59,
-                      borderRadius: 20,
-                      paddingLeft: 5,
-                      paddingRight: 5,
-                      color: colors.white,
-                      fontSize: 12,
-                      alignSelf: "center",
-                    }}
-                  >
-                    {data?.length}
+                  Áo
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  <Link to={"/product"}>Quần</Link>
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Phụ kiện
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Ưu đãi
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Liên hệ
+                </Button>
+
+                <div className={classes.grow} />
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
                   </div>
-                )}
-              </div>
-              <div className={classes.sectionDesktop}>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="default"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </div>
+                  <InputBase
+                    placeholder="Search…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    inputProps={{ "aria-label": "search" }}
+                  />
+                </div>
 
-              <div className={classes.sectionMobile}>
-                <IconButton
-                  aria-label="show more"
-                  aria-controls={mobileMenuId}
-                  aria-haspopup="true"
-                  onClick={handleMobileMenuOpen}
-                  color="default"
+                <div className={classes.sectionDesktop}>
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={() => {}}
+                    color="default"
+                  >
+                    <Favorite />
+                  </IconButton>
+                </div>
+                <div
+                  className={classes.sectionDesktop}
+                  style={{ position: "relative" }}
                 >
-                  <MoreIcon />
-                </IconButton>
-              </div>
-            </Toolbar>
-          </AppBar>
-          <div
-            style={{
-              flex: 1,
-              marginTop: 70,
-              paddingRight: "18%",
-              paddingLeft: "18%",
-            }}
-          >
-            <ActiveBreadcrumbs />
-            <MainApp isAdmin={isAdmin} />
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleCartOpen}
+                    color="default"
+                  >
+                    <Cart />
+                  </IconButton>
+                  {data && data?.length > 0 && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 1,
+                        right: -5,
+                        backgroundColor: colors.gray59,
+                        borderRadius: 20,
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        color: colors.white,
+                        fontSize: 12,
+                        alignSelf: "center",
+                      }}
+                    >
+                      {data?.length}
+                    </div>
+                  )}
+                </div>
+                <div className={classes.sectionDesktop}>
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="default"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </div>
+
+                <div className={classes.sectionMobile}>
+                  <IconButton
+                    aria-label="show more"
+                    aria-controls={mobileMenuId}
+                    aria-haspopup="true"
+                    onClick={handleMobileMenuOpen}
+                    color="default"
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </div>
+              </Toolbar>
+            </AppBar>
+            <div
+              style={{
+                flex: 1,
+                marginTop: 70,
+                paddingRight: "18%",
+                paddingLeft: "18%",
+                minHeight: size && size?.height ? size?.height - 370 : 0,
+              }}
+            >
+              <ActiveBreadcrumbs />
+              <MainApp isAdmin={isAdmin} />
+            </div>
+            {renderMobileMenu}
+            {renderMenu}
+            {renderCart}
           </div>
-          {renderMobileMenu}
-          {renderMenu}
-          {renderCart}
           <FooterComponent />
         </div>
       )}
