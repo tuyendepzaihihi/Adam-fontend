@@ -1,13 +1,14 @@
 import { Navigate } from "react-router-dom";
 import LoginScreen from "../app/auth/LoginScreen";
 import RegisterScreen from "../app/auth/RegisterScreen";
-import { ROUTE } from "../app/contant/Contant";
+import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
 import HomeScreen from "../app/screen/home/HomeScreen";
 import ProductScreen from "../app/screen/product/ProductScreen";
 import EmailInputScreen from "../app/auth/EmailInputScreen";
 import { getToken } from "../app/service/StorageService";
 import ForgotPasswordScreen from "../app/auth/ForgotPasswordScreen";
 import ProductDetailScreen from "../app/screen/product/ProductDetailScreen";
+import CartScreen from "../app/screen/cart/CartScreen";
 
 export const AUTH_ROUTE = [
   {
@@ -41,15 +42,23 @@ export const PRIVATE_ROUTE = [
     route: ROUTE.PRODUCT_DETAIL,
     screen: <ProductDetailScreen />,
   },
+  {
+    route: ROUTE.CART,
+    screen: <CartScreen />,
+  },
 ];
 
-export function PrivateRoute(props: { children: any }) {
-  const { children } = props;
-  return children;
+export function PrivateRoute(props: { children: any; isAdmin?: boolean }) {
+  const { children, isAdmin } = props;
+  return !isAdmin ? children : <Navigate replace to={ROUTE_ADMIN.DASHBOARD} />;
 }
 
-export function AuthRoute(props: { children: any }) {
-  const { children } = props;
+export function AuthRoute(props: { children: any; isAdmin?: boolean }) {
+  const { children, isAdmin } = props;
   const token = getToken();
-  return !token ? children : <Navigate replace to="/" />;
+  return !token ? (
+    children
+  ) : (
+    <Navigate replace to={isAdmin ? ROUTE_ADMIN.DASHBOARD : ROUTE.HOME} />
+  );
 }

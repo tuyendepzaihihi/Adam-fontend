@@ -5,7 +5,9 @@ import InputBase from "@material-ui/core/InputBase";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Toolbar from "@material-ui/core/Toolbar";
+import { NotInterested } from "@material-ui/icons";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import Delete from "@material-ui/icons/Delete";
 import Favorite from "@material-ui/icons/FavoriteBorder";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
@@ -13,9 +15,14 @@ import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import FooterComponent from "../../component/footer/FooterComponent";
 import { ROUTE } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { updateQuantity } from "../../screen/cart/slice/CartSlice";
+import {
+  deleteItemCart,
+  updateQuantity,
+} from "../../screen/cart/slice/CartSlice";
+import { colors } from "../../utils/color";
 import ActiveBreadcrumbs from "../Breadcrumbs";
 import MiniDrawer from "../Drawer";
 import MainApp from "../MainApp";
@@ -101,62 +108,102 @@ export default function NavBar() {
       open={isCartOpen}
       onClose={handleCartClose}
     >
-      <MenuItem>
-        <p>Giỏ hàng của bạn</p>
-      </MenuItem>
-      {data?.map((e, index) => {
-        return (
-          <div className={classes.containerItemCart} key={index}>
-            <div className={classes.containerInfoCart}>
-              <img src={e.url_image} style={{ width: 25 }} alt="" />
-            </div>
-            <div className={classes.containerInfoCart}>
-              <p className={classes.textNameProductCart}>{e.name}</p>
-              <p className={classes.textPriceCart}> {e.price}đ</p>
-            </div>
-            <div className={classes.containerQuantity}>
-              <button
-                className={classes.buttonChangeQuantityCart}
-                onClick={() => {
-                  e.count > 1 &&
+      {
+        <MenuItem>
+          <p style={{ color: colors.gray59, fontWeight: "bold" }}>
+            Giỏ hàng của bạn
+          </p>
+        </MenuItem>
+      }
+      {data && data?.length > 0 ? (
+        data?.map((e, index) => {
+          return (
+            <div className={classes.containerItemCart} key={index}>
+              <div className={classes.containerInfoCart}>
+                <img src={e.url_image} style={{ width: 25 }} alt="" />
+              </div>
+              <div className={classes.containerInfoCart}>
+                <p className={classes.textNameProductCart}>{e.name}</p>
+                <p className={classes.textPriceCart}> {e.price}đ</p>
+              </div>
+              <div className={classes.containerQuantity}>
+                <button
+                  className={classes.buttonChangeQuantityCart}
+                  onClick={() => {
+                    e.count > 1 &&
+                      dispatch(
+                        updateQuantity({ id: e.id, new_quantity: e.count - 1 })
+                      );
+                  }}
+                >
+                  -
+                </button>
+                <input
+                  value={e.count}
+                  style={{ width: 50, height: 40, textAlign: "center" }}
+                />
+                <button
+                  className={classes.buttonChangeQuantityCart}
+                  onClick={() => {
                     dispatch(
-                      updateQuantity({ id: e.id, new_quantity: e.count - 1 })
+                      updateQuantity({ id: e.id, new_quantity: e.count + 1 })
                     );
-                }}
-              >
-                -
-              </button>
-              <input
-                value={e.count}
-                style={{ width: 50, height: 40, textAlign: "center" }}
-              />
-              <button
-                className={classes.buttonChangeQuantityCart}
+                  }}
+                >
+                  +
+                </button>
+              </div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="primary-search-account-menu"
+                aria-haspopup="true"
+                color="inherit"
+                style={{ marginLeft: 5 }}
                 onClick={() => {
-                  dispatch(
-                    updateQuantity({ id: e.id, new_quantity: e.count + 1 })
-                  );
+                  dispatch(deleteItemCart({ id: e.id }));
                 }}
               >
-                +
-              </button>
+                <Delete />
+              </IconButton>
             </div>
-          </div>
-        );
-      })}
-
-      <div style={{ padding: 5 }}>
-        <Button
-          variant="outlined"
-          color="secondary"
+          );
+        })
+      ) : (
+        <div
           style={{
-            width: "100%",
-            display: "flex",
+            textAlign: "center",
+            padding: 10,
+            paddingTop: 50,
+            paddingBottom: 50,
+            paddingLeft: 20,
+            paddingRight: 20,
           }}
         >
-          Mua hàng
-        </Button>
-      </div>
+          Giỏ hàng của bạn không có sản phẩm nào
+          <div>
+            <NotInterested />
+          </div>
+        </div>
+      )}
+
+      {data && data.length > 0 && (
+        <div style={{ padding: 5 }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            style={{
+              width: "100%",
+              display: "flex",
+            }}
+            onClick={() => {
+              navigate(ROUTE.CART);
+              handleCartClose();
+            }}
+          >
+            Mua hàng
+          </Button>
+        </div>
+      )}
     </Menu>
   );
 
@@ -206,7 +253,7 @@ export default function NavBar() {
       </MenuItem>
     </Menu>
   );
-  const isAdmin = true;
+  const isAdmin = false;
   return (
     <div className={classes.grow}>
       {isAdmin ? (
@@ -231,18 +278,37 @@ export default function NavBar() {
               >
                 Adam store
               </Button>
+              <div className={classes.margin} />
               <Button
                 className={classes.button}
-                onClick={() => navigate(ROUTE.HOME)}
+                onClick={() => navigate(ROUTE.PRODUCT)}
               >
                 Áo
               </Button>
-              <Button className={classes.button}>
+              <Button
+                className={classes.button}
+                onClick={() => navigate(ROUTE.PRODUCT)}
+              >
                 <Link to={"/product"}>Quần</Link>
               </Button>
-              <Button className={classes.button}>Phụ kiện</Button>
-              <Button className={classes.button}>Ưu đãi</Button>
-              <Button className={classes.button}>Liên hệ</Button>
+              <Button
+                className={classes.button}
+                onClick={() => navigate(ROUTE.PRODUCT)}
+              >
+                Phụ kiện
+              </Button>
+              <Button
+                className={classes.button}
+                onClick={() => navigate(ROUTE.PRODUCT)}
+              >
+                Ưu đãi
+              </Button>
+              <Button
+                className={classes.button}
+                onClick={() => navigate(ROUTE.PRODUCT)}
+              >
+                Liên hệ
+              </Button>
 
               <div className={classes.grow} />
               <div className={classes.search}>
@@ -271,7 +337,10 @@ export default function NavBar() {
                   <Favorite />
                 </IconButton>
               </div>
-              <div className={classes.sectionDesktop}>
+              <div
+                className={classes.sectionDesktop}
+                style={{ position: "relative" }}
+              >
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
@@ -282,6 +351,24 @@ export default function NavBar() {
                 >
                   <Cart />
                 </IconButton>
+                {data && data?.length > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 1,
+                      right: -5,
+                      backgroundColor: colors.gray59,
+                      borderRadius: 20,
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                      color: colors.white,
+                      fontSize: 12,
+                      alignSelf: "center",
+                    }}
+                  >
+                    {data?.length}
+                  </div>
+                )}
               </div>
               <div className={classes.sectionDesktop}>
                 <IconButton
@@ -323,6 +410,7 @@ export default function NavBar() {
           {renderMobileMenu}
           {renderMenu}
           {renderCart}
+          <FooterComponent />
         </div>
       )}
     </div>

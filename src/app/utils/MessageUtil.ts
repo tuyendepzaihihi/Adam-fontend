@@ -11,7 +11,7 @@ const createNotification = (params: {
     message: message ?? "Đây là thông báo",
     type: type ?? "success",
     insert: "top",
-    container: "top-right",
+    container: "top-left",
     animationIn: ["animate__animated", "animate__fadeIn"],
     animationOut: ["animate__animated", "animate__fadeOut"],
     dismiss: {
