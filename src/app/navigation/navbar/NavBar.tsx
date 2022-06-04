@@ -415,7 +415,7 @@ export default function NavBar() {
                 minHeight: size && size?.height ? size?.height - 370 : 0,
               }}
             >
-              <ActiveBreadcrumbs />
+              {/* <ActiveBreadcrumbs /> */}
               <MainApp isAdmin={isAdmin} />
             </div>
             {renderMobileMenu}

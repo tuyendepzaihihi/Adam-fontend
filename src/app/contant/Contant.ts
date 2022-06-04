@@ -4,6 +4,7 @@ import User from "@material-ui/icons/AccountBalance";
 
 import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
+import { Category, PermMediaOutlined } from "@material-ui/icons";
 
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
@@ -56,6 +57,8 @@ export const ROUTE_ADMIN = {
   PRODUCT: "/PRODUCT_ADMIN",
   ORDER: "/ORDER_ADMIN",
   SETTING: "/SETTING_ADMIN",
+  CATEGORY: "/CATEGORY_ADMIN",
+  MEDIA: "/MEDIA_ADMIN",
 };
 
 export const LIST_MENU_DRAWER = [
@@ -73,6 +76,16 @@ export const LIST_MENU_DRAWER = [
     name: "User",
     route: ROUTE_ADMIN.USER,
     icon: User,
+  },
+  {
+    name: "Category",
+    route: ROUTE_ADMIN.CATEGORY,
+    icon: Category,
+  },
+  {
+    name: "Media",
+    route: ROUTE_ADMIN.MEDIA,
+    icon: PermMediaOutlined,
   },
 ];
 

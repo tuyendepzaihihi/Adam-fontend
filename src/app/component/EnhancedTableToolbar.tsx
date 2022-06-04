@@ -8,6 +8,7 @@ import {
   makeStyles,
   MenuItem,
   Select,
+  TextField,
   Theme,
   Toolbar,
   Tooltip,
@@ -16,9 +17,8 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
-import { useState } from "react";
-import TextInputComponent from "./TextInputComponent";
 import moment from "moment";
+import { useState } from "react";
 import { colors } from "../utils/color";
 interface EnhancedTableToolbarProps {
   numSelected: number;
@@ -39,12 +39,12 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     <div>
       <div className={classes.filter}>
         <div className={classes.containerFilter}>
-          <TextInputComponent
+          <TextField
             value={textFilter}
-            classNameStyle={classes.textInput}
-            label={"filter"}
-            onChange={(text: { nativeEvent: { data: any } }) => {
-              setTextFilter(text.nativeEvent.data ?? "");
+            className={classes.textInput}
+            label={"Search"}
+            onChange={(event) => {
+              setTextFilter(event.target.value);
             }}
           />
           <div className={classes.containerDate}>

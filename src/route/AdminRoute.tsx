@@ -1,4 +1,5 @@
 import { Navigate } from "react-router";
+import CategoryScreen from "../app/admin/category/CategoryScreen";
 import DashboardScreen from "../app/admin/dashboard/DashboardScreen";
 import ProductAdminScreen from "../app/admin/product/ProductAdminScreen";
 import UserScreen from "../app/admin/user/UserScreen";
@@ -18,10 +19,15 @@ export const PRIVATE_ROUTE_ADMIN = [
     route: ROUTE_ADMIN.PRODUCT,
     screen: <ProductAdminScreen />,
   },
+  {
+    route: ROUTE_ADMIN.CATEGORY,
+    screen: <CategoryScreen />,
+  },
 ];
 
 export function PrivateRouteAdmin(props: { children: any; isAdmin?: boolean }) {
   const { children, isAdmin } = props;
   const token = getToken();
+  return children;
   return token && isAdmin ? children : <Navigate replace to={ROUTE.LOGIN} />;
 }

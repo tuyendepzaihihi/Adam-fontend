@@ -20,3 +20,10 @@ export interface DataState<T> {
   isLoading?: boolean;
   isError?: boolean;
 }
+
+export interface CategoryAdmin {
+  id: number;
+  name: string;
+  create_date: string;
+  status: number;
+}
