@@ -3,6 +3,7 @@ import CategoryScreen from "../app/admin/category/CategoryScreen";
 import DashboardScreen from "../app/admin/dashboard/DashboardScreen";
 import ProductAdminScreen from "../app/admin/product/ProductAdminScreen";
 import UserScreen from "../app/admin/user/UserScreen";
+import VoucherScreen from "../app/admin/voucher/VoucherScreen";
 import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
 import { getAdmin, getToken } from "../app/service/StorageService";
 
@@ -22,6 +23,10 @@ export const PRIVATE_ROUTE_ADMIN = [
   {
     route: ROUTE_ADMIN.CATEGORY,
     screen: <CategoryScreen />,
+  },
+  {
+    route: ROUTE_ADMIN.VOUCHER,
+    screen: <VoucherScreen />,
   },
 ];
 

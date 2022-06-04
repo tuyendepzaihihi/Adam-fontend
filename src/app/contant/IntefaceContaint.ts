@@ -28,3 +28,17 @@ export interface CategoryAdmin {
   status: number;
   url: string;
 }
+
+export interface VoucherAdmin {
+  id: number;
+  title: string;
+  description: string;
+  status: number;
+  url: string;
+  startDate: any;
+  endDate: any;
+  create_date: any;
+  discountMinValue: number;
+  discountMaxValue: number;
+  discountPersent: number;
+}

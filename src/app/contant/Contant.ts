@@ -60,6 +60,7 @@ export const ROUTE_ADMIN = {
   SETTING: "/SETTING_ADMIN",
   CATEGORY: "/CATEGORY_ADMIN",
   MEDIA: "/MEDIA_ADMIN",
+  VOUCHER: "/VOUCHER_ADMIN",
 };
 
 export const LIST_MENU_DRAWER = [
@@ -85,7 +86,7 @@ export const LIST_MENU_DRAWER = [
   },
   {
     name: "Quản lý khuyến mãi",
-    route: ROUTE_ADMIN.MEDIA,
+    route: ROUTE_ADMIN.VOUCHER,
     icon: PermMediaOutlined,
   },
 ];

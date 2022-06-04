@@ -1,4 +1,9 @@
-import { CategoryAdmin, HeadCell, UserAdminInteface } from "./IntefaceContaint";
+import {
+  CategoryAdmin,
+  HeadCell,
+  UserAdminInteface,
+  VoucherAdmin,
+} from "./IntefaceContaint";
 import R from "../assets/R";
 export const rows_example_user: UserAdminInteface[] = [
   {
@@ -154,5 +159,69 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     name: "Thu đông",
     status: 1,
     url: R.images.img_product,
+  },
+];
+
+export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  { id: "title", numeric: true, disablePadding: false, label: "Title" },
+  {
+    id: "description",
+    numeric: true,
+    disablePadding: false,
+    label: "Description",
+  },
+  {
+    id: "startDate",
+    numeric: true,
+    disablePadding: false,
+    label: "Start time",
+  },
+  { id: "endDate", numeric: true, disablePadding: false, label: "End time" },
+  {
+    id: "create_date",
+    numeric: true,
+    disablePadding: false,
+    label: " Dreate date",
+  },
+  {
+    id: "discountPersent",
+    numeric: true,
+    disablePadding: false,
+    label: "Discount persent",
+  },
+];
+
+export const LIST_VOUCHER: VoucherAdmin[] = [
+  {
+    id: 1,
+    title: "Hè đỏ lửa",
+    status: 1,
+    url: R.images.img_banner1,
+    startDate: "10/8/2022",
+    endDate: "15/10/2022",
+    create_date: "04/06/2022",
+    description: "Hưởng ứng mùa hè sôi động",
+    discountPersent: 10,
+    discountMinValue: 10000,
+    discountMaxValue: 25000000,
+  },
+  {
+    id: 2,
+    title: "Mùa hè đỏ lửa 1972",
+    status: 1,
+    url: R.images.img_banner2,
+    startDate: "10/8/2022",
+    endDate: "18/10/2022",
+    create_date: "04/06/2022",
+    description: "Hưởng ứng mùa hè sôi động của quân giải phóng",
+    discountPersent: 5,
+    discountMinValue: 10000,
+    discountMaxValue: 25000000,
   },
 ];

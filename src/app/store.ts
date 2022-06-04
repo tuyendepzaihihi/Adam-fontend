@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import CategoryAdminSlice from "./admin/category/slice/CategoryAdminSlice";
 import switchRoleSlice from "./admin/sliceSwitchRole/switchRoleSlice";
 import userAdminReducer from "./admin/user/slice/UserAdminSlice";
+import VoucherAdminSlice from "./admin/voucher/slice/VoucherAdminSlice";
 import cartReducer from "./screen/cart/slice/CartSlice";
 import homeReducer from "./screen/home/slice/HomeSlice";
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     userAdmin: userAdminReducer,
     categoryAdmin: CategoryAdminSlice,
     swicth: switchRoleSlice,
+    voucherAdmin: VoucherAdminSlice,
   },
 });
 
