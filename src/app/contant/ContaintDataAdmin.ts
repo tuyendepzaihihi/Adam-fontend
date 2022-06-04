@@ -187,7 +187,7 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     id: "create_date",
     numeric: true,
     disablePadding: false,
-    label: " Dreate date",
+    label: " Create date",
   },
   {
     id: "discountPersent",
@@ -195,6 +195,7 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     disablePadding: false,
     label: "Discount persent",
   },
+  { id: "status", numeric: true, disablePadding: false, label: "Status" },
 ];
 
 export const LIST_VOUCHER: VoucherAdmin[] = [

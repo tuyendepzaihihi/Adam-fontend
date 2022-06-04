@@ -111,7 +111,7 @@ const FormDialog = (props: Props) => {
                 <img
                   src={image ? image : anchorElData?.item.url}
                   alt=""
-                  style={{ width: 200 }}
+                  style={{ width: 300 }}
                 />
                 <h1>Select Image</h1>
                 <input type="file" name="myImage" onChange={onImageChange} />

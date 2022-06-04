@@ -235,7 +235,13 @@ export default function VoucherScreen() {
                           {row.id}
                         </TableCell>
                         <TableCell align="right">{row.title}</TableCell>
+                        <TableCell align="right">{row.description}</TableCell>
+                        <TableCell align="right">{row.startDate}</TableCell>
+                        <TableCell align="right">{row.endDate}</TableCell>
                         <TableCell align="right">{row.create_date}</TableCell>
+                        <TableCell align="right">
+                          {`${row.discountPersent}%`}
+                        </TableCell>
                         <TableCell align="right">
                           <Switch
                             checked={row.status === 1 ? true : false}
@@ -261,7 +267,7 @@ export default function VoucherScreen() {
                           <img
                             alt=""
                             src={`${row.url}`}
-                            style={{ width: 40 }}
+                            style={{ width: 120 }}
                           />
                         </TableCell>
                         <TableCell align="right">
