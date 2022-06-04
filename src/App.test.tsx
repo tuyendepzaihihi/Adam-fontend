@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import App from "./App";
 
-test("should ", () => {})("renders learn react link", () => {
+
   const { getByText } = render(
     <Provider store={store}>
       <App />
@@ -12,4 +12,4 @@ test("should ", () => {})("renders learn react link", () => {
   );
 
   expect(getByText(/learn/i)).toBeInTheDocument();
-});
+
