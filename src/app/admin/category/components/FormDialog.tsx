@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { Formik } from "formik";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
@@ -33,10 +33,7 @@ const initialValues: PropsCreateCategory = {
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
-  const [image, setImage] = useState<any>(anchorElData?.item.url);
-  useEffect(() => {
-    setImage(anchorElData?.item.url);
-  }, [anchorElData]);
+  const [image, setImage] = useState<any>(null);
 
   const onSubmit = (data: { name: string }) => {
     const { name } = data;
@@ -112,7 +109,11 @@ const FormDialog = (props: Props) => {
                 cần thiết
               </DialogContentText>
               <div>
-                <img src={image} alt="" style={{ width: 200 }} />
+                <img
+                  src={image ? image : anchorElData?.item.url}
+                  alt=""
+                  style={{ width: 200 }}
+                />
                 <h1>Select Image</h1>
                 <input type="file" name="myImage" onChange={onImageChange} />
               </div>
@@ -120,7 +121,7 @@ const FormDialog = (props: Props) => {
                 error={errors.name}
                 touched={touched.name}
                 value={values.name}
-                label={"Name"}
+                label={"Name Category"}
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
               />
