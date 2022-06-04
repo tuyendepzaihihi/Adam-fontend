@@ -6,18 +6,17 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import Logout from "@material-ui/icons/ExitToApp";
 import clsx from "clsx";
-import React from "react";
-import { Link } from "react-router-dom";
-import { LIST_MENU_DRAWER } from "../contant/Contant";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { updateSwitchRole } from "../admin/sliceSwitchRole/switchRoleSlice";
+import { LIST_MENU_DRAWER, ROUTE } from "../contant/Contant";
+import { useAppDispatch } from "../hooks";
+import { colors } from "../utils/color";
 
 const drawerWidth = 240;
 
@@ -91,11 +90,13 @@ interface Props {
 export default function MiniDrawer(props: Props) {
   const { open, setOpen } = props;
   const classes = useStyles();
-  const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setOpen(!open);
   };
+  const [selected, setSelected] = useState(0);
 
   return (
     <div className={classes.root}>
@@ -115,11 +116,7 @@ export default function MiniDrawer(props: Props) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
         <Divider />
@@ -127,22 +124,47 @@ export default function MiniDrawer(props: Props) {
           {LIST_MENU_DRAWER.map((val, index) => {
             const Icon = val.icon;
             return (
-              <Link
-                to={val.route}
-                style={{ textDecorationLine: "none", color: "black" }}
+              <ListItem
+                button
                 key={index}
+                onClick={() => {
+                  navigate(val.route);
+                  setSelected(index);
+                }}
               >
-                <ListItem button key={index}>
-                  <ListItemIcon>
-                    <Icon />
-                  </ListItemIcon>
-                  <ListItemText primary={val.name} />
-                </ListItem>
-              </Link>
+                <ListItemIcon>
+                  <Icon color={selected === index ? "primary" : "inherit"} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={val.name}
+                  style={{
+                    color: selected === index ? colors.black : colors.gray59,
+                  }}
+                />
+              </ListItem>
             );
           })}
+          <button
+            onClick={() => {
+              localStorage.clear();
+              dispatch(updateSwitchRole(false));
+              navigate(ROUTE.LOGIN);
+              setSelected(6);
+            }}
+          >
+            <ListItem button>
+              <ListItemIcon>
+                <Logout color={selected === 6 ? "primary" : "inherit"} />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Đăng xuất"}
+                style={{
+                  color: selected === 6 ? colors.black : colors.gray59,
+                }}
+              />
+            </ListItem>
+          </button>
         </List>
-        {/* <Divider /> */}
       </Drawer>
     </div>
   );

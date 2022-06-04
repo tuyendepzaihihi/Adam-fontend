@@ -1,18 +1,26 @@
 import {
   Button,
   createStyles,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
   Grid,
   makeStyles,
+  Radio,
+  RadioGroup,
   Theme,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useFormik } from "formik";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import { updateSwitchRole } from "../admin/sliceSwitchRole/switchRoleSlice";
 import R from "../assets/R";
 import TextInputComponent from "../component/TextInputComponent";
-import { ROUTE } from "../contant/Contant";
+import { ROUTE, ROUTE_ADMIN } from "../contant/Contant";
+import { setToken, setAdmin } from "../service/StorageService";
 import { colors } from "../utils/color";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,6 +77,7 @@ const LoginScreen = () => {
   const className = useStyles();
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(true);
+  const dispatch = useDispatch();
   const validateLogin = Yup.object({
     user_name: Yup.string()
       .min(2, "Mininum 2 characters")
@@ -76,6 +85,11 @@ const LoginScreen = () => {
       .required("Required!"),
     password: Yup.string().min(6, "Minimum 6 characters").required("Required!"),
   });
+  const [value, setValue] = useState("1");
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue((event.target as HTMLInputElement).value);
+  };
 
   const formik = useFormik({
     initialValues: initValuesLogin,
@@ -86,14 +100,17 @@ const LoginScreen = () => {
   });
 
   const handleSubmit = async (data: LoginInterface) => {
-    // try {
-    //   const responseLogin: { data: { data: UserInterface } } =
-    //     await requestLogin(data);
-    //   if (responseLogin) {
-    //     // setToken(responseLogin.data.data.token);
-    //     navigate("/");
-    //   }
-    // } catch (e) {}
+    try {
+      setToken("dangthunghiem");
+      if (Number(value) === 1) {
+        dispatch(updateSwitchRole(true));
+        setAdmin("1");
+        navigate(ROUTE_ADMIN.DASHBOARD);
+      } else {
+        dispatch(updateSwitchRole(false));
+        navigate(ROUTE.HOME);
+      }
+    } catch (e) {}
   };
 
   return (
@@ -126,6 +143,24 @@ const LoginScreen = () => {
               setShowPass(!showPass);
             }}
           />
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Role</FormLabel>
+            <RadioGroup
+              aria-label="role"
+              name="role1"
+              value={value}
+              onChange={handleChange}
+              row
+              defaultValue={value}
+            >
+              <FormControlLabel value="1" control={<Radio />} label="Admin" />
+              <FormControlLabel
+                value="2"
+                control={<Radio />}
+                label="Customer"
+              />
+            </RadioGroup>
+          </FormControl>
           <p className={className.textForgotPass}>
             <button
               onClick={() => {

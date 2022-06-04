@@ -5,10 +5,12 @@ import App from "./App";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
-
+import { ReactNotifications } from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
+      <ReactNotifications />
       <App />
     </Provider>
   </React.StrictMode>,

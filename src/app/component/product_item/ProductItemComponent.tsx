@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../contant/Contant";
 import { colors } from "../../utils/color";
+import { formatPrice } from "../../utils/function";
 export interface ItemProduct {
   id: number;
 
@@ -40,7 +41,7 @@ const ProductItemComponent = (props: Props) => {
       <div className={className.containerInfo}>
         <p className={className.textDiscount}>{item.descriptionDiscount}</p>
         <p className={className.textName}>{item.name}</p>
-        <p className={className.textPrice}>{item.price} đ</p>
+        <p className={className.textPrice}>{formatPrice(item.price)} đ</p>
       </div>
       {show && (
         <div className={className.positionContainer}>
@@ -48,8 +49,8 @@ const ProductItemComponent = (props: Props) => {
             color="primary"
             className={className.button}
             onClick={() => {
-              // navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
-              navigate(ROUTE.PRODUCT);
+              navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
+              // navigate(ROUTE.PRODUCT);
             }}
           >
             Mua ngay
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       width: "23%",
       position: "relative",
+      marginRight: `${(100 - 32 * 3) / 3}%`,
     },
     image_banner: {
       width: "100%",

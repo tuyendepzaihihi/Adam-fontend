@@ -6,7 +6,6 @@ import {
   InputLabel,
   makeStyles,
   OutlinedInput,
-  TextField,
   Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -45,21 +44,6 @@ const TextInputComponent = (props: Props) => {
   const className = useStyles();
   return (
     <>
-      {/* <TextField
-        id={id ?? "filled-required"}
-        variant="outlined"
-        label={label}
-        color="primary"
-        className={clsx(className.textField, {
-          [classNameStyle]: !!classNameStyle,
-        })}
-        type={type}
-        required={require ?? false}
-        onChange={onChange}
-        onBlur={onBlur}
-        error={!!error}
-        value={value}
-      /> */}
       <FormControl
         className={clsx(className.textField, classNameStyle)}
         variant="outlined"
@@ -74,6 +58,7 @@ const TextInputComponent = (props: Props) => {
           onChange={onChange}
           onBlur={onBlur}
           required={require}
+          style={{ height: 50 }}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -114,6 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 20,
       borderColor: "white",
       width: "100%",
+      height: 50,
     },
     withoutLabel: {
       marginTop: theme.spacing(3),

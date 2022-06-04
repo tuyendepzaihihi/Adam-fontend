@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listImage: {
       display: "flex",
-      justifyContent: "space-between",
+      // justifyContent: "space-between",
       flexWrap: "wrap",
       width: "100%",
     },
@@ -69,7 +69,7 @@ const ProductScreen = () => {
         <div className={className.listImage}>
           {LIST_PRODUCT.map((value, idx) => {
             return (
-              <ProductItemComponent item={value} key={idx} width={"33%"} />
+              <ProductItemComponent item={value} key={idx} width={"32%"} />
             );
           })}
         </div>
