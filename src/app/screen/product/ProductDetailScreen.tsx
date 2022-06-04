@@ -131,13 +131,15 @@ const ProductDetailScreen = () => {
       return;
     }
     const itemProduct: ItemProduct = state?.item;
+    console.log({ id: itemProduct.id });
+
     const item: ItemCart = {
-      id: LIST_CART.length,
+      id: LIST_CART.length + Math.random() + 1000,
       count: count,
       name: itemProduct?.name,
-      price: itemProduct?.price,
-      totalPrice: count * itemProduct?.price,
-      url_image: itemProduct.url_image,
+      price: dataF ? dataF?.price : itemProduct.price,
+      totalPrice: count * (dataF ? dataF?.price : itemProduct.price),
+      url_image: dataF ? dataF?.url : itemProduct.url_image,
       descriptionDiscount: itemProduct.descriptionDiscount,
       discountPersent: itemProduct.discountPersent,
       product_id: itemProduct.id,

@@ -25,6 +25,7 @@ import {
 } from "../../screen/cart/slice/CartSlice";
 import { getAdmin } from "../../service/StorageService";
 import { colors } from "../../utils/color";
+import { formatPrice } from "../../utils/function";
 import { useWindowSize } from "../../utils/helper";
 import { createNotification } from "../../utils/MessageUtil";
 import MiniDrawer from "../Drawer";
@@ -147,7 +148,10 @@ export default function NavBar() {
               </div>
               <div className={classes.containerInfoCart}>
                 <p className={classes.textNameProductCart}>{e.name}</p>
-                <p className={classes.textPriceCart}> {e.price}đ</p>
+                <p className={classes.textPriceCart}>
+                  {" "}
+                  {formatPrice(e.price)}đ
+                </p>
               </div>
               <div className={classes.containerQuantity}>
                 <button

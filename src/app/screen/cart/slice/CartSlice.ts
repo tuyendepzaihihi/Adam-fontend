@@ -33,18 +33,18 @@ export const cartSlice = createSlice({
     },
     deleteItemCart: (state, action) => {
       state.data = state.data?.filter((e) => e.id !== action.payload?.id);
-      // createNotification({
-      //   type: "success",
-      //   message: `Bạn đã xoá sản phẩm khỏi giỏ hàng thành công`,
-      // });
+      createNotification({
+        type: "success",
+        message: `Bạn đã xoá sản phẩm khỏi giỏ hàng thành công`,
+      });
     },
     addProductToCart: (state, action) => {
       let carts = state.data;
       let item: ItemCart = action.payload?.item;
-      let checkExistItem = carts?.find((e) => e.id === item.id);
+      let checkExistItem = carts?.find((e) => e.product_id === item.product_id);
       if (checkExistItem) {
         carts = carts?.map((e) => {
-          if (e.id === item?.id) {
+          if (e.product_id === item?.product_id) {
             return {
               ...e,
               count: e.count + item.count,

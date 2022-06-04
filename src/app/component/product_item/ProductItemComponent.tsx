@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       width: "23%",
       position: "relative",
+      marginRight: `${(100 - 32 * 3) / 3}%`,
     },
     image_banner: {
       width: "100%",

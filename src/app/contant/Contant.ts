@@ -127,17 +127,15 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 1,
-    name: "Áo sơ mi",
+    name: "Áo sơ mi xấu tệ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 2,
@@ -145,26 +143,23 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 3,
-    name: "Áo sơ mi",
+    name: "Áo sơ xấu đui",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 4,
-    name: "Áo sơ mi ",
+    name: "Áo sơ mi thấp ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 5,
@@ -172,8 +167,7 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 6,
@@ -181,18 +175,24 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
   {
     id: 7,
-    name: "Áo sơ mi ",
+    name: "Áo cổ cao ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
   },
+  // {
+  //   id: 8,
+  //   name: "Cổ cao ",
+  //   price: 628000,
+  //   discountPersent: 10,
+  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
+  //   url_image: R.images.img_product,
+  // },
 ];
 export interface ItemCart extends ItemProduct {
   totalPrice: number;
@@ -200,42 +200,42 @@ export interface ItemCart extends ItemProduct {
   product_id?: number;
 }
 export const LIST_CART: ItemCart[] = [
-  {
-    id: 0,
-    name: "Áo sơ mi",
-    price: 628000,
-    discountPersent: 10,
-    descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    totalPrice: 628000 * 2,
-    count: 2,
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
-    product_id: 7,
-  },
-  {
-    id: 1,
-    name: "Áo sơ mi",
-    price: 628000,
-    discountPersent: 10,
-    descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    totalPrice: 628000 * 2,
-    count: 2,
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
-    product_id: 5,
-  },
-  {
-    id: 2,
-    name: "Áo sơ mi",
-    price: 628000,
-    discountPersent: 10,
-    descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    totalPrice: 628000 * 2,
-    count: 2,
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
-    product_id: 2,
-  },
+  // {
+  //   id: 0,
+  //   name: "Ao fake",
+  //   price: 628000,
+  //   discountPersent: 10,
+  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
+  //   totalPrice: 628000 * 2,
+  //   count: 2,
+  //   url_image:
+  //     R.images.img_product,
+  //   product_id: 7,
+  // },
+  // {
+  //   id: 1,
+  //   name: "Áo sơ mi",
+  //   price: 628000,
+  //   discountPersent: 10,
+  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
+  //   totalPrice: 628000 * 2,
+  //   count: 2,
+  //   url_image:
+  //     R.images.img_product,
+  //   product_id: 5,
+  // },
+  // {
+  //   id: 2,
+  //   name: "Áo sơ mi",
+  //   price: 628000,
+  //   discountPersent: 10,
+  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
+  //   totalPrice: 628000 * 2,
+  //   count: 2,
+  //   url_image:
+  //     R.images.img_product,
+  //   product_id: 2,
+  // },
 ];
 
 export interface Category {
