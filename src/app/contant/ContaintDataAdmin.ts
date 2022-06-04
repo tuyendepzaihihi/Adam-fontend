@@ -1,5 +1,5 @@
 import { CategoryAdmin, HeadCell, UserAdminInteface } from "./IntefaceContaint";
-
+import R from "../assets/R";
 export const rows_example_user: UserAdminInteface[] = [
   {
     id: 1,
@@ -113,10 +113,46 @@ export const headCellsCategory: HeadCell<CategoryAdmin>[] = [
 ];
 
 export const LIST_CATEGORY: CategoryAdmin[] = [
-  { id: 1, create_date: "12/20/2022", name: "Thu đông", status: 1 },
-  { id: 2, create_date: "12/20/2022", name: "Đồng hồ", status: 1 },
-  { id: 3, create_date: "12/20/2022", name: "Hạ chí", status: 1 },
-  { id: 4, create_date: "12/20/2022", name: "Thu đông", status: 0 },
-  { id: 5, create_date: "12/20/2022", name: "Thu đông", status: 1 },
-  { id: 6, create_date: "12/20/2022", name: "Thu đông", status: 1 },
+  {
+    id: 1,
+    create_date: "12/20/2022",
+    name: "Thu đông",
+    status: 1,
+    url: R.images.img_product,
+  },
+  {
+    id: 2,
+    create_date: "12/20/2022",
+    name: "Đồng hồ",
+    status: 1,
+    url: R.images.img_product,
+  },
+  {
+    id: 3,
+    create_date: "12/20/2022",
+    name: "Hạ chí",
+    status: 1,
+    url: R.images.img_product,
+  },
+  {
+    id: 4,
+    create_date: "12/20/2022",
+    name: "Thu đông",
+    status: 0,
+    url: R.images.img_product,
+  },
+  {
+    id: 5,
+    create_date: "12/20/2022",
+    name: "Thu đông",
+    status: 1,
+    url: R.images.img_product,
+  },
+  {
+    id: 6,
+    create_date: "12/20/2022",
+    name: "Thu đông",
+    status: 1,
+    url: R.images.img_product,
+  },
 ];

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { Checkbox } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
@@ -42,7 +43,18 @@ const CartScreen = () => {
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
   const { data } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+  const checkTotal = () => {
+    let array: ItemCart[] = [];
+    selected.map((a) => {
+      const exist = data.find((e) => {
+        if (e.id === Number(a)) return e;
+      });
 
+      if (exist) array = array.concat([exist]);
+    });
+
+    return subtotal(array);
+  };
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="spanning table">
@@ -154,9 +166,7 @@ const CartScreen = () => {
           <TableRow>
             <TableCell rowSpan={4} />
             <TableCell colSpan={4}>Tổng tiền</TableCell>
-            <TableCell align="right">
-              {formatPrice(subtotal(data ?? []))}đ
-            </TableCell>
+            <TableCell align="right">{formatPrice(checkTotal())}đ</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={4}>Giảm giá</TableCell>
@@ -164,9 +174,7 @@ const CartScreen = () => {
           </TableRow>
           <TableRow>
             <TableCell colSpan={4}>Thành tiền</TableCell>
-            <TableCell align="right">
-              {formatPrice(subtotal(data ?? []))}đ
-            </TableCell>
+            <TableCell align="right">{formatPrice(checkTotal())}đ</TableCell>
           </TableRow>
         </TableBody>
       </Table>

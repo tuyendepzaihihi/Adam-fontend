@@ -20,7 +20,7 @@ import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import { headCells, headCellsCategory } from "../../contant/ContaintDataAdmin";
+import { headCellsCategory } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
 import { CategoryAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -105,6 +105,7 @@ export default function CategoryScreen() {
     setAnchorEl(null);
     setAnchorElData(null);
   };
+
   const handleProfileMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     item: any
@@ -125,7 +126,7 @@ export default function CategoryScreen() {
     >
       <MenuItem
         onClick={() => {
-          console.log({ anchorElData });
+          // console.log({ anchorElData });
         }}
         button
       >
@@ -165,6 +166,7 @@ export default function CategoryScreen() {
             dispatch(deleteCategory({ array: selected }));
             setSelected([]);
           }}
+          label={"Danh mục sản phẩm"}
         />
         <TableContainer>
           <Table
@@ -184,6 +186,11 @@ export default function CategoryScreen() {
               rowCount={data.length}
               headCells={headCellsCategory}
               createSortHandler={createSortHandler}
+              childrenMore={
+                <>
+                  <TableCell align="right">Ảnh</TableCell>
+                </>
+              }
             />
             <TableBody>
               {data.length > 0 &&
@@ -243,6 +250,15 @@ export default function CategoryScreen() {
                             inputProps={{ "aria-label": labelId }}
                             color="primary"
                           />
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <img alt="" src={row.url} style={{ width: 40 }} />
                         </TableCell>
                         <TableCell align="right">
                           <Button

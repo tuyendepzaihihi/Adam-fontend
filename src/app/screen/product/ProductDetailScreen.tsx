@@ -13,8 +13,10 @@ import {
   LIST_CART,
 } from "../../contant/Contant";
 import { useAppDispatch } from "../../hooks";
+import { getToken } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
+import { createNotification } from "../../utils/MessageUtil";
 import { addProductToCart } from "../cart/slice/CartSlice";
 
 export const sortPriceToMax = () => {
@@ -120,6 +122,14 @@ const ProductDetailScreen = () => {
   };
 
   const handleBuyProduct = () => {
+    const token = getToken();
+    if (!token) {
+      createNotification({
+        type: "warning",
+        message: "Bạn cần đăng nhập để thực hiện chức năng này",
+      });
+      return;
+    }
     const itemProduct: ItemProduct = state?.item;
     const item: ItemCart = {
       id: LIST_CART.length,

@@ -26,4 +26,5 @@ export interface CategoryAdmin {
   name: string;
   create_date: string;
   status: number;
+  url: string;
 }

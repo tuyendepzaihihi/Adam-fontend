@@ -5,7 +5,7 @@ import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
 import HomeScreen from "../app/screen/home/HomeScreen";
 import ProductScreen from "../app/screen/product/ProductScreen";
 import EmailInputScreen from "../app/auth/EmailInputScreen";
-import { getToken } from "../app/service/StorageService";
+import { getAdmin, getToken } from "../app/service/StorageService";
 import ForgotPasswordScreen from "../app/auth/ForgotPasswordScreen";
 import ProductDetailScreen from "../app/screen/product/ProductDetailScreen";
 import CartScreen from "../app/screen/cart/CartScreen";
@@ -49,16 +49,18 @@ export const PRIVATE_ROUTE = [
 ];
 
 export function PrivateRoute(props: { children: any; isAdmin?: boolean }) {
-  const { children, isAdmin } = props;
-  return !isAdmin ? children : <Navigate replace to={ROUTE_ADMIN.DASHBOARD} />;
+  const { children } = props;
+  const admin = getAdmin();
+  return !admin ? children : <Navigate replace to={ROUTE_ADMIN.DASHBOARD} />;
 }
 
 export function AuthRoute(props: { children: any; isAdmin?: boolean }) {
-  const { children, isAdmin } = props;
+  const { children } = props;
   const token = getToken();
+  const admin = getAdmin();
   return !token ? (
     children
   ) : (
-    <Navigate replace to={isAdmin ? ROUTE_ADMIN.DASHBOARD : ROUTE.HOME} />
+    <Navigate replace to={admin ? ROUTE_ADMIN.DASHBOARD : ROUTE.HOME} />
   );
 }

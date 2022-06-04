@@ -4,7 +4,7 @@ import DashboardScreen from "../app/admin/dashboard/DashboardScreen";
 import ProductAdminScreen from "../app/admin/product/ProductAdminScreen";
 import UserScreen from "../app/admin/user/UserScreen";
 import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
-import { getToken } from "../app/service/StorageService";
+import { getAdmin, getToken } from "../app/service/StorageService";
 
 export const PRIVATE_ROUTE_ADMIN = [
   {
@@ -26,8 +26,8 @@ export const PRIVATE_ROUTE_ADMIN = [
 ];
 
 export function PrivateRouteAdmin(props: { children: any; isAdmin?: boolean }) {
-  const { children, isAdmin } = props;
+  const { children } = props;
   const token = getToken();
-  return children;
-  return token && isAdmin ? children : <Navigate replace to={ROUTE.LOGIN} />;
+  const admin = getAdmin();
+  return token && admin ? children : <Navigate replace to={ROUTE.LOGIN} />;
 }

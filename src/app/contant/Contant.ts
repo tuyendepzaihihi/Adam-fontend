@@ -4,7 +4,8 @@ import User from "@material-ui/icons/AccountBalance";
 
 import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
-import { Category, PermMediaOutlined } from "@material-ui/icons";
+import { PermMediaOutlined } from "@material-ui/icons";
+import CategoryIcon from "@material-ui/icons/Category";
 
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
@@ -68,22 +69,22 @@ export const LIST_MENU_DRAWER = [
     icon: Dashboard,
   },
   {
-    name: "Product",
+    name: "Quản lý sản phẩm",
     route: ROUTE_ADMIN.PRODUCT,
     icon: Product,
   },
   {
-    name: "User",
+    name: "Quản lý người dùng",
     route: ROUTE_ADMIN.USER,
     icon: User,
   },
   {
-    name: "Category",
+    name: "Quản lý danh mục",
     route: ROUTE_ADMIN.CATEGORY,
-    icon: Category,
+    icon: CategoryIcon,
   },
   {
-    name: "Media",
+    name: "Quản lý khuyến mãi",
     route: ROUTE_ADMIN.MEDIA,
     icon: PermMediaOutlined,
   },
