@@ -7,3 +7,12 @@ create db in linux:
 - create database database_name
 - show databases
 see link https://www.geeksforgeeks.org/how-to-install-mysql-on-linux/
+
+// remove error node version :
+sudo yum clean all && sudo yum makecache fast
+sudo yum install -y gcc-c++ make
+sudo yum install -y nodejs
+//delete cache/buff:
+sync; echo 1 > /proc/sys/vm/drop_caches
+//build pm2:
+pm2 serve build 80 --spa
