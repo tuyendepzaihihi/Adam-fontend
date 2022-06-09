@@ -1,0 +1,56 @@
+import {
+  createStyles,
+  IconButton,
+  makeStyles,
+  Theme,
+  Typography,
+} from "@material-ui/core";
+import { EditLocationOutlined } from "@material-ui/icons";
+import { AddressOrderInterface } from "../../../contant/IntefaceContaint";
+import { colors } from "../../../utils/color";
+interface Props {
+  address: AddressOrderInterface | null;
+}
+const AddressOrder = (props: Props) => {
+  const { address } = props;
+  const classes = useStyles();
+  return (
+    <div className={classes.container}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Typography>Địa chỉ nhận hàng: </Typography>
+        <p className={classes.textAddress}>
+          {address
+            ? `Xã thông hạnh tây - huyện củ chi - tp.hcm`
+            : "Chưa có địa chỉ, vui lòng chọn!"}
+        </p>
+        <IconButton>
+          <EditLocationOutlined color="primary" />
+        </IconButton>
+      </div>
+    </div>
+  );
+};
+export default AddressOrder;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      width: "100%",
+      paddingTop: 20,
+      paddingBottom: 10,
+      borderBottomWidth: 0.8,
+      borderBottomColor: colors.grayC4,
+      marginBottom: 10,
+    },
+    textAddress: {
+      color: colors.gray59,
+      fontSize: 16,
+      fontStyle: "italic",
+      marginLeft: "1%",
+    },
+  })
+);

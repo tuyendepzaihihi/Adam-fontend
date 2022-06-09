@@ -42,3 +42,19 @@ export interface VoucherAdmin {
   discountMaxValue: number;
   discountPersent: number;
 }
+
+export interface AddressOrderInterface {
+  ward: {
+    id: any;
+    name: string;
+  };
+  province: {
+    id: any;
+    name: string;
+  };
+  district: {
+    id: any;
+    name: string;
+  };
+  detail: string;
+}

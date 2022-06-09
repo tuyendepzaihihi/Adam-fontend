@@ -1,9 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ItemCart, LIST_CART } from "../../../contant/Contant";
-import { DataState } from "../../../contant/IntefaceContaint";
+import {
+  AddressOrderInterface,
+  DataState,
+  VoucherAdmin,
+} from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+interface DataStateCart extends DataState<ItemCart[]> {
+  addressSelected?: AddressOrderInterface | null;
+  voucherSelected?: VoucherAdmin | null;
+}
 
-const initialState: DataState<ItemCart[]> = {
+const initialState: DataStateCart = {
   data: LIST_CART,
   isError: false,
   isLoading: false,
