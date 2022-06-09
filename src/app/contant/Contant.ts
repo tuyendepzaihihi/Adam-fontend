@@ -6,6 +6,7 @@ import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
 import { PermMediaOutlined } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
+import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
 
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
@@ -49,7 +50,8 @@ export const ROUTE = {
   FORGOT_PASS: "/auth/forgotPassword",
   EMAIL_INPUT: "/auth/emailInput",
   PRODUCT_DETAIL: "/product/detail",
-  CART: "cart",
+  CART: "/cart",
+  ADDRESS: '/address'
 };
 
 export const ROUTE_ADMIN = {
@@ -201,42 +203,7 @@ export interface ItemCart extends ItemProduct {
   product_id?: number;
 }
 export const LIST_CART: ItemCart[] = [
-  // {
-  //   id: 0,
-  //   name: "Ao fake",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   totalPrice: 628000 * 2,
-  //   count: 2,
-  //   url_image:
-  //     R.images.img_product,
-  //   product_id: 7,
-  // },
-  // {
-  //   id: 1,
-  //   name: "Áo sơ mi",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   totalPrice: 628000 * 2,
-  //   count: 2,
-  //   url_image:
-  //     R.images.img_product,
-  //   product_id: 5,
-  // },
-  // {
-  //   id: 2,
-  //   name: "Áo sơ mi",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   totalPrice: 628000 * 2,
-  //   count: 2,
-  //   url_image:
-  //     R.images.img_product,
-  //   product_id: 2,
-  // },
+  
 ];
 
 export interface Category {
@@ -378,3 +345,20 @@ export const dataFilter = {
     },
   ],
 };
+
+
+export const LIST_ADDRESS : DataAddress[] =[
+  {
+    id:1,
+    addressDetail: 'khn',
+    districtId: 1,
+    districtName:'Nam từ liêm',
+    isDefault: false,
+    name: 'Phạm Văn Khánh',
+    phone:'0965259441',
+    provinceId: 1,
+  provinceName:'Ha noi',
+  wardId: 1,
+  wardName:'Mỹ Đình'
+  }
+]
