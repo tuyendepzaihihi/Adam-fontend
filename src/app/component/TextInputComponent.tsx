@@ -6,6 +6,7 @@ import {
   InputLabel,
   makeStyles,
   OutlinedInput,
+  TextField,
   Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -18,13 +19,16 @@ interface Props {
   error?: any;
   onChange?: any;
   onBlur?: any;
-  value: string;
+  value: any;
   touched?: any;
   type?: any;
   id?: any;
   isPass?: boolean;
   rightIcon?: any;
   onRightIcon?: any;
+  isSelected?: any;
+  childrentSeleted?: any;
+  helperText?: string;
 }
 const TextInputComponent = (props: Props) => {
   const {
@@ -40,42 +44,65 @@ const TextInputComponent = (props: Props) => {
     type,
     rightIcon,
     onRightIcon,
+    isSelected,
+    childrentSeleted,
+    helperText,
   } = props;
   const className = useStyles();
   return (
     <>
-      <FormControl
-        className={clsx(className.textField, classNameStyle)}
-        variant="outlined"
-      >
-        <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
-          {label}
-        </InputLabel>
-        <OutlinedInput
-          id={id ?? "outlined-adornment-amount"}
-          type={type ?? "text"}
+      {isSelected ? (
+        <TextField
+          id="outlined-select-currency-native"
+          select
+          label={label}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          required={require}
+          SelectProps={{
+            native: true,
+          }}
+          helperText={helperText}
+          variant="outlined"
           style={{ height: 50 }}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => {
-                  onRightIcon && onRightIcon();
-                }}
-                onMouseDown={() => {}}
-                edge="end"
-              >
-                {rightIcon}
-              </IconButton>
-            </InputAdornment>
-          }
-          labelWidth={`${label}`.length * 8.5}
-        />
-      </FormControl>
+          className={clsx(className.textField, classNameStyle)}
+        >
+          {childrentSeleted}
+        </TextField>
+      ) : (
+        <FormControl
+          className={clsx(className.textField, classNameStyle)}
+          variant="outlined"
+        >
+          <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
+            {label}
+          </InputLabel>
+          <OutlinedInput
+            id={id ?? "outlined-adornment-amount"}
+            type={type ?? "text"}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            required={require}
+            style={{ height: 50 }}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => {
+                    onRightIcon && onRightIcon();
+                  }}
+                  onMouseDown={() => {}}
+                  edge="end"
+                >
+                  {rightIcon}
+                </IconButton>
+              </InputAdornment>
+            }
+            labelWidth={`${label}`.length * 8.5}
+          />
+        </FormControl>
+      )}
       <div className={className.errorContainer}>
         {error && touched ? (
           <p className={className.textErr}> {error}</p>

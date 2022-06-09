@@ -9,6 +9,7 @@ import { getAdmin, getToken } from "../app/service/StorageService";
 import ForgotPasswordScreen from "../app/auth/ForgotPasswordScreen";
 import ProductDetailScreen from "../app/screen/product/ProductDetailScreen";
 import CartScreen from "../app/screen/cart/CartScreen";
+import AddressUser from "../app/screen/setting/address/AddressUser";
 
 export const AUTH_ROUTE = [
   {
@@ -45,6 +46,10 @@ export const PRIVATE_ROUTE = [
   {
     route: ROUTE.CART,
     screen: <CartScreen />,
+  },
+  {
+    route: ROUTE.ADDRESS,
+    screen: <AddressUser />,
   },
 ];
 
