@@ -1,0 +1,9 @@
+create db in linux:
+- sudo apt install mysql-server
+- mysql –version
+- sudo mysql_secure_installation
+- sudo mysql -u root
+- sudo mysql -u root
+- create database database_name
+- show databases
+see link https://www.geeksforgeeks.org/how-to-install-mysql-on-linux/

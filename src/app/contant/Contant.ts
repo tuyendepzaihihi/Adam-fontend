@@ -203,42 +203,7 @@ export interface ItemCart extends ItemProduct {
   product_id?: number;
 }
 export const LIST_CART: ItemCart[] = [
-  // {
-  //   id: 0,
-  //   name: "Ao fake",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   totalPrice: 628000 * 2,
-  //   count: 2,
-  //   url_image:
-  //     R.images.img_product,
-  //   product_id: 7,
-  // },
-  // {
-  //   id: 1,
-  //   name: "Áo sơ mi",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   totalPrice: 628000 * 2,
-  //   count: 2,
-  //   url_image:
-  //     R.images.img_product,
-  //   product_id: 5,
-  // },
-  // {
-  //   id: 2,
-  //   name: "Áo sơ mi",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   totalPrice: 628000 * 2,
-  //   count: 2,
-  //   url_image:
-  //     R.images.img_product,
-  //   product_id: 2,
-  // },
+  
 ];
 
 export interface Category {
