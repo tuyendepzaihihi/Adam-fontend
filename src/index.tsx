@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import { ReactNotifications } from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
+import "./index.css";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
