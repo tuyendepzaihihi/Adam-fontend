@@ -1,64 +1,143 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataState } from "../../../contant/IntefaceContaint";
+import { ItemCart, LIST_ADDRESS, LIST_CART } from "../../../contant/Contant";
+import { DataState, VoucherAdmin } from "../../../contant/IntefaceContaint";
+import { DataAddress } from "../../setting/address/slice/AddressSlice";
 
-export interface DataAddress {
-  wardId?: number
-  wardName?: string 
-  districtId?: number
-  districtName?: string 
-  provinceId?: number
-  provinceName?: string 
-  addressDetail?: string
-  isDefault?: boolean
-  phone?: string
-  name?: string
-  id?: any
+export interface History {
+  id: number;
+  status: number;
+  time: string;
+}
+export interface DataOrder {
+  id: number;
+  create_date: string;
+  totalPrice: number;
+  address?: DataAddress | null;
+  products?: ItemCart[] | null;
+  voucher?: VoucherAdmin | null;
+  status: number;
+  totalProduct: number;
+  totalDiscount: number;
+  code?: string;
+  history?: History[];
+}
+interface DataOrderList {
+  pedding: DataState<DataOrder[]>;
+  confirm: DataState<DataOrder[]>;
+  delivery: DataState<DataOrder[]>;
+  adrived: DataState<DataOrder[]>;
+  done: DataState<DataOrder[]>;
+  cancel: DataState<DataOrder[]>;
+  roll_back: DataState<DataOrder[]>;
 }
 
-const initialState: DataState<DataAddress[]> = {
-  data: [],
-  isError: false,
-  isLoading: false,
+const LIST_ORDER_PENDING: DataOrder[] = [
+  {
+    id: 1,
+    create_date: "09/05/2009 08:15",
+    status: 1,
+    totalPrice: 1500000,
+    voucher: null,
+    address: LIST_ADDRESS[0],
+    products: LIST_CART,
+    totalDiscount: 1200000,
+    totalProduct: 300000,
+    code: "#VFGFF4F6AFF4F52",
+    history: [
+      { id: 1, status: 1, time: "10/10/2022 08:22" },
+      { id: 1, status: 2, time: "10/10/2022 08:22" },
+      { id: 1, status: 3, time: "10/10/2022 08:22" },
+    ],
+  },
+  {
+    id: 2,
+    create_date: "09/05/2009 08:15",
+    status: 1,
+    totalPrice: 180000,
+    voucher: null,
+    address: LIST_ADDRESS[0],
+    products: LIST_CART,
+    totalDiscount: 1500000,
+    totalProduct: 300000,
+    code: "#VFGFF4F6AFF4F51",
+    history: [
+      { id: 1, status: 1, time: "10/10/2022 08:22" },
+      { id: 1, status: 2, time: "10/10/2022 08:22" },
+      { id: 1, status: 3, time: "10/10/2022 08:22" },
+      { id: 1, status: 4, time: "10/10/2022 08:22" },
+    ],
+  },
+  {
+    id: 3,
+    create_date: "09/05/2009 08:15",
+    status: 1,
+    totalPrice: 180000,
+    voucher: null,
+    address: LIST_ADDRESS[0],
+    products: LIST_CART,
+    totalDiscount: 1500000,
+    totalProduct: 300000,
+    code: "#VFGFF4F6AFF4F51",
+    history: [{ id: 1, status: 1, time: "10/10/2022 08:22" }],
+  },
+];
+
+const initialState: DataOrderList = {
+  pedding: {
+    data: LIST_ORDER_PENDING,
+    isError: false,
+    isLoading: false,
+  },
+  adrived: {
+    data: LIST_ORDER_PENDING,
+    isError: false,
+    isLoading: false,
+  },
+  cancel: {
+    data: LIST_ORDER_PENDING,
+    isError: false,
+    isLoading: false,
+  },
+  confirm: {
+    data: LIST_ORDER_PENDING,
+    isError: false,
+    isLoading: false,
+  },
+  delivery: {
+    data: LIST_ORDER_PENDING,
+    isError: false,
+    isLoading: false,
+  },
+  done: {
+    data: LIST_ORDER_PENDING,
+    isError: false,
+    isLoading: false,
+  },
+  roll_back: {
+    data: [],
+    isError: false,
+    isLoading: false,
+  },
 };
 
-export const getAddressInfo = createAsyncThunk("address", async () => {
+export const getOrderInfo = createAsyncThunk("order", async () => {
   return true;
 });
 
-export const addressSlice = createSlice({
-  name: "address",
+export const orderSlice = createSlice({
+  name: "order",
   initialState,
   reducers: {
-    updateAddress: (state, action) => {
-      let oldArray = state.data;
-      let item: DataAddress = action.payload?.item;
-      state.data = oldArray?.map((e) => {
-        if (e.id === item.id) return item;
-        else return e;
-      });
-    },
-    createAddress: (state, action) => {
-      let item: DataAddress = action.payload?.item;
-      state.data = state.data?.concat([item]);
-    },
+    updateOrder: (state, action) => {},
+    createOrder: (state, action) => {},
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getAddressInfo.pending, (state) => {
-        state.isError = false;
-        state.isLoading = true;
-      })
-      .addCase(getAddressInfo.fulfilled, (state, action) => {
-        
-        state.isError = false;
-        state.isLoading = false;
-      })
-      .addCase(getAddressInfo.rejected, (state) => {
-        state.isError = true;
-        state.isLoading = false;
-      });
+      .addCase(getOrderInfo.pending, (state, action) => {})
+      .addCase(getOrderInfo.fulfilled, (state, action) => {})
+      .addCase(getOrderInfo.rejected, (state, action) => {});
   },
 });
-export const {createAddress,updateAddress} = addressSlice.actions
+export const { createOrder, updateOrder } = orderSlice.actions;
 
-export default addressSlice.reducer;
+export default orderSlice.reducer;

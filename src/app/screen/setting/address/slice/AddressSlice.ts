@@ -17,10 +17,15 @@ export interface DataAddress {
   id?: any
 }
 
-const initialState: DataState<DataAddress[]> = {
+interface DataStateAddress extends DataState<DataAddress[]>{
+  dataSelected: DataAddress | null
+}
+
+const initialState: DataStateAddress = {
   data: LIST_ADDRESS,
   isError: false,
   isLoading: false,
+  dataSelected: null
 };
 
 export const getAddressInfo = createAsyncThunk("address", async () => {
@@ -55,6 +60,9 @@ export const addressSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    setSelectedAddress:(state, action: {payload: {item: DataAddress}})=>{
+      state.dataSelected = action.payload.item
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -73,6 +81,6 @@ export const addressSlice = createSlice({
       });
   },
 });
-export const {createAddress,deleteAddress,updateAddress} = addressSlice.actions
+export const {createAddress,deleteAddress,updateAddress,setSelectedAddress} = addressSlice.actions
 
 export default addressSlice.reducer;

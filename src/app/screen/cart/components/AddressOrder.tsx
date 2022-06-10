@@ -6,14 +6,24 @@ import {
   Typography,
 } from "@material-ui/core";
 import { EditLocationOutlined } from "@material-ui/icons";
-import { AddressOrderInterface } from "../../../contant/IntefaceContaint";
 import { colors } from "../../../utils/color";
+import { DataAddress } from "../../setting/address/slice/AddressSlice";
 interface Props {
-  address: AddressOrderInterface | null;
+  address: DataAddress | null;
+  onChoose?: Function;
 }
 const AddressOrder = (props: Props) => {
-  const { address } = props;
+  const { address, onChoose } = props;
   const classes = useStyles();
+  const renderAddress = (item: DataAddress) => {
+    let detail = item.addressDetail;
+    let ward = item.wardName ? " - " + item.wardName : "";
+    let district = item.districtName ? " - " + item.districtName : "";
+    let province = item.provinceName ? " - " + item.provinceName : "";
+    return (
+      detail + ward + district + province + " | " + item.name + "-" + item.phone
+    );
+  };
   return (
     <div className={classes.container}>
       <div
@@ -24,12 +34,14 @@ const AddressOrder = (props: Props) => {
       >
         <Typography>Địa chỉ nhận hàng: </Typography>
         <p className={classes.textAddress}>
-          {address
-            ? `Xã thông hạnh tây - huyện củ chi - tp.hcm`
-            : "Chưa có địa chỉ, vui lòng chọn!"}
+          {address ? renderAddress(address) : "Chưa có địa chỉ, vui lòng chọn!"}
         </p>
-        <IconButton>
-          <EditLocationOutlined color="primary" />
+        <IconButton
+          onClick={() => {
+            onChoose && onChoose();
+          }}
+        >
+          <EditLocationOutlined color="action" />
         </IconButton>
       </div>
     </div>

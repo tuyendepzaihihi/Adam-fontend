@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
 // Usage
 
 // Hook
@@ -30,3 +31,15 @@ export function useWindowSize() {
   }, []); // Empty array ensures that effect is only run on mount
   return windowSize;
 }
+
+export const renderAddress = (item?: DataAddress | null) => {
+  if(item){
+    let detail = item.addressDetail;
+  let ward = item.wardName ? " - " + item.wardName : "";
+  let district = item.districtName ? " - " + item.districtName : "";
+  let province = item.provinceName ? " - " + item.provinceName : "";
+  return (
+    detail + ward + district + province 
+  );
+  }
+};
