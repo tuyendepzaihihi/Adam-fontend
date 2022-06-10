@@ -16,3 +16,8 @@ sudo yum install -y nodejs
 sync; echo 1 > /proc/sys/vm/drop_caches
 //build pm2:
 pm2 serve build 80 --spa
+//stop
+pm2 stop all 
+//connect SSH:
+ssh -i "key-2.pem" ec2-user@ec2-34-217-116-208.us-west-2.compute.amazonaws.com
+

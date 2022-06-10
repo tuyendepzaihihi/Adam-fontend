@@ -114,7 +114,11 @@ const ProductScreen = () => {
             <p className={className.textLabelValueFilter}>Color</p>
             <input
               type={"color"}
-              style={{ width: "100%" }}
+              style={{
+                width: "100%",
+                borderColor: colors.grayC4,
+                borderWidth: 0.5,
+              }}
               value={color}
               onChange={(event) => {
                 setColor(event.target.value);

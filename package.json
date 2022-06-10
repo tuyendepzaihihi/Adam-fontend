@@ -37,7 +37,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "li": " node generateAssetResource.ts prettier --write ./src/app/assets/ImagesAsset.ts "
+    "li": " node generateAssetResource.ts prettier --write ./src/app/assets/ImagesAsset.ts ",
+    "start:prod": "serve -s dist -l 3000"
   },
   "eslintConfig": {
     "extends": "react-app"
