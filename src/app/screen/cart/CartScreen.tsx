@@ -1,4 +1,4 @@
-import { Button, Checkbox, Typography } from "@material-ui/core";
+import { Button, Checkbox, IconButton } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -9,13 +9,22 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Delete from "@material-ui/icons/Delete";
 import React, { useState } from "react";
-import { ItemCart } from "../../contant/Contant";
-import { AddressOrderInterface } from "../../contant/IntefaceContaint";
+import { useNavigate } from "react-router";
+import { LIST_VOUCHER } from "../../contant/ContaintDataAdmin";
+import { ItemCart, ROUTE } from "../../contant/Contant";
+import { VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil } from "../../utils/function";
 import AddressOrder from "./components/AddressOrder";
-import { deleteItemCart, updateQuantity } from "./slice/CartSlice";
+import FormDialogAddress from "./components/FormDialogAddress";
+import FormDialogVoucher from "./components/FormDialogVoucher";
+import VoucherOrder from "./components/VoucherOrder";
+import {
+  deleteItemCart,
+  deleteMoreCart,
+  updateQuantity,
+} from "./slice/CartSlice";
 
 const useStyles = makeStyles({
   table: {
@@ -43,8 +52,13 @@ const CartScreen = () => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
   const { data } = useAppSelector((state) => state.cart);
-  const [addressOrder, setAddressOrder] =
-    useState<AddressOrderInterface | null>(null);
+  const address = useAppSelector((state) => state.addressUser);
+  const [openVoucher, setOpenVoucher] = useState(false);
+  const [openAddress, setOpenAddress] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState<VoucherAdmin | null>(
+    null
+  );
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const checkTotal = () => {
     let array: ItemCart[] = [];
@@ -58,19 +72,45 @@ const CartScreen = () => {
     return subtotal(array);
   };
 
+  const checkDiscount = () => {
+    let res: number = !!selectedVoucher?.discountPersent
+      ? (checkTotal() * selectedVoucher?.discountPersent) / 100
+      : 0;
+    return res;
+  };
+
   return (
     <div>
-      <AddressOrder address={addressOrder} />
-      <Typography>Giỏ hàng của bạn</Typography>
+      <AddressOrder
+        address={address.dataSelected}
+        onChoose={() => {
+          setOpenAddress(!openAddress);
+        }}
+      />
+      <VoucherOrder
+        onPress={() => {
+          setOpenVoucher(!openVoucher);
+        }}
+        itemVoucher={selectedVoucher}
+        total={checkTotal()}
+      />
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>
             <TableRow>
-              <TableCell align="right">
+              <TableCell padding="checkbox" align="center">
                 {selected.length > 0 && (
-                  <button>
-                    <Delete color="secondary" />
-                  </button>
+                  <IconButton
+                    onClick={() => {
+                      dispatch(deleteMoreCart({ array: selected }));
+                      setSelected([]);
+                      if (selected.length === data.length) {
+                        navigate(ROUTE.PRODUCT);
+                      }
+                    }}
+                  >
+                    <Delete color="secondary" fontSize="small" />
+                  </IconButton>
                 )}
               </TableCell>
 
@@ -180,9 +220,24 @@ const CartScreen = () => {
               <TableCell colSpan={2}>Tổng tiền</TableCell>
               <TableCell align="right">{formatPrice(checkTotal())}đ</TableCell>
             </TableRow>
+            <TableRow>
+              <TableCell colSpan={3} />
+              <TableCell colSpan={2}>Giảm giá</TableCell>
+              <TableCell align="right">
+                {formatPrice(checkDiscount())}đ
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={3} />
+              <TableCell colSpan={2}>Thành tiền</TableCell>
+              <TableCell align="right">
+                {formatPrice(checkTotal() - checkDiscount())}đ
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
+
       <div
         style={{
           display: "flex",
@@ -197,10 +252,31 @@ const CartScreen = () => {
           style={{
             width: "30%",
           }}
+          onClick={() => {
+            navigate(ROUTE.ORDER);
+          }}
         >
           Thanh toán
         </Button>
       </div>
+      <FormDialogVoucher
+        data={LIST_VOUCHER}
+        handleClose={() => {
+          setOpenVoucher(!openVoucher);
+        }}
+        open={openVoucher}
+        description={"Hãy chọn voucher để nhận được những ưu đãi lớn nhất"}
+        selected={selectedVoucher}
+        setSelected={setSelectedVoucher}
+      />
+      <FormDialogAddress
+        data={address.data}
+        handleClose={() => {
+          setOpenAddress(!openAddress);
+        }}
+        open={openAddress}
+        description={"Vui lòng chọn địa chỉ nhận hàng"}
+      />
     </div>
   );
 };

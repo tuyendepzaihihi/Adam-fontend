@@ -51,7 +51,8 @@ export const ROUTE = {
   EMAIL_INPUT: "/auth/emailInput",
   PRODUCT_DETAIL: "/product/detail",
   CART: "/cart",
-  ADDRESS: '/address'
+  ADDRESS: '/address',
+  ORDER: '/order'
 };
 
 export const ROUTE_ADMIN = {
@@ -203,7 +204,30 @@ export interface ItemCart extends ItemProduct {
   product_id?: number;
 }
 export const LIST_CART: ItemCart[] = [
-  
+   {
+    id: 100,
+    name: "Áo sơ mi nam",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    totalPrice: 628000 * 2,
+    count: 2,
+    url_image:
+      R.images.img_product,
+    product_id: 7,
+  },
+  {
+    id: 150,
+    name: "Áo kẻ sọc đẹp",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    totalPrice: 628000 * 2,
+    count: 2,
+    url_image:
+      R.images.img_product,
+    product_id: 7,
+  },
 ];
 
 export interface Category {

@@ -39,6 +39,18 @@ export const cartSlice = createSlice({
         return e;
       });
     },
+    deleteMoreCart:(state, action)=>{
+      let array = state.data;
+      let deleteArray = action.payload?.array;
+      deleteArray.map((e: any) => {
+        array = array.filter((v) => e !== `${v.id}`);
+      });
+      state.data = array;
+      createNotification({
+        type: "success",
+        message: "Xoá thành công",
+      });
+    },
     deleteItemCart: (state, action) => {
       state.data = state.data?.filter((e) => e.id !== action.payload?.id);
       createNotification({
@@ -89,6 +101,6 @@ export const cartSlice = createSlice({
       });
   },
 });
-export const { updateQuantity, addProductToCart, deleteItemCart } =
+export const { updateQuantity, addProductToCart, deleteItemCart ,deleteMoreCart} =
   cartSlice.actions;
 export default cartSlice.reducer;
