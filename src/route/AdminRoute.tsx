@@ -1,7 +1,11 @@
 import { Navigate } from "react-router";
+import BranchScreen from "../app/admin/branch/BranchScreen";
 import CategoryScreen from "../app/admin/category/CategoryScreen";
 import DashboardScreen from "../app/admin/dashboard/DashboardScreen";
+import MaterialScreen from "../app/admin/material/MaterialScreen";
+import OptionScreen from "../app/admin/option/OptionScreen";
 import ProductAdminScreen from "../app/admin/product/ProductAdminScreen";
+import TagScreen from "../app/admin/tag/TagScreen";
 import UserScreen from "../app/admin/user/UserScreen";
 import VoucherScreen from "../app/admin/voucher/VoucherScreen";
 import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
@@ -27,6 +31,22 @@ export const PRIVATE_ROUTE_ADMIN = [
   {
     route: ROUTE_ADMIN.VOUCHER,
     screen: <VoucherScreen />,
+  },
+  {
+    route: ROUTE_ADMIN.MATERIAL,
+    screen: <MaterialScreen />,
+  },
+  {
+    route: ROUTE_ADMIN.BRANCH,
+    screen: <BranchScreen />,
+  },
+  {
+    route: ROUTE_ADMIN.TAG,
+    screen: <TagScreen />,
+  },
+  {
+    route: ROUTE_ADMIN.OPTION,
+    screen: <OptionScreen />,
   },
 ];
 
