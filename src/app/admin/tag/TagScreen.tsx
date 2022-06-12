@@ -20,13 +20,13 @@ import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import { headCells } from "../../contant/ContaintDataAdmin";
+import { headCellsTag } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { UserAdminInteface } from "../../contant/IntefaceContaint";
+import { Tag } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteUser, updateUser } from "./slice/UserAdminSlice";
+import { deleteTag, updateTag } from "./slice/TagAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,19 +58,19 @@ export default function TagScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof UserAdminInteface>("id");
+  const [orderBy, setOrderBy] = React.useState<keyof Tag>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
-    item: UserAdminInteface;
+    item: Tag;
   }>(null);
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.userAdmin);
+  const { data } = useAppSelector((state) => state.tagAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const handleClose = () => {
     setOpen(false);
@@ -79,8 +79,7 @@ export default function TagScreen() {
   };
 
   const createSortHandler =
-    (property: keyof UserAdminInteface) =>
-    (event: React.MouseEvent<unknown>) => {
+    (property: keyof Tag) => (event: React.MouseEvent<unknown>) => {
       const isAsc = orderBy === property && order === "asc";
       setOrder(isAsc ? "desc" : "asc");
       setOrderBy(property);
@@ -163,10 +162,11 @@ export default function TagScreen() {
             setOpen(!open);
           }}
           onDelete={() => {
-            dispatch(deleteUser({ array: selected }));
+            dispatch(deleteTag({ array: selected }));
             setSelected([]);
           }}
-          label={"Quản lý user"}
+          label={"Quản lý Tag"}
+          isNonSearchTime={true}
         />
         <TableContainer>
           <Table
@@ -184,7 +184,7 @@ export default function TagScreen() {
                 setSelected(FunctionUtil.handleSelectAllClick(event, data));
               }}
               rowCount={data.length}
-              headCells={headCells}
+              headCells={headCellsTag}
               createSortHandler={createSortHandler}
             />
             <TableBody>
@@ -229,20 +229,17 @@ export default function TagScreen() {
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.email}</TableCell>
-                        <TableCell align="right">{row.phone}</TableCell>
-                        <TableCell align="right">{row.position}</TableCell>
-                        <TableCell align="right">{row.first_name}</TableCell>
-                        <TableCell align="right">{row.last_name}</TableCell>
+                        <TableCell align="right">{row.tag_name}</TableCell>
+
                         <TableCell align="right">
                           <Switch
-                            checked={row.active === 1 ? true : false}
+                            checked={row.status === 1 ? true : false}
                             onChange={(data) => {
                               let item = {
                                 ...row,
-                                active: row.active === 1 ? 0 : 1,
+                                status: row.status === 1 ? 0 : 1,
                               };
-                              dispatch(updateUser({ item: item }));
+                              dispatch(updateTag({ item: item }));
                             }}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}

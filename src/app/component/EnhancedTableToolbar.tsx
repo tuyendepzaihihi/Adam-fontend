@@ -25,11 +25,12 @@ interface EnhancedTableToolbarProps {
   onCreate: Function;
   onDelete: Function;
   label: string;
+  isNonSearchTime?: boolean;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, onCreate, onDelete, label } = props;
+  const { numSelected, onCreate, onDelete, label, isNonSearchTime } = props;
   const [textFilter, setTextFilter] = useState("");
   const [status, setStatus] = useState(`0`);
 
@@ -58,31 +59,33 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
               setTextFilter(event.target.value);
             }}
           />
-          <div className={classes.containerDate}>
-            <div>
-              <p>Start date</p>
-              <input
-                type={"date"}
-                onChange={(date) => {
-                  console.log({
-                    time: date.timeStamp,
-                    date: moment.unix(date?.timeStamp).format("MM/DD/YYYY"),
-                  });
-                }}
-                className={classes.dateInput}
-              />
+          {!isNonSearchTime && (
+            <div className={classes.containerDate}>
+              <div>
+                <p>Start date</p>
+                <input
+                  type={"date"}
+                  onChange={(date) => {
+                    console.log({
+                      time: date.timeStamp,
+                      date: moment.unix(date?.timeStamp).format("MM/DD/YYYY"),
+                    });
+                  }}
+                  className={classes.dateInput}
+                />
+              </div>
+              <div>
+                <p>End date</p>
+                <input
+                  type={"date"}
+                  onChange={(date) => {
+                    console.log({ date });
+                  }}
+                  className={classes.dateInput}
+                />
+              </div>
             </div>
-            <div>
-              <p>End date</p>
-              <input
-                type={"date"}
-                onChange={(date) => {
-                  console.log({ date });
-                }}
-                className={classes.dateInput}
-              />
-            </div>
-          </div>
+          )}
           <FormControl className={classes.formControl}>
             <InputLabel
               id="demo-simple-select-label"

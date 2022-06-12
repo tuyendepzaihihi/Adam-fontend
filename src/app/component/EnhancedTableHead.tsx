@@ -17,6 +17,7 @@ interface EnhancedTableProps {
   headCells: any[];
   createSortHandler: any;
   childrenMore?: any;
+  nonActivties?: boolean;
 }
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
@@ -30,17 +31,20 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
     headCells,
     createSortHandler,
     childrenMore,
+    nonActivties,
   } = props;
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
+          {!nonActivties && (
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{ "aria-label": "select all desserts" }}
+            />
+          )}
         </TableCell>
 
         {headCells.map((headCell) => (
@@ -65,7 +69,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
           </TableCell>
         ))}
         {childrenMore}
-        <TableCell align="right">Hoạt động</TableCell>
+        {!nonActivties && <TableCell align="right">Hoạt động</TableCell>}
       </TableRow>
     </TableHead>
   );

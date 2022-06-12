@@ -1,42 +1,39 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { rows_example_user } from "../../../contant/ContaintDataAdmin";
-import {
-  DataState,
-  UserAdminInteface,
-} from "../../../contant/IntefaceContaint";
+import { LIST_TAG } from "../../../contant/ContaintDataAdmin";
+import { DataState, Tag } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
 
-const initialState: DataState<UserAdminInteface[]> = {
-  data: rows_example_user,
+const initialState: DataState<Tag[]> = {
+  data: LIST_TAG,
   isError: false,
   isLoading: false,
 };
 
-export const incrementAsyncUserAdmin = createAsyncThunk(
-  "user/admin",
+export const incrementAsyncTagAdmin = createAsyncThunk(
+  "tag/admin",
   async () => {
     // call api here
     return true;
   }
 );
 
-export const userAdminSlice = createSlice({
-  name: "user/admin",
+export const tagAdminSlice = createSlice({
+  name: "tag/admin",
   initialState,
   reducers: {
-    updateUser: (state, action) => {
+    updateTag: (state, action) => {
       let oldArray = state.data;
-      let item: UserAdminInteface = action.payload?.item;
+      let item: Tag = action.payload?.item;
       state.data = oldArray?.map((e) => {
         if (e.id === item.id) return item;
         else return e;
       });
     },
-    createUser: (state, action) => {
-      let item: UserAdminInteface = action.payload?.item;
+    createTag: (state, action) => {
+      let item: Tag = action.payload?.item;
       state.data = state.data?.concat([item]);
     },
-    deleteUser: (state, action) => {
+    deleteTag: (state, action) => {
       let array = state.data;
       let deleteArray = action.payload?.array;
       deleteArray.map((e: any) => {
@@ -51,20 +48,20 @@ export const userAdminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(incrementAsyncUserAdmin.pending, (state) => {
+      .addCase(incrementAsyncTagAdmin.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
       })
-      .addCase(incrementAsyncUserAdmin.fulfilled, (state, action) => {
+      .addCase(incrementAsyncTagAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
         state.data = [];
       })
-      .addCase(incrementAsyncUserAdmin.rejected, (state) => {
+      .addCase(incrementAsyncTagAdmin.rejected, (state) => {
         state.isError = true;
         state.isLoading = false;
       });
   },
 });
-export const { createUser, updateUser, deleteUser } = userAdminSlice.actions;
-export default userAdminSlice.reducer;
+export const { createTag, updateTag, deleteTag } = tagAdminSlice.actions;
+export default tagAdminSlice.reducer;

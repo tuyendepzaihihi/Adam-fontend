@@ -149,17 +149,26 @@ export default function MiniDrawer(props: Props) {
               localStorage.clear();
               dispatch(updateSwitchRole(false));
               navigate(ROUTE.LOGIN);
-              setSelected(6);
+              setSelected(LIST_MENU_DRAWER.length + 1);
             }}
           >
             <ListItem button>
               <ListItemIcon>
-                <Logout color={selected === 6 ? "primary" : "inherit"} />
+                <Logout
+                  color={
+                    selected === LIST_MENU_DRAWER.length + 1
+                      ? "primary"
+                      : "inherit"
+                  }
+                />
               </ListItemIcon>
               <ListItemText
                 primary={"Đăng xuất"}
                 style={{
-                  color: selected === 6 ? colors.black : colors.gray59,
+                  color:
+                    selected === LIST_MENU_DRAWER.length + 1
+                      ? colors.black
+                      : colors.gray59,
                 }}
               />
             </ListItem>

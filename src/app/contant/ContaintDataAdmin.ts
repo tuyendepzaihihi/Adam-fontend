@@ -1,6 +1,13 @@
 import {
+  Branch,
   CategoryAdmin,
+  DataStateOption,
   HeadCell,
+  Material,
+  Option,
+  OptionColor,
+  OptionSize,
+  Tag,
   UserAdminInteface,
   VoucherAdmin,
 } from "./IntefaceContaint";
@@ -225,4 +232,158 @@ export const LIST_VOUCHER: VoucherAdmin[] = [
     discountMinValue: 10000,
     discountMaxValue: 25000000,
   },
+];
+
+export const headCellsMaterial: HeadCell<Material>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "material_name",
+    numeric: true,
+    disablePadding: false,
+    label: "Material name",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const LIST_MATERIAL: Material[] = [
+  {
+    id: 1,
+    status: 2,
+    material_name: "Lụa mềm",
+  },
+  {
+    id: 2,
+    status: 1,
+    material_name: "Cotton",
+  },
+];
+
+export const LIST_BRANCH: Branch[] = [
+  {
+    id: 1,
+    status: 1,
+    branch_name: "Gucci",
+  },
+  {
+    id: 2,
+    status: 1,
+    branch_name: "Owen",
+  },
+  {
+    id: 3,
+    status: 1,
+    branch_name: "MieMode",
+  },
+];
+
+export const headCellsBranch: HeadCell<Branch>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "branch_name",
+    numeric: true,
+    disablePadding: false,
+    label: "Branch name",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const LIST_TAG: Tag[] = [
+  {
+    id: 1,
+    status: 2,
+    tag_name: "Tag 1",
+  },
+  {
+    id: 2,
+    status: 1,
+    tag_name: "Tag 2",
+  },
+];
+
+export const headCellsTag: HeadCell<Tag>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "tag_name",
+    numeric: true,
+    disablePadding: false,
+    label: "Tag name",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const OPTIONS_DATA: DataStateOption = {
+  colors: [
+    { id: 1, color_name: "Xanh", status: 1 },
+    { id: 2, color_name: "Đỏ", status: 1 },
+    { id: 3, color_name: "Vàng", status: 1 },
+  ],
+  sizes: [
+    { id: 1, size_name: "S", status: 1 },
+    { id: 2, size_name: "M", status: 1 },
+    { id: 3, size_name: "L", status: 1 },
+    { id: 4, size_name: "XL", status: 1 },
+    { id: 5, size_name: "XXL", status: 1 },
+  ],
+};
+
+export const headCellsOption: HeadCell<Option>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "option_name",
+    numeric: true,
+    disablePadding: false,
+    label: "Option name",
+  },
+];
+
+export const headCellsOptionColor: HeadCell<OptionColor>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "color_name",
+    numeric: true,
+    disablePadding: false,
+    label: "Color name",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const headCellsOptionSize: HeadCell<OptionSize>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "size_name",
+    numeric: true,
+    disablePadding: false,
+    label: "Size name",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
 ];

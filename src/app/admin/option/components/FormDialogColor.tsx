@@ -10,51 +10,48 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { Material } from "../../../contant/IntefaceContaint";
+import { OptionColor } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createMaterial, updateMaterial } from "../slice/MaterialAdminSlice";
+import { createColor, updateColor } from "../slice/OptionAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData: any;
   type: number;
-  data: Material[];
+  data: OptionColor[];
 }
-const validateMaterial = Yup.object({
-  material_name: Yup.string()
-    .required("Vui lòng nhập")
-
-    .trim(),
+const validateOptionColor = Yup.object({
+  color_name: Yup.string().required("Vui lòng nhập").trim(),
 });
 
-interface PropsCreateMaterial {
-  material_name: string;
+interface PropsCreateColor {
+  color_name: string;
 }
-const initialValues: PropsCreateMaterial = {
-  material_name: "",
+const initialValues: PropsCreateColor = {
+  color_name: "",
 };
-const FormDialog = (props: Props) => {
+const FormDialogColor = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
 
-  const onSubmit = (data: PropsCreateMaterial) => {
-    const { material_name } = data;
-    const item: Material = {
+  const onSubmit = (data: PropsCreateColor) => {
+    const { color_name } = data;
+    const item: OptionColor = {
       ...anchorElData.item,
-      material_name: material_name,
+      color_name: color_name,
     };
-    dispatch(updateMaterial({ item: item }));
+    dispatch(updateColor({ item: item }));
     handleClose();
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateMaterial) => {
-    const { material_name } = dataCreate;
-    const item: Material = {
-      material_name: material_name,
+  const onSubmitCreate = (dataCreate: PropsCreateColor) => {
+    const { color_name } = dataCreate;
+    const item: OptionColor = {
+      color_name: color_name,
       id: data[data.length - 1].id + 1,
       status: 1,
     };
-    dispatch(createMaterial({ item: item }));
+    dispatch(createColor({ item: item }));
     handleClose();
   };
 
@@ -66,14 +63,14 @@ const FormDialog = (props: Props) => {
       style={{ width: "100%" }}
     >
       <DialogTitle id="form-dialog-title">
-        {TYPE_DIALOG.CREATE === type ? "Tạo mới Material" : `Cập nhật Material`}
+        {TYPE_DIALOG.CREATE === type ? "Tạo mới Color" : `Cập nhật Color`}
       </DialogTitle>
       <Formik
         initialValues={
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                material_name: anchorElData?.item.material_name ?? "",
+                color_name: anchorElData?.item.color_name ?? "",
               }
         }
         onSubmit={(data) => {
@@ -82,7 +79,7 @@ const FormDialog = (props: Props) => {
             : onSubmit(data);
         }}
         validateOnChange
-        validationSchema={validateMaterial}
+        validationSchema={validateOptionColor}
       >
         {({
           values,
@@ -95,16 +92,16 @@ const FormDialog = (props: Props) => {
           <>
             <DialogContent style={{ width: "100%" }}>
               <DialogContentText>
-                Cập nhật thông tin cá nhân của Material, vui lòng điền tất cả
-                thông tin cần thiết
+                Cập nhật thông tin cá nhân của Color, vui lòng điền tất cả thông
+                tin cần thiết
               </DialogContentText>
               <TextInputComponent
-                error={errors.material_name}
-                touched={touched.material_name}
-                value={values.material_name}
-                label={"Material name"}
-                onChange={handleChange("material_name")}
-                onBlur={handleBlur("material_name")}
+                error={errors.color_name}
+                touched={touched.color_name}
+                value={values.color_name}
+                label={"color name"}
+                onChange={handleChange("color_name")}
+                onBlur={handleBlur("color_name")}
               />
             </DialogContent>
             <DialogActions>
@@ -121,4 +118,4 @@ const FormDialog = (props: Props) => {
     </Dialog>
   );
 };
-export default FormDialog;
+export default FormDialogColor;

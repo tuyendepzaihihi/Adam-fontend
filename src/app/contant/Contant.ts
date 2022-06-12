@@ -108,7 +108,7 @@ export const LIST_MENU_DRAWER = [
     icon: PermMediaOutlined,
   },
   {
-    name: "Quản lý branch",
+    name: "Quản lý Branch",
     route: ROUTE_ADMIN.BRANCH,
     icon: BrandingWatermark,
   },

@@ -1,42 +1,39 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { rows_example_user } from "../../../contant/ContaintDataAdmin";
-import {
-  DataState,
-  UserAdminInteface,
-} from "../../../contant/IntefaceContaint";
+import { LIST_MATERIAL } from "../../../contant/ContaintDataAdmin";
+import { DataState, Material } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
 
-const initialState: DataState<UserAdminInteface[]> = {
-  data: rows_example_user,
+const initialState: DataState<Material[]> = {
+  data: LIST_MATERIAL,
   isError: false,
   isLoading: false,
 };
 
-export const incrementAsyncUserAdmin = createAsyncThunk(
-  "user/admin",
+export const incrementAsyncMaterialAdmin = createAsyncThunk(
+  "material/admin",
   async () => {
     // call api here
     return true;
   }
 );
 
-export const userAdminSlice = createSlice({
-  name: "user/admin",
+export const materialAdminSlice = createSlice({
+  name: "material/admin",
   initialState,
   reducers: {
-    updateUser: (state, action) => {
+    updateMaterial: (state, action) => {
       let oldArray = state.data;
-      let item: UserAdminInteface = action.payload?.item;
+      let item: Material = action.payload?.item;
       state.data = oldArray?.map((e) => {
         if (e.id === item.id) return item;
         else return e;
       });
     },
-    createUser: (state, action) => {
-      let item: UserAdminInteface = action.payload?.item;
+    createMaterial: (state, action) => {
+      let item: Material = action.payload?.item;
       state.data = state.data?.concat([item]);
     },
-    deleteUser: (state, action) => {
+    deleteMaterial: (state, action) => {
       let array = state.data;
       let deleteArray = action.payload?.array;
       deleteArray.map((e: any) => {
@@ -51,20 +48,21 @@ export const userAdminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(incrementAsyncUserAdmin.pending, (state) => {
+      .addCase(incrementAsyncMaterialAdmin.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
       })
-      .addCase(incrementAsyncUserAdmin.fulfilled, (state, action) => {
+      .addCase(incrementAsyncMaterialAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
         state.data = [];
       })
-      .addCase(incrementAsyncUserAdmin.rejected, (state) => {
+      .addCase(incrementAsyncMaterialAdmin.rejected, (state) => {
         state.isError = true;
         state.isLoading = false;
       });
   },
 });
-export const { createUser, updateUser, deleteUser } = userAdminSlice.actions;
-export default userAdminSlice.reducer;
+export const { createMaterial, updateMaterial, deleteMaterial } =
+  materialAdminSlice.actions;
+export default materialAdminSlice.reducer;

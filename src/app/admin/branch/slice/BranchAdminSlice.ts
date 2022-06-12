@@ -1,42 +1,39 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { rows_example_user } from "../../../contant/ContaintDataAdmin";
-import {
-  DataState,
-  UserAdminInteface,
-} from "../../../contant/IntefaceContaint";
+import { LIST_BRANCH } from "../../../contant/ContaintDataAdmin";
+import { Branch, DataState } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
 
-const initialState: DataState<UserAdminInteface[]> = {
-  data: rows_example_user,
+const initialState: DataState<Branch[]> = {
+  data: LIST_BRANCH,
   isError: false,
   isLoading: false,
 };
 
-export const incrementAsyncUserAdmin = createAsyncThunk(
-  "user/admin",
+export const incrementAsyncBranchAdmin = createAsyncThunk(
+  "branch/admin",
   async () => {
     // call api here
     return true;
   }
 );
 
-export const userAdminSlice = createSlice({
-  name: "user/admin",
+export const branchAdminSlice = createSlice({
+  name: "branch/admin",
   initialState,
   reducers: {
-    updateUser: (state, action) => {
+    updateBranch: (state, action) => {
       let oldArray = state.data;
-      let item: UserAdminInteface = action.payload?.item;
+      let item: Branch = action.payload?.item;
       state.data = oldArray?.map((e) => {
         if (e.id === item.id) return item;
         else return e;
       });
     },
-    createUser: (state, action) => {
-      let item: UserAdminInteface = action.payload?.item;
+    createBranch: (state, action) => {
+      let item: Branch = action.payload?.item;
       state.data = state.data?.concat([item]);
     },
-    deleteUser: (state, action) => {
+    deleteBranch: (state, action) => {
       let array = state.data;
       let deleteArray = action.payload?.array;
       deleteArray.map((e: any) => {
@@ -51,20 +48,21 @@ export const userAdminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(incrementAsyncUserAdmin.pending, (state) => {
+      .addCase(incrementAsyncBranchAdmin.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
       })
-      .addCase(incrementAsyncUserAdmin.fulfilled, (state, action) => {
+      .addCase(incrementAsyncBranchAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
         state.data = [];
       })
-      .addCase(incrementAsyncUserAdmin.rejected, (state) => {
+      .addCase(incrementAsyncBranchAdmin.rejected, (state) => {
         state.isError = true;
         state.isLoading = false;
       });
   },
 });
-export const { createUser, updateUser, deleteUser } = userAdminSlice.actions;
-export default userAdminSlice.reducer;
+export const { createBranch, updateBranch, deleteBranch } =
+  branchAdminSlice.actions;
+export default branchAdminSlice.reducer;

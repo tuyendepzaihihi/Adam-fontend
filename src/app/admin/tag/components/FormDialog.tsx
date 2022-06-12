@@ -7,86 +7,54 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import TextInputComponent from "../../../component/TextInputComponent";
 import * as Yup from "yup";
-import {
-  NAME_REGEX,
-  PHONE_REGEX,
-  REG_EMAIL,
-  textValidate,
-  TYPE_DIALOG,
-} from "../../../contant/Contant";
+import TextInputComponent from "../../../component/TextInputComponent";
+import { TYPE_DIALOG } from "../../../contant/Contant";
+import { Tag } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createUser, updateUser } from "../slice/UserAdminSlice";
-import { UserAdminInteface } from "../../../contant/IntefaceContaint";
+import { createTag, updateTag } from "../slice/TagAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData: any;
   type: number;
-  data: UserAdminInteface[];
+  data: Tag[];
 }
-const validateUser = Yup.object({
-  phone: Yup.string()
-    .min(10, textValidate.phone.error_validate)
-    .max(11, textValidate.phone.error_validate)
-    .matches(PHONE_REGEX, textValidate.phone.error_validate)
-    .required()
-    .trim(),
-  email: Yup.string()
-    .matches(REG_EMAIL, textValidate.email.error_validate)
-    .required(textValidate.email.require)
-    .trim(),
-  fullname: Yup.string()
-    .required(textValidate.full_name.require)
-    .matches(NAME_REGEX, textValidate.full_name.error_validate)
+const validateTag = Yup.object({
+  tag_name: Yup.string()
+    .required("Vui lòng nhập")
+
     .trim(),
 });
 
-interface PropsCreateUser {
-  email: string;
-  phone: string;
-  fullname: string;
-  position: string;
+interface PropsCreateTag {
+  tag_name: string;
 }
-const initialValues: PropsCreateUser = {
-  email: "",
-  phone: "",
-  fullname: "",
-  position: "",
+const initialValues: PropsCreateTag = {
+  tag_name: "",
 };
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
 
-  const onSubmit = (data: {
-    email: string;
-    phone: string;
-    fullname: string;
-  }) => {
-    const { email, fullname, phone } = data;
-    const item: UserAdminInteface = {
+  const onSubmit = (data: PropsCreateTag) => {
+    const { tag_name } = data;
+    const item: Tag = {
       ...anchorElData.item,
-      email: email,
-      last_name: fullname,
-      phone: phone,
+      tag_name: tag_name,
     };
-    dispatch(updateUser({ item: item }));
+    dispatch(updateTag({ item: item }));
     handleClose();
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateUser) => {
-    const { email, fullname, phone, position } = dataCreate;
-    const item: UserAdminInteface = {
-      active: 1,
-      email: email,
-      first_name: fullname,
-      last_name: fullname,
-      phone: phone,
-      position: position,
+  const onSubmitCreate = (dataCreate: PropsCreateTag) => {
+    const { tag_name } = dataCreate;
+    const item: Tag = {
+      tag_name: tag_name,
       id: data[data.length - 1].id + 1,
+      status: 1,
     };
-    dispatch(createUser({ item: item }));
+    dispatch(createTag({ item: item }));
     handleClose();
   };
 
@@ -98,25 +66,23 @@ const FormDialog = (props: Props) => {
       style={{ width: "100%" }}
     >
       <DialogTitle id="form-dialog-title">
-        {TYPE_DIALOG.CREATE === type ? "Tạo mới User" : `Cập nhật User`}
+        {TYPE_DIALOG.CREATE === type ? "Tạo mới Tag" : `Cập nhật Tag`}
       </DialogTitle>
       <Formik
         initialValues={
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                email: anchorElData?.item.email ?? "",
-                phone: anchorElData?.item.phone ?? "",
-                fullname: anchorElData?.item.last_name ?? "",
+                tag_name: anchorElData?.item.tag_name ?? "",
               }
         }
         onSubmit={(data) => {
           type === TYPE_DIALOG.CREATE
-            ? onSubmitCreate({ ...data, position: "Admin" })
+            ? onSubmitCreate({ ...data })
             : onSubmit(data);
         }}
         validateOnChange
-        validationSchema={validateUser}
+        validationSchema={validateTag}
       >
         {({
           values,
@@ -129,32 +95,16 @@ const FormDialog = (props: Props) => {
           <>
             <DialogContent style={{ width: "100%" }}>
               <DialogContentText>
-                Cập nhật thông tin cá nhân của user, vui lòng điền tất cả thông
+                Cập nhật thông tin cá nhân của Tag, vui lòng điền tất cả thông
                 tin cần thiết
               </DialogContentText>
               <TextInputComponent
-                error={errors.email}
-                touched={touched.email}
-                value={values.email}
-                label={"Email"}
-                onChange={handleChange("email")}
-                onBlur={handleBlur("email")}
-              />
-              <TextInputComponent
-                error={errors.phone}
-                touched={touched.phone}
-                value={values.phone}
-                label={"Số điện thoại"}
-                onChange={handleChange("phone")}
-                onBlur={handleBlur("phone")}
-              />
-              <TextInputComponent
-                error={errors.fullname}
-                touched={touched.fullname}
-                value={values.fullname}
-                label={"Tên họ đầy đủ"}
-                onChange={handleChange("fullname")}
-                onBlur={handleBlur("fullname")}
+                error={errors.tag_name}
+                touched={touched.tag_name}
+                value={values.tag_name}
+                label={"tag name"}
+                onChange={handleChange("tag_name")}
+                onBlur={handleBlur("tag_name")}
               />
             </DialogContent>
             <DialogActions>

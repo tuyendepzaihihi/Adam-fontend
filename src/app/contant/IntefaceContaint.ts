@@ -58,3 +58,42 @@ export interface AddressOrderInterface {
   };
   detail: string;
 }
+
+export interface Material {
+  id: any;
+  material_name: string;
+  status: number;
+}
+export interface Tag {
+  id: any;
+  tag_name: string;
+  status: number;
+}
+export interface Branch {
+  id: any;
+  branch_name: string;
+  status: number;
+}
+
+export interface OptionColor {
+  id: any;
+  color_name: string;
+  status: number;
+}
+export interface OptionSize {
+  id: any;
+  size_name: string;
+  status: number;
+}
+
+export interface DataStateOption {
+  colors: OptionColor[];
+  sizes: OptionSize[];
+}
+
+export interface Option extends DataStateOption {
+  id: any;
+  option_name: string;
+  status: number;
+  data: OptionColor[] | OptionSize[];
+}

@@ -10,51 +10,48 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { Material } from "../../../contant/IntefaceContaint";
+import { OptionSize } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createMaterial, updateMaterial } from "../slice/MaterialAdminSlice";
+import { createSize, updateSize } from "../slice/OptionAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData: any;
   type: number;
-  data: Material[];
+  data: OptionSize[];
 }
-const validateMaterial = Yup.object({
-  material_name: Yup.string()
-    .required("Vui lòng nhập")
-
-    .trim(),
+const validateOptionSize = Yup.object({
+  Size_name: Yup.string().required("Vui lòng nhập").trim(),
 });
 
-interface PropsCreateMaterial {
-  material_name: string;
+interface PropsCreateSize {
+  Size_name: string;
 }
-const initialValues: PropsCreateMaterial = {
-  material_name: "",
+const initialValues: PropsCreateSize = {
+  Size_name: "",
 };
-const FormDialog = (props: Props) => {
+const FormDialogSize = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
 
-  const onSubmit = (data: PropsCreateMaterial) => {
-    const { material_name } = data;
-    const item: Material = {
+  const onSubmit = (data: PropsCreateSize) => {
+    const { Size_name } = data;
+    const item: OptionSize = {
       ...anchorElData.item,
-      material_name: material_name,
+      size_name: Size_name,
     };
-    dispatch(updateMaterial({ item: item }));
+    dispatch(updateSize({ item: item }));
     handleClose();
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateMaterial) => {
-    const { material_name } = dataCreate;
-    const item: Material = {
-      material_name: material_name,
+  const onSubmitCreate = (dataCreate: PropsCreateSize) => {
+    const { Size_name } = dataCreate;
+    const item: OptionSize = {
+      size_name: Size_name,
       id: data[data.length - 1].id + 1,
       status: 1,
     };
-    dispatch(createMaterial({ item: item }));
+    dispatch(createSize({ item: item }));
     handleClose();
   };
 
@@ -66,14 +63,14 @@ const FormDialog = (props: Props) => {
       style={{ width: "100%" }}
     >
       <DialogTitle id="form-dialog-title">
-        {TYPE_DIALOG.CREATE === type ? "Tạo mới Material" : `Cập nhật Material`}
+        {TYPE_DIALOG.CREATE === type ? "Tạo mới Size" : `Cập nhật Size`}
       </DialogTitle>
       <Formik
         initialValues={
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                material_name: anchorElData?.item.material_name ?? "",
+                Size_name: anchorElData?.item.size_name ?? "",
               }
         }
         onSubmit={(data) => {
@@ -82,7 +79,7 @@ const FormDialog = (props: Props) => {
             : onSubmit(data);
         }}
         validateOnChange
-        validationSchema={validateMaterial}
+        validationSchema={validateOptionSize}
       >
         {({
           values,
@@ -95,16 +92,16 @@ const FormDialog = (props: Props) => {
           <>
             <DialogContent style={{ width: "100%" }}>
               <DialogContentText>
-                Cập nhật thông tin cá nhân của Material, vui lòng điền tất cả
-                thông tin cần thiết
+                Cập nhật thông tin cá nhân của Size, vui lòng điền tất cả thông
+                tin cần thiết
               </DialogContentText>
               <TextInputComponent
-                error={errors.material_name}
-                touched={touched.material_name}
-                value={values.material_name}
-                label={"Material name"}
-                onChange={handleChange("material_name")}
-                onBlur={handleBlur("material_name")}
+                error={errors.Size_name}
+                touched={touched.Size_name}
+                value={values.Size_name}
+                label={"Size name"}
+                onChange={handleChange("Size_name")}
+                onBlur={handleBlur("Size_name")}
               />
             </DialogContent>
             <DialogActions>
@@ -121,4 +118,4 @@ const FormDialog = (props: Props) => {
     </Dialog>
   );
 };
-export default FormDialog;
+export default FormDialogSize;

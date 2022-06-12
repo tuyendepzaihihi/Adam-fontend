@@ -1,10 +1,14 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Button,
   IconButton,
   Menu,
   MenuItem,
   Switch,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
@@ -16,22 +20,28 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
-import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import { headCells } from "../../contant/ContaintDataAdmin";
+import {
+  headCellsOptionColor,
+  headCellsOptionSize,
+} from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { UserAdminInteface } from "../../contant/IntefaceContaint";
+import { OptionColor, OptionSize } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { colors } from "../../utils/color";
 import { FunctionUtil, Order } from "../../utils/function";
-import FormDialog from "./components/FormDialog";
-import { deleteUser, updateUser } from "./slice/UserAdminSlice";
+import FormDialogColor from "./components/FormDialogColor";
+import FormDialogSize from "./components/FormDialogSize";
+import { updateColor, updateSize } from "./slice/OptionAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
+      marginTop: 15,
     },
     paper: {
       width: "100%",
@@ -57,76 +67,140 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function OptionScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof UserAdminInteface>("id");
-  const [selected, setSelected] = React.useState<string[]>([]);
-  const [page, setPage] = React.useState(0);
+  const [orderSize, setOrderSize] = React.useState<Order>("asc");
+  const [orderBySize, setOrderBySize] = React.useState<keyof OptionSize>("id");
+  const [selectedSize, setSelectedSize] = React.useState<string[]>([]);
+  const [pageSize, setPageSize] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [anchorElData, setAnchorElData] = React.useState<null | {
-    item: UserAdminInteface;
+  const [openSize, setOpenSize] = React.useState(false);
+  const [anchorElSize, setAnchorElSize] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElDataSize, setAnchorElDataSize] = React.useState<null | {
+    item: OptionSize;
   }>(null);
-  const isMenuOpen = Boolean(anchorEl);
+  const isMenuOpenSize = Boolean(anchorElSize);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.userAdmin);
-  const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
-  const handleClose = () => {
-    setOpen(false);
-    setAnchorEl(null);
-    setAnchorElData(null);
+  const { data } = useAppSelector((state) => state.optionAdmin);
+  const [typeDialogSize, setTypeDialogSize] = useState(TYPE_DIALOG.CREATE);
+  const handleCloseSize = () => {
+    setOpenSize(false);
+    setAnchorElSize(null);
+    setAnchorElDataSize(null);
   };
 
-  const createSortHandler =
-    (property: keyof UserAdminInteface) =>
-    (event: React.MouseEvent<unknown>) => {
-      const isAsc = orderBy === property && order === "asc";
-      setOrder(isAsc ? "desc" : "asc");
-      setOrderBy(property);
+  const createSortHandlerSize =
+    (property: keyof OptionSize) => (event: React.MouseEvent<unknown>) => {
+      const isAsc = orderBySize === property && orderSize === "asc";
+      setOrderSize(isAsc ? "desc" : "asc");
+      setOrderBySize(property);
     };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handleChangePageSize = (event: unknown, newPage: number) => {
+    setPageSize(newPage);
   };
 
-  const handleChangeRowsPerPage = (
+  const handleChangeRowsPerPageSize = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(0);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelectedSize = (name: string) => selectedSize.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    rowsPerPage -
+    Math.min(rowsPerPage, data.sizes.length - pageSize * rowsPerPage);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setAnchorElData(null);
+  const handleMenuCloseSize = () => {
+    setAnchorElSize(null);
+    setAnchorElDataSize(null);
   };
-  const handleProfileMenuOpen = (
+  const handleProfileMenuOpenSize = (
     event: React.MouseEvent<HTMLElement>,
     item: any
   ) => {
-    setAnchorEl(event.currentTarget);
-    setAnchorElData({ item: item });
+    setAnchorElSize(event.currentTarget);
+    setAnchorElDataSize({ item: item });
+  };
+
+  // Color
+  const [orderColor, setOrderColor] = React.useState<Order>("asc");
+  const [orderByColor, setOrderByColor] =
+    React.useState<keyof OptionColor>("id");
+  const [selectedColor, setSelectedColor] = React.useState<string[]>([]);
+  const [pageColor, setPageColor] = React.useState(0);
+  const [rowsPerPageColor, setRowsPerPageColor] = React.useState(5);
+  const [openColor, setOpenColor] = React.useState(false);
+  const [anchorElColor, setAnchorElColor] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElDataColor, setAnchorElDataColor] = React.useState<null | {
+    item: OptionColor;
+  }>(null);
+  const isMenuOpenColor = Boolean(anchorElColor);
+
+  const [typeDialogColor, setTypeDialogColor] = useState(TYPE_DIALOG.CREATE);
+  const handleCloseColor = () => {
+    setOpenColor(false);
+    setAnchorElColor(null);
+    setAnchorElDataColor(null);
+  };
+
+  const createSortHandlerColor =
+    (property: keyof OptionColor) => (event: React.MouseEvent<unknown>) => {
+      const isAsc = orderByColor === property && orderColor === "asc";
+      setOrderColor(isAsc ? "desc" : "asc");
+      setOrderByColor(property);
+    };
+
+  const handleChangePageColor = (event: unknown, newPage: number) => {
+    setPageColor(newPage);
+  };
+
+  const handleChangeRowsPerPageColor = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPageColor(parseInt(event.target.value, 10));
+    setPageColor(0);
+  };
+
+  const isSelectedColor = (name: string) => selectedColor.indexOf(name) !== -1;
+
+  const emptyRowsColor =
+    rowsPerPageColor -
+    Math.min(
+      rowsPerPageColor,
+      data.colors.length - pageColor * rowsPerPageColor
+    );
+
+  const handleMenuCloseColor = () => {
+    setAnchorElColor(null);
+    setAnchorElDataColor(null);
+  };
+  const handleProfileMenuOpenColor = (
+    event: React.MouseEvent<HTMLElement>,
+    item: any
+  ) => {
+    setAnchorElColor(event.currentTarget);
+    setAnchorElDataColor({ item: item });
   };
 
   const renderMenu = (
     <Menu
-      anchorEl={anchorEl}
+      anchorEl={anchorElSize}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={menuId}
       keepMounted
       transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
+      open={isMenuOpenSize}
+      onClose={handleMenuCloseSize}
     >
       <MenuItem
         onClick={() => {
-          console.log({ anchorElData });
+          console.log({ anchorElDataSize });
         }}
         button
       >
@@ -139,8 +213,47 @@ export default function OptionScreen() {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          setTypeDialog(TYPE_DIALOG.UPDATE);
-          setOpen(!open);
+          setTypeDialogSize(TYPE_DIALOG.UPDATE);
+          setOpenSize(!openSize);
+        }}
+      >
+        <Tooltip title="Update">
+          <IconButton aria-label="update">
+            <UpdateIcon color="primary" />
+          </IconButton>
+        </Tooltip>
+        <p>Cập nhật</p>
+      </MenuItem>
+    </Menu>
+  );
+
+  const renderMenuColor = (
+    <Menu
+      anchorEl={anchorElColor}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpenColor}
+      onClose={handleMenuCloseColor}
+    >
+      <MenuItem
+        onClick={() => {
+          console.log({ anchorElDataColor });
+        }}
+        button
+      >
+        <Tooltip title="Delete">
+          <IconButton aria-label="delete">
+            <DeleteIcon color="secondary" />
+          </IconButton>
+        </Tooltip>
+        <p>Xoá</p>
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          setTypeDialogColor(TYPE_DIALOG.UPDATE);
+          setOpenColor(!openColor);
         }}
       >
         <Tooltip title="Update">
@@ -156,136 +269,342 @@ export default function OptionScreen() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          onCreate={() => {
-            setTypeDialog(TYPE_DIALOG.CREATE);
-            setOpen(!open);
-          }}
-          onDelete={() => {
-            dispatch(deleteUser({ array: selected }));
-            setSelected([]);
-          }}
-          label={"Quản lý user"}
-        />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={"medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={(event) => {
-                setSelected(FunctionUtil.handleSelectAllClick(event, data));
-              }}
-              rowCount={data.length}
-              headCells={headCells}
-              createSortHandler={createSortHandler}
-            />
-            <TableBody>
-              {data.length > 0 &&
-                FunctionUtil.stableSort(
-                  data,
-                  FunctionUtil.getComparator(order, orderBy)
-                )
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(`${row.id}`);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={`${row.id}`}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                            onClick={(event) => {
-                              setSelected(
-                                FunctionUtil.handleClick(
-                                  event,
-                                  `${row.id}`,
-                                  selected
-                                )
-                              );
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                        >
-                          {row.id}
-                        </TableCell>
-                        <TableCell align="right">{row.email}</TableCell>
-                        <TableCell align="right">{row.phone}</TableCell>
-                        <TableCell align="right">{row.position}</TableCell>
-                        <TableCell align="right">{row.first_name}</TableCell>
-                        <TableCell align="right">{row.last_name}</TableCell>
-                        <TableCell align="right">
-                          <Switch
-                            checked={row.active === 1 ? true : false}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                active: row.active === 1 ? 0 : 1,
-                              };
-                              dispatch(updateUser({ item: item }));
-                            }}
-                            name={labelId}
-                            inputProps={{ "aria-label": labelId }}
-                            color="primary"
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Button
-                            onClick={(event) => {
-                              handleProfileMenuOpen(event, row);
-                            }}
-                          >
-                            ...
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        <Typography variant="h5">Option Manager</Typography>
+        <div className={classes.root}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-label="Expand"
+              aria-controls="additional-actions3-content"
+              id="additional-actions3-header"
+            >
+              <Typography
+                style={{
+                  fontSize: 16,
+                  color: colors.gray59,
+                  fontStyle: "italic",
+                  fontWeight: "bold",
+                }}
+              >
+                Color
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Paper className={classes.paper}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setTypeDialogColor(TYPE_DIALOG.CREATE);
+                      setOpenColor(!openColor);
+                    }}
+                  >
+                    Tạo mới thông tin
+                  </Button>
+                </div>
+                <TableContainer>
+                  <Table
+                    className={classes.table}
+                    aria-labelledby="tableTitle"
+                    size={"medium"}
+                    aria-label="enhanced table"
+                  >
+                    <EnhancedTableHead
+                      classes={classes}
+                      numSelected={selectedColor.length}
+                      order={orderColor}
+                      orderBy={orderByColor}
+                      onSelectAllClick={(event) => {
+                        setSelectedColor(
+                          FunctionUtil.handleSelectAllClick(event, data.colors)
+                        );
+                      }}
+                      rowCount={data.colors.length}
+                      headCells={headCellsOptionColor}
+                      createSortHandler={createSortHandlerColor}
+                    />
+                    <TableBody>
+                      {data.colors.length > 0 &&
+                        FunctionUtil.stableSort(
+                          data.colors,
+                          FunctionUtil.getComparator(orderColor, orderByColor)
+                        )
+                          .slice(
+                            pageColor * rowsPerPageColor,
+                            pageColor * rowsPerPageColor + rowsPerPageColor
+                          )
+                          .map((row, index) => {
+                            const isItemSelected = isSelectedColor(`${row.id}`);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+                            return (
+                              <TableRow
+                                hover
+                                role="checkbox"
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={`${row.id}`}
+                                selected={isItemSelected}
+                              >
+                                <TableCell padding="checkbox">
+                                  <Checkbox
+                                    checked={isItemSelected}
+                                    inputProps={{
+                                      "aria-labelledby": labelId,
+                                    }}
+                                    onClick={(event) => {
+                                      setSelectedColor(
+                                        FunctionUtil.handleClick(
+                                          event,
+                                          `${row.id}`,
+                                          selectedColor
+                                        )
+                                      );
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell
+                                  component="th"
+                                  id={labelId}
+                                  scope="row"
+                                  padding="none"
+                                >
+                                  {row.id}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {row.color_name}
+                                </TableCell>
+
+                                <TableCell align="right">
+                                  <Switch
+                                    checked={row.status === 1 ? true : false}
+                                    onChange={(data) => {
+                                      let item = {
+                                        ...row,
+                                        status: row.status === 1 ? 0 : 1,
+                                      };
+                                      dispatch(updateColor({ item: item }));
+                                    }}
+                                    name={labelId}
+                                    inputProps={{ "aria-label": labelId }}
+                                    color="primary"
+                                  />
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Button
+                                    onClick={(event) => {
+                                      handleProfileMenuOpenColor(event, row);
+                                    }}
+                                  >
+                                    ...
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                      {emptyRowsColor > 0 && (
+                        <TableRow style={{ height: 53 * emptyRowsColor }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={data.colors.length}
+                  rowsPerPage={rowsPerPageColor}
+                  page={pageColor}
+                  onPageChange={handleChangePageColor}
+                  onRowsPerPageChange={handleChangeRowsPerPageColor}
+                />
+              </Paper>
+            </AccordionDetails>
+          </Accordion>
+        </div>
+
+        <div className={classes.root}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-label="Expand"
+              aria-controls="additional-actions3-content"
+              id="additional-actions3-header"
+            >
+              <Typography
+                style={{
+                  fontSize: 16,
+                  color: colors.gray59,
+                  fontStyle: "italic",
+                  fontWeight: "bold",
+                }}
+              >
+                Size
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Paper className={classes.paper}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setTypeDialogSize(TYPE_DIALOG.CREATE);
+                      setOpenSize(!openSize);
+                    }}
+                  >
+                    Tạo mới thông tin
+                  </Button>
+                </div>
+                <TableContainer>
+                  <Table
+                    className={classes.table}
+                    aria-labelledby="tableTitle"
+                    size={"medium"}
+                    aria-label="enhanced table"
+                  >
+                    <EnhancedTableHead
+                      classes={classes}
+                      numSelected={selectedSize.length}
+                      order={orderSize}
+                      orderBy={orderBySize}
+                      onSelectAllClick={(event) => {
+                        setSelectedSize(
+                          FunctionUtil.handleSelectAllClick(event, data.sizes)
+                        );
+                      }}
+                      rowCount={data.sizes.length}
+                      headCells={headCellsOptionSize}
+                      createSortHandler={createSortHandlerSize}
+                    />
+                    <TableBody>
+                      {data.sizes.length > 0 &&
+                        FunctionUtil.stableSort(
+                          data.sizes,
+                          FunctionUtil.getComparator(orderSize, orderBySize)
+                        )
+                          .slice(
+                            pageSize * rowsPerPage,
+                            pageSize * rowsPerPage + rowsPerPage
+                          )
+                          .map((row, index) => {
+                            const isItemSelected = isSelectedSize(`${row.id}`);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+                            return (
+                              <TableRow
+                                hover
+                                role="checkbox"
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={`${row.id}`}
+                                selected={isItemSelected}
+                              >
+                                <TableCell padding="checkbox">
+                                  <Checkbox
+                                    checked={isItemSelected}
+                                    inputProps={{
+                                      "aria-labelledby": labelId,
+                                    }}
+                                    onClick={(event) => {
+                                      setSelectedSize(
+                                        FunctionUtil.handleClick(
+                                          event,
+                                          `${row.id}`,
+                                          selectedSize
+                                        )
+                                      );
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell
+                                  component="th"
+                                  id={labelId}
+                                  scope="row"
+                                  padding="none"
+                                >
+                                  {row.id}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {row.size_name}
+                                </TableCell>
+
+                                <TableCell align="right">
+                                  <Switch
+                                    checked={row.status === 1 ? true : false}
+                                    onChange={(data) => {
+                                      let item = {
+                                        ...row,
+                                        status: row.status === 1 ? 0 : 1,
+                                      };
+                                      dispatch(updateSize({ item: item }));
+                                    }}
+                                    name={labelId}
+                                    inputProps={{ "aria-label": labelId }}
+                                    color="primary"
+                                  />
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Button
+                                    onClick={(event) => {
+                                      handleProfileMenuOpenSize(event, row);
+                                    }}
+                                  >
+                                    ...
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={data.sizes.length}
+                  rowsPerPage={rowsPerPage}
+                  page={pageSize}
+                  onPageChange={handleChangePageSize}
+                  onRowsPerPageChange={handleChangeRowsPerPageSize}
+                />
+              </Paper>
+            </AccordionDetails>
+          </Accordion>
+        </div>
       </Paper>
       {renderMenu}
-      <FormDialog
-        open={open}
-        handleClose={handleClose}
-        anchorElData={anchorElData}
-        type={typeDialog}
-        data={data}
+      {renderMenuColor}
+      <FormDialogColor
+        open={openColor}
+        handleClose={handleCloseColor}
+        anchorElData={anchorElDataColor}
+        type={typeDialogColor}
+        data={data.colors}
+      />
+      <FormDialogSize
+        open={openSize}
+        handleClose={handleCloseSize}
+        anchorElData={anchorElDataSize}
+        type={typeDialogSize}
+        data={data.sizes}
       />
     </div>
   );
