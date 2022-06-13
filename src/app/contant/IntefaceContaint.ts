@@ -97,3 +97,27 @@ export interface Option extends DataStateOption {
   status: number;
   data: OptionColor[] | OptionSize[];
 }
+
+export interface Product {
+  product_name: string;
+  create_date: string;
+  description: string;
+  image: string;
+  is_delete: number;
+  category_id: number;
+  branch_id: number;
+  id: any;
+  status: any;
+}
+
+export interface DetailProduct {
+  id: any;
+  quantity: number;
+  price_export: number;
+  price_import: number;
+  is_delete: any;
+  image_product: any;
+  product_id: number;
+  color_id: any;
+  size_id: any;
+}
