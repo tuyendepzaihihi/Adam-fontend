@@ -7,6 +7,7 @@ import {
   Option,
   OptionColor,
   OptionSize,
+  ProductAdmin,
   Tag,
   UserAdminInteface,
   VoucherAdmin,
@@ -386,4 +387,67 @@ export const headCellsOptionSize: HeadCell<OptionSize>[] = [
     label: "Size name",
   },
   { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+// Product
+export const headCellsProduct: HeadCell<ProductAdmin>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  { id: "product_name", numeric: true, disablePadding: false, label: "Name" },
+  {
+    id: "category_id",
+    numeric: true,
+    disablePadding: false,
+    label: "Category id",
+  },
+  {
+    id: "create_date",
+    numeric: true,
+    disablePadding: false,
+    label: "Create date",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const LIST_PRODUCT: ProductAdmin[] = [
+  {
+    product_name: "Áo",
+    branch_id: 1,
+    category_id: 1,
+    description: "khanh",
+    image: R.images.img_product,
+    id: 1,
+    create_date: "15/10/2021",
+    is_delete: 0,
+    status: 1,
+    tag_id: 1,
+  },
+  {
+    product_name: "Áo sơ mi",
+    branch_id: 1,
+    category_id: 1,
+    description: "khanh",
+    image: R.images.img_product,
+    id: 2,
+    create_date: "15/10/2021",
+    is_delete: 0,
+    status: 1,
+    tag_id: 1,
+  },
+  {
+    product_name: "Áo gió",
+    branch_id: 1,
+    category_id: 1,
+    description: "khanh",
+    image: R.images.img_product,
+    id: 3,
+    create_date: "15/10/2021",
+    is_delete: 0,
+    status: 1,
+    tag_id: 1,
+  },
 ];

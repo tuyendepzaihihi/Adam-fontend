@@ -20,13 +20,14 @@ import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import { headCellsTag } from "../../contant/ContaintDataAdmin";
+import { headCellsProduct } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { Tag } from "../../contant/IntefaceContaint";
+import { ProductAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
-import FormDialog from "../tag/components/FormDialog";
-import { deleteTag, updateTag } from "../tag/slice/TagAdminSlice";
+import { deleteTag } from "../tag/slice/TagAdminSlice";
+import FormDialogProductCreate from "./components/DialogCreateProduct";
+import { updateProduct } from "./slice/ProductAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,19 +59,19 @@ export default function ProductScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Tag>("id");
+  const [orderBy, setOrderBy] = React.useState<keyof ProductAdmin>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
-    item: Tag;
+    item: ProductAdmin;
   }>(null);
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.tagAdmin);
+  const { data } = useAppSelector((state) => state.productAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const handleClose = () => {
     setOpen(false);
@@ -79,7 +80,7 @@ export default function ProductScreen() {
   };
 
   const createSortHandler =
-    (property: keyof Tag) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof ProductAdmin) => (event: React.MouseEvent<unknown>) => {
       const isAsc = orderBy === property && order === "asc";
       setOrder(isAsc ? "desc" : "asc");
       setOrderBy(property);
@@ -165,8 +166,7 @@ export default function ProductScreen() {
             dispatch(deleteTag({ array: selected }));
             setSelected([]);
           }}
-          label={"Quản lý Tag"}
-          isNonSearchTime={true}
+          label={"Quản lý Product"}
         />
         <TableContainer>
           <Table
@@ -184,7 +184,7 @@ export default function ProductScreen() {
                 setSelected(FunctionUtil.handleSelectAllClick(event, data));
               }}
               rowCount={data.length}
-              headCells={headCellsTag}
+              headCells={headCellsProduct}
               createSortHandler={createSortHandler}
             />
             <TableBody>
@@ -229,7 +229,9 @@ export default function ProductScreen() {
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.tag_name}</TableCell>
+                        <TableCell align="right">{row.product_name}</TableCell>
+                        <TableCell align="right">{row.category_id}</TableCell>
+                        <TableCell align="right">{row.create_date}</TableCell>
 
                         <TableCell align="right">
                           <Switch
@@ -239,7 +241,7 @@ export default function ProductScreen() {
                                 ...row,
                                 status: row.status === 1 ? 0 : 1,
                               };
-                              dispatch(updateTag({ item: item }));
+                              dispatch(updateProduct({ item: item }));
                             }}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}
@@ -277,7 +279,7 @@ export default function ProductScreen() {
         />
       </Paper>
       {renderMenu}
-      <FormDialog
+      <FormDialogProductCreate
         open={open}
         handleClose={handleClose}
         anchorElData={anchorElData}

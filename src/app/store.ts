@@ -3,6 +3,7 @@ import BranchAdminSlice from "./admin/branch/slice/BranchAdminSlice";
 import CategoryAdminSlice from "./admin/category/slice/CategoryAdminSlice";
 import MaterialAdminSlice from "./admin/material/slice/MaterialAdminSlice";
 import OptionAdminSlice from "./admin/option/slice/OptionAdminSlice";
+import ProductAdminSlice from "./admin/product/slice/ProductAdminSlice";
 import switchRoleSlice from "./admin/sliceSwitchRole/switchRoleSlice";
 import TagAdminSlice from "./admin/tag/slice/TagAdminSlice";
 import userAdminReducer from "./admin/user/slice/UserAdminSlice";
@@ -26,6 +27,7 @@ export const store = configureStore({
     tagAdmin: TagAdminSlice,
     branchAdmin: BranchAdminSlice,
     optionAdmin: OptionAdminSlice,
+    productAdmin: ProductAdminSlice,
   },
 });
 
