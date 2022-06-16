@@ -74,9 +74,11 @@ const TextInputComponent = (props: Props) => {
           className={clsx(className.textField, classNameStyle)}
           variant="outlined"
         >
-          <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
-            {label}
-          </InputLabel>
+          {label && (
+            <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
+              {label}
+            </InputLabel>
+          )}
           <OutlinedInput
             id={id ?? "outlined-adornment-amount"}
             type={type ?? "text"}

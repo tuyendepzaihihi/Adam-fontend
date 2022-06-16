@@ -2,6 +2,7 @@ import {
   Branch,
   CategoryAdmin,
   DataStateOption,
+  DetailProductAdmin,
   HeadCell,
   Material,
   Option,
@@ -450,4 +451,47 @@ export const LIST_PRODUCT: ProductAdmin[] = [
     status: 1,
     tag_id: 1,
   },
+];
+
+export const headCellsProductDetail: HeadCell<DetailProductAdmin>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  { id: "color_id", numeric: true, disablePadding: false, label: "Active" },
+  { id: "size_id", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const LIST_PRODUCT_DETAIL: DetailProductAdmin[] = [
+  {
+    id: 1,
+    color_id: 1,
+    size_id: 1,
+    price_export: 0,
+    price_import: 0,
+    quantity: 0,
+    product_id: 1,
+    image_product: "",
+    is_delete: 1,
+    status: 1,
+  },
+  {
+    id: 2,
+    color_id: 1,
+    size_id: 1,
+    price_export: 0,
+    price_import: 0,
+    quantity: 0,
+    product_id: 1,
+    image_product: "",
+    is_delete: 1,
+    status: 1,
+  },
+];
+
+export const LIST_OPTION = [
+  { id: 1, name: "Color" },
+  { id: 2, name: "Size" },
 ];

@@ -95,7 +95,7 @@ export interface Option extends DataStateOption {
   id: any;
   option_name: string;
   status: number;
-  data: OptionColor[] | OptionSize[];
+  data?: OptionColor[] | OptionSize[];
 }
 
 export interface ProductAdmin {
@@ -121,4 +121,5 @@ export interface DetailProductAdmin {
   product_id: number;
   color_id: any;
   size_id: any;
+  status: number;
 }

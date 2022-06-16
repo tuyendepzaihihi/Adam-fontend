@@ -4,93 +4,78 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import R from "../../../../assets/R";
-import {
-  LIST_BRANCH,
-  LIST_CATEGORY,
-  LIST_TAG,
-} from "../../../../contant/ContaintDataAdmin";
 import { ProductAdmin } from "../../../../contant/IntefaceContaint";
-import { colors } from "../../../../utils/color";
+import RenderItemOption from "./components/ItemOptionComponent";
+import ProductInfomation from "./components/ProductInfomationComponent";
 
 interface Props {
   handleBack: () => void;
   handleNext: () => void;
   productItem: ProductAdmin | null;
+  option: any[];
+  setOption: any;
 }
-const ProductInfomation = (props: { item: ProductAdmin | null }) => {
-  const { item } = props;
-  const renderTag = () => LIST_TAG.find((e) => e.id === item?.tag_id)?.tag_name;
-  const renderBranch = () =>
-    LIST_BRANCH.find((e) => e.id === item?.branch_id)?.branch_name;
-  const renderCategory = () =>
-    LIST_CATEGORY.find((e) => e.id === item?.category_id)?.name;
-  const classes = useStylesInfo();
-  return (
-    <div style={{ display: "flex", justifyContent: "space-around" }}>
-      <div>
-        <Typography className={classes.containerItem}>
-          Name: <p className={classes.textValue}>{item?.product_name}</p>
-        </Typography>
-        <Typography className={classes.containerItem}>
-          Category:{" "}
-          <p className={classes.textValue}>
-            {renderCategory() ? renderCategory() : "..."}
-          </p>
-        </Typography>
-        <Typography className={classes.containerItem}>
-          Branch:{" "}
-          <p className={classes.textValue}>
-            {renderBranch() ? renderBranch() : "..."}
-          </p>
-        </Typography>
-        <Typography className={classes.containerItem}>
-          Tag:{" "}
-          <p className={classes.textValue}>
-            {renderTag() ? renderTag() : "..."}
-          </p>
-        </Typography>
-        <Typography className={classes.containerItem}>
-          Description: <p>{item?.description}</p>
-        </Typography>
-      </div>
-      <div>
-        <img alt="" src={R.images.img_product} style={{ width: 200 }} />
-      </div>
-    </div>
-  );
-};
-
-const useStylesInfo = makeStyles(() =>
-  createStyles({
-    containerItem: {
-      display: "flex",
-      color: colors.grayC4,
-      fontSize: 14,
-    },
-    textTitle: {
-      color: colors.grayC4,
-      fontSize: 14,
-    },
-    textValue: {
-      color: colors.black,
-      fontSize: 16,
-      fontWeight: "bold",
-    },
-  })
-);
 
 const CreateProductDetail = (props: Props) => {
-  const { handleBack, handleNext, productItem } = props;
+  const { handleBack, handleNext, productItem, option, setOption } = props;
   const classes = useStyles();
+
+  const handleChooseOption = () => {
+    setOption(option.concat(["0"]));
+  };
+
+  const handleDeleteOption = (number_key: number) => {
+    const newRes = option.filter((e, idx) => idx !== number_key);
+    setOption(newRes);
+  };
+
   return (
     <div className={classes.root}>
       <Typography
-        style={{ fontWeight: "bold", fontSize: 18, marginBottom: 20 }}
+        style={{
+          fontWeight: "bold",
+          fontSize: 18,
+          marginBottom: 20,
+          marginLeft: 10,
+        }}
       >
-        Thong tin product
+        Thông tin sản phẩm
       </Typography>
       <ProductInfomation item={productItem} />
+      <Typography
+        style={{
+          marginTop: 15,
+          fontWeight: "bold",
+          fontSize: 18,
+          marginBottom: 10,
+          marginLeft: 10,
+        }}
+      >
+        Thông tin option của sản phẩm
+      </Typography>
+      <div style={{ padding: 10, display: "flex", flexWrap: "wrap" }}>
+        {option.map((e, index) => {
+          return (
+            <RenderItemOption
+              handleDeleteOption={() => handleDeleteOption(index)}
+              key={index}
+              option={option}
+              index={index}
+              valueOption={option[index]}
+              setOption={setOption}
+            />
+          );
+        })}
+        {option.length < 2 && (
+          <Button
+            variant="outlined"
+            onClick={handleChooseOption}
+            style={{ height: 45 }}
+          >
+            Add option
+          </Button>
+        )}
+      </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button onClick={handleBack}>Back</Button>
         <Button variant="contained" color="primary" onClick={handleNext}>
@@ -105,7 +90,6 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       padding: 20,
-      width: 600,
     },
     title: {
       fontSize: 18,

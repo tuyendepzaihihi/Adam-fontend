@@ -1,5 +1,4 @@
 import {
-  Button,
   createStyles,
   Dialog,
   DialogTitle,
@@ -8,7 +7,6 @@ import {
   StepLabel,
   Stepper,
   Theme,
-  Typography,
 } from "@material-ui/core";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -62,6 +60,7 @@ const FormDialogProductCreate = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
   const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(null);
+  const [option, setOption] = useState<any[]>([]);
   const onClose = () => {
     handleReset();
     handleClose();
@@ -107,21 +106,18 @@ const FormDialogProductCreate = (props: Props) => {
             handleBack={handleBack}
             handleNext={handleNext}
             productItem={dataProduct}
+            option={option}
+            setOption={setOption}
           />
         );
       case 2:
-        return <ListProductDetail handleBack={handleBack} />;
+        return <ListProductDetail />;
       default:
         return "Unknown stepIndex";
     }
   }
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby="form-dialog-title"
-      style={{ width: "100%" }}
-    >
+    <Dialog open={open} onClose={onClose} maxWidth={false}>
       <DialogTitle id="form-dialog-title">
         {TYPE_DIALOG.CREATE === type ? "Tạo mới Product" : `Cập nhật Product`}
       </DialogTitle>
@@ -133,7 +129,7 @@ const FormDialogProductCreate = (props: Props) => {
             </Step>
           ))}
         </Stepper>
-        <div>
+        <div style={{ width: 1500 }}>
           <div>{getStepContent(activeStep)}</div>
         </div>
       </div>
