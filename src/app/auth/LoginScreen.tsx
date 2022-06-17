@@ -81,7 +81,7 @@ const LoginScreen = () => {
   const validateLogin = Yup.object({
     user_name: Yup.string()
       .min(2, "Mininum 2 characters")
-      .max(15, "Maximum 15 characters")
+      .max(55, "Maximum 15 characters")
       .required("Required!"),
     password: Yup.string().min(6, "Minimum 6 characters").required("Required!"),
   });
