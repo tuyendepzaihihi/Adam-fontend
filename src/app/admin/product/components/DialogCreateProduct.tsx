@@ -11,7 +11,10 @@ import {
 import { useState } from "react";
 import * as Yup from "yup";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { ProductAdmin } from "../../../contant/IntefaceContaint";
+import {
+  DetailProductAdmin,
+  ProductAdmin,
+} from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
 import ComponentFormCreate from "./create/ComponentFormCreate";
 import CreateProductDetail from "./create/CreateProductDetail";
@@ -111,7 +114,9 @@ const FormDialogProductCreate = (props: Props) => {
           />
         );
       case 2:
-        return <ListProductDetail />;
+        return (
+          <ListProductDetail onSubmit={(list: DetailProductAdmin[]) => {}} />
+        );
       default:
         return "Unknown stepIndex";
     }
@@ -129,7 +134,7 @@ const FormDialogProductCreate = (props: Props) => {
             </Step>
           ))}
         </Stepper>
-        <div style={{ width: 1500 }}>
+        <div style={{ width: 1200 }}>
           <div>{getStepContent(activeStep)}</div>
         </div>
       </div>

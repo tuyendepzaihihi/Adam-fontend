@@ -79,7 +79,7 @@ const RenderItemOption = (props: PropsRenderOption) => {
     setOption(res);
   };
 
-  const changeOptionValue = (event: any) => {
+  const changeOptionValue = (event: any, index: number) => {
     const value = event.target.value;
     const res = optionValue.map((val, ind) => {
       if (ind === index) {
@@ -120,7 +120,7 @@ const RenderItemOption = (props: PropsRenderOption) => {
               <TextInputComponent
                 label={""}
                 value={optionValue[index]}
-                onChange={(event: any) => changeOptionValue(event)}
+                onChange={(event: any) => changeOptionValue(event, index)}
                 isSelected={true}
                 childrentSeleted={
                   <ChildrenOption list={listOption} isNoOption={true} />

@@ -4,6 +4,8 @@ import {
   OPTIONS_DATA,
 } from "../../../../../contant/ContaintDataAdmin";
 import { DetailProductAdmin } from "../../../../../contant/IntefaceContaint";
+import { formatPrice } from "../../../../../utils/function";
+import { createNotification } from "../../../../../utils/MessageUtil";
 
 interface Props {
   row: DetailProductAdmin;
@@ -14,6 +16,44 @@ interface Props {
 
 const FormEditProductDetail = (props: Props) => {
   const { row, labelId, listProductDetail, setListProductDetail } = props;
+
+  const handleChangePrice = (params: {
+    keyString: "price_import" | "price_export" | "quantity";
+    text: string;
+  }) => {
+    const { keyString, text } = params;
+    let newText = `${text}`.replace(",", "").replace(",", "").replace(",", "");
+    const isNumber = Number.isInteger(Number(newText));
+    if (!isNumber) {
+      createNotification({
+        type: "warning",
+        message: "Bạn cần nhập giá số",
+      });
+      return;
+    }
+    let value = row[`${keyString}`];
+
+    if (newText) {
+      value = Number(newText);
+    } else {
+      value = 0;
+      createNotification({
+        type: "warning",
+        message: "Bạn cần nhập giá xuất",
+      });
+    }
+
+    const oldArray = listProductDetail;
+
+    let item: DetailProductAdmin = { ...row };
+    item[keyString] = value;
+
+    const newProductDetail = oldArray?.map((e) => {
+      if (e.id === item.id) return item;
+      else return e;
+    });
+    setListProductDetail(newProductDetail);
+  };
   return (
     <TableRow hover tabIndex={-1} key={`${row.id}`}>
       <TableCell component="th" id={labelId} scope="row" padding="none">
@@ -31,36 +71,38 @@ const FormEditProductDetail = (props: Props) => {
 
       <TableCell align="right">
         <TextField
-          value={`${row.price_import}`}
-          onChange={(text: any) => {}}
+          value={`${formatPrice(row.price_import)}`}
+          onChange={(event) =>
+            handleChangePrice({
+              keyString: "price_import",
+              text: `${event.target.value}`,
+            })
+          }
           variant="outlined"
         />
       </TableCell>
       <TableCell align="right">
         <TextField
-          value={`${row.price_export}`}
-          onChange={(text) => {
-            if (text) {
-              const oldArray = listProductDetail;
-              let item: DetailProductAdmin = {
-                ...row,
-                price_export: Number(text.target.value),
-              };
-              const newProductDetail = oldArray?.map((e) => {
-                if (e.id === item.id) return item;
-                else return e;
-              });
-              setListProductDetail(newProductDetail);
-            }
-          }}
+          value={`${formatPrice(row.price_export)}`}
+          onChange={(event) =>
+            handleChangePrice({
+              keyString: "price_export",
+              text: `${event.target.value}`,
+            })
+          }
           variant="outlined"
         />
       </TableCell>
       <TableCell align="right">{row.image_product}</TableCell>
       <TableCell align="right">
         <TextField
-          value={`${row.quantity}`}
-          onChange={(text: any) => {}}
+          value={`${formatPrice(row.quantity)}`}
+          onChange={(event) =>
+            handleChangePrice({
+              keyString: "quantity",
+              text: `${event.target.value}`,
+            })
+          }
           variant="outlined"
         />
       </TableCell>

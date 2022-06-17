@@ -2,29 +2,145 @@ import {
   Button,
   createStyles,
   makeStyles,
-  Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@material-ui/core";
 import { useState } from "react";
-import {
-  LIST_PRODUCT,
-  LIST_PRODUCT_DETAIL,
-  OPTIONS_DATA,
-} from "../../../../contant/ContaintDataAdmin";
+import { LIST_PRODUCT_DETAIL } from "../../../../contant/ContaintDataAdmin";
+import { useAppDispatch } from "../../../../hooks";
+import { formatPrice, FunctionUtil } from "../../../../utils/function";
 import FormEditProductDetail from "./components/FormEditProductDetail";
 
-interface Props {}
+interface Props {
+  onSubmit: Function;
+}
 const ListProductDetail = (props: Props) => {
+  const { onSubmit } = props;
   const classes = useStyles();
+  const dispatch = useAppDispatch();
   const [listProductDetail, setListProductDetail] =
     useState(LIST_PRODUCT_DETAIL);
+  const [priceExportTotal, setPriceExportTotal] = useState(0);
+  const [priceImportTotal, setPriceImportTotal] = useState(0);
+  const [quantityTotal, setQuantityTotal] = useState(0);
+
+  const handleChangePrice = (params: {
+    keyString: "price_import" | "price_export" | "quantity";
+    value: number;
+  }) => {
+    const { keyString, value } = params;
+    if (!FunctionUtil.checkIsNumber(value)) return;
+
+    const oldArray = listProductDetail;
+    const newProductDetail = oldArray?.map((e) => {
+      let newItem = e;
+      newItem[keyString] = value;
+      return newItem;
+    });
+    setListProductDetail(newProductDetail);
+  };
+
+  const handleChane = (params: { oldValue: any; text: any }) => {
+    const { oldValue, text } = params;
+    let newText = `${text}`.replace(",", "").replace(",", "").replace(",", "");
+    if (!FunctionUtil.checkIsNumber(newText)) return oldValue;
+    let value = oldValue;
+    if (newText) value = Number(newText);
+    else value = 0;
+    return value;
+  };
+
+  const handleSubmit = () => {
+    onSubmit(listProductDetail);
+  };
+
   return (
     <div className={classes.root}>
+      <div className={classes.totalFilter}>
+        <div className={classes.itemAddAll}>
+          <TextField
+            value={`${formatPrice(priceImportTotal)}`}
+            onChange={(event) => {
+              const value = handleChane({
+                oldValue: priceImportTotal,
+                text: event.target.value,
+              });
+              setPriceImportTotal(value);
+            }}
+            variant="standard"
+            label="Price import(VNĐ)"
+          />
+          <Button
+            variant="contained"
+            style={{ marginLeft: 5 }}
+            onClick={() => {
+              handleChangePrice({
+                keyString: "price_import",
+                value: priceImportTotal,
+              });
+            }}
+          >
+            Apply all
+          </Button>
+        </div>
+        <div className={classes.itemAddAll}>
+          <TextField
+            value={`${formatPrice(priceExportTotal)}`}
+            onChange={(event) => {
+              const value = handleChane({
+                oldValue: priceExportTotal,
+                text: event.target.value,
+              });
+              setPriceExportTotal(value);
+            }}
+            variant="standard"
+            label="Price export(VNĐ)"
+          />
+          <Button
+            variant="contained"
+            style={{ marginLeft: 5 }}
+            onClick={() => {
+              handleChangePrice({
+                keyString: "price_export",
+                value: priceExportTotal,
+              });
+            }}
+          >
+            Apply all
+          </Button>
+        </div>
+        <div className={classes.itemAddAll}>
+          <TextField
+            value={`${formatPrice(quantityTotal)}`}
+            onChange={(event) => {
+              const value = handleChane({
+                oldValue: quantityTotal,
+                text: event.target.value,
+              });
+              setQuantityTotal(value);
+            }}
+            variant="standard"
+            label="Quantity(Cái)"
+          />
+          <Button
+            variant="contained"
+            style={{ marginLeft: 5 }}
+            onClick={() => {
+              handleChangePrice({
+                keyString: "quantity",
+                value: quantityTotal,
+              });
+            }}
+          >
+            Apply all
+          </Button>
+        </div>
+      </div>
       <TableContainer>
         <Table
           className={classes.table}
@@ -61,14 +177,10 @@ const ListProductDetail = (props: Props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            console.log("khanh");
-          }}
-        >
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", paddingTop: 20 }}
+      >
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Submit
         </Button>
       </div>
@@ -83,6 +195,15 @@ const useStyles = makeStyles(() =>
     },
     table: {
       minWidth: 750,
+    },
+    totalFilter: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    itemAddAll: {
+      display: "flex",
+      alignItems: "center",
     },
   })
 );

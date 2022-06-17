@@ -1,3 +1,5 @@
+import { createNotification } from "./MessageUtil";
+
 export const formatPrice = (num: number) => {
   return num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 };
@@ -66,10 +68,28 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+const checkIsNumber = (number: number | string) => {
+  // let newNumber = `${number}`
+  //   .replace(",", "")
+  //   .replace(",", "")
+  //   .replace(",", "");
+  // console.log({ newNumber, number });
+
+  if (!Number.isInteger(Number(number))) {
+    createNotification({
+      type: "warning",
+      message: "Không phải số, vui lòng kiểm tra lại!",
+    });
+    return false;
+  }
+  return true;
+};
+
 export const FunctionUtil = {
   handleClick,
   handleSelectAllClick,
   stableSort,
   getComparator,
   descendingComparator,
+  checkIsNumber,
 };
