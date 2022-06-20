@@ -22,6 +22,7 @@ import TextInputComponent from "../component/TextInputComponent";
 import { ROUTE, ROUTE_ADMIN } from "../contant/Contant";
 import { setToken, setAdmin } from "../service/StorageService";
 import { colors } from "../utils/color";
+import { requestLoginApp } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -81,7 +82,7 @@ const LoginScreen = () => {
   const validateLogin = Yup.object({
     user_name: Yup.string()
       .min(2, "Mininum 2 characters")
-      .max(55, "Maximum 15 characters")
+      .max(55, "Maximum 55 characters")
       .required("Required!"),
     password: Yup.string().min(6, "Minimum 6 characters").required("Required!"),
   });
@@ -101,6 +102,11 @@ const LoginScreen = () => {
 
   const handleSubmit = async (data: LoginInterface) => {
     try {
+      // const result = await requestLoginApp({
+      //   password: data.password,
+      //   username: data.user_name,
+      // });
+      // console.log({ result });
       setToken("dangthunghiem");
       if (Number(value) === 1) {
         dispatch(updateSwitchRole(true));

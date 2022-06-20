@@ -3,7 +3,7 @@ import { createNotification } from "../utils/MessageUtil";
 import { ROUTE } from "./../contant/Contant";
 import { getToken } from "./StorageService";
 
-const BASE_URL_DEV = "http://localhost:3001/";
+const BASE_URL_DEV = "https://adam-store.herokuapp.com/";
 export interface ResponseType<T> {
   status: number;
   code: number;

@@ -1,4 +1,11 @@
-import { handlePut } from "../service/Services";
+import { ApiClient } from "../service/ApiService";
 
-export const requestLogin = async (payload: any) =>
-  handlePut("customer/login", payload);
+//interface
+export interface LoginRequest {
+  password: string;
+  username: string;
+}
+
+// function
+export const requestLoginApp = (payload: LoginRequest) =>
+  ApiClient.post("/authenticate", payload);
