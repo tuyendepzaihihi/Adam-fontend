@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import BranchScreen from "../app/admin/branch/BranchScreen";
+import BranchScreen from "../app/admin/branch/OrderScreen";
 import CategoryScreen from "../app/admin/category/CategoryScreen";
 import DashboardScreen from "../app/admin/dashboard/DashboardScreen";
 import MaterialScreen from "../app/admin/material/MaterialScreen";
@@ -37,7 +37,7 @@ export const PRIVATE_ROUTE_ADMIN = [
     screen: <MaterialScreen />,
   },
   {
-    route: ROUTE_ADMIN.BRANCH,
+    route: ROUTE_ADMIN.ORDER,
     screen: <BranchScreen />,
   },
   {

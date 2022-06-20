@@ -26,7 +26,7 @@ import { Branch } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteBranch, updateBranch } from "./slice/BranchAdminSlice";
+import { deleteBranch, updateBranch } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function BranchScreen() {
+export default function OrderScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
