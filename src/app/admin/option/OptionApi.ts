@@ -1,13 +1,13 @@
 import { ApiClient } from "../../service/ApiService";
 // interface color
-export interface UpdateInterface {
+export interface UpdateDto {
   id: number;
   isDelete: boolean;
   colorName: string;
   status: boolean;
 }
 
-export interface CreateInterface {
+export interface CreateDto {
   colorName: string;
 }
 
@@ -15,24 +15,24 @@ export interface CreateInterface {
 export const requestGetColorAll = (payload: any) =>
   ApiClient.get("/admin/color/findAll", payload);
 
-export const requestPutUpdateColor = (payload: UpdateInterface) =>
+export const requestPutUpdateColor = (payload: UpdateDto) =>
   ApiClient.put("/admin/color/update", payload);
 
 export const requestDeleteColor = (payload: { color_id: number }) =>
   ApiClient.delete("/admin/color/delete", { params: payload });
 
-export const requestPostCreateColor = (payload: CreateInterface) =>
+export const requestPostCreateColor = (payload: CreateDto) =>
   ApiClient.post("/admin/color/create", payload);
 
 // interface size
-export interface UpdateInterface {
+export interface UpdateDto {
   id: number;
   isDelete: boolean;
   sizeName: string;
   status: boolean;
 }
 
-export interface CreateInterface {
+export interface CreateDto {
   sizeName: string;
 }
 
@@ -40,11 +40,11 @@ export interface CreateInterface {
 export const requestGetSizeAll = (payload: any) =>
   ApiClient.get("/admin/size/findAll", payload);
 
-export const requestPutUpdateSize = (payload: UpdateInterface) =>
+export const requestPutUpdateSize = (payload: UpdateDto) =>
   ApiClient.put("/admin/size/update", payload);
 
 export const requestDeleteSize = (payload: { size_id: number }) =>
   ApiClient.delete("/admin/size/delete", { params: payload });
 
-export const requestPostCreateSize = (payload: CreateInterface) =>
+export const requestPostCreateSize = (payload: CreateDto) =>
   ApiClient.post("/admin/size/create", payload);

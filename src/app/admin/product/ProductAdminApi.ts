@@ -1,13 +1,13 @@
 import { ApiClient } from "../../service/ApiService";
 // interface product detail
-export interface UpdateInterface {
+export interface UpdateDto {
   id: number;
   isDelete: boolean;
   tagName: string;
   status: boolean;
 }
 
-export interface CreateInterface {
+export interface CreateDto {
   colorList: [
     {
       id: 0;
@@ -30,11 +30,11 @@ export interface DeleteInterface {
 export const requestGetDetailProductAll = (payload: any) =>
   ApiClient.get("/admin/detailProduct/findAll", payload);
 
-export const requestPutUpdateDetailProduct = (payload: UpdateInterface) =>
+export const requestPutUpdateDetailProduct = (payload: UpdateDto) =>
   ApiClient.put("/admin/detailProduct/update", payload);
 
 export const requestDeleteDetailProduct = (payload: DeleteInterface) =>
   ApiClient.delete("/admin/detailProduct/delete", { params: payload });
 
-export const requestPostCreateDetailProduct = (payload: CreateInterface) =>
+export const requestPostCreateDetailProduct = (payload: CreateDto) =>
   ApiClient.post("/admin/detailProduct/create", payload);

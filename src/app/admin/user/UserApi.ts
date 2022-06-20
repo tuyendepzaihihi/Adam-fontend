@@ -1,13 +1,13 @@
 import { ApiClient } from "../../service/ApiService";
 // interface
-export interface UpdateInterface {
+export interface UpdateDto {
   id: number;
   isDelete: boolean;
   tagName: string;
   status: boolean;
 }
 
-export interface CreateInterface {
+export interface CreateDto {
   email: string;
   password: string;
   role: string;
@@ -18,11 +18,11 @@ export interface CreateInterface {
 // export const requestGetTagAll = (payload: any) =>
 //   ApiClient.get("/admin/tag/findAll", payload);
 
-// export const requestPutUpdateTag = (payload: UpdateInterface) =>
+// export const requestPutUpdateTag = (payload: UpdateDto) =>
 //   ApiClient.put("/admin/tag/update", payload);
 
 // export const requestDeleteTag = (payload: { tag_id: number }) =>
 //   ApiClient.delete("/admin/tag/delete", { params: payload });
 
-export const requestPostCreateUser = (payload: CreateInterface) =>
+export const requestPostCreateUser = (payload: CreateDto) =>
   ApiClient.post("/admin/account/createAccount", payload);
