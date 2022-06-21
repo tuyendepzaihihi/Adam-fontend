@@ -51,13 +51,14 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
+  a: { [key in Key]: number | string | boolean },
+  b: { [key in Key]: number | string | boolean }
 ) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
+
 function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
@@ -69,12 +70,6 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 }
 
 const checkIsNumber = (number: number | string) => {
-  // let newNumber = `${number}`
-  //   .replace(",", "")
-  //   .replace(",", "")
-  //   .replace(",", "");
-  // console.log({ newNumber, number });
-
   if (!Number.isInteger(Number(number))) {
     createNotification({
       type: "warning",

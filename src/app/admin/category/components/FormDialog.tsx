@@ -7,20 +7,33 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import moment from "moment";
 import { useState } from "react";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
+import { LIST_CATEGORY } from "../../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { CategoryAdmin } from "../../../contant/IntefaceContaint";
+import { CategoryAdmin, ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createCategory, updateCategory } from "../slice/CategoryAdminSlice";
+import {
+  CreateDto,
+  requestPostCreateCategory,
+  requestPutUpdateCategory,
+  UpdateDto,
+} from "../CategoryApi";
+import {
+  createCategory,
+  createCategoryChilden,
+  updateCategory,
+  updateCategoryChilden,
+} from "../slice/CategoryAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData?: { item: CategoryAdmin } | null;
   type: number;
   data: CategoryAdmin[];
+  isParent?: boolean;
+  category_parent_id?: number;
 }
 const validateCategory = Yup.object({});
 
@@ -32,42 +45,63 @@ const initialValues: PropsCreateCategory = {
 };
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
-  const [image, setImage] = useState<any>(null);
-
-  const onSubmit = (data: { name: string }) => {
+  const {
+    handleClose,
+    open,
+    anchorElData,
+    type,
+    isParent,
+    category_parent_id,
+  } = props;
+  const [category, setCategory] = useState<string | null>(
+    category_parent_id ? `${category_parent_id}` : null
+  );
+  const onSubmitUpdate = async (data: { name: string }) => {
     const { name } = data;
     if (anchorElData) {
-      const item: CategoryAdmin = {
-        ...anchorElData.item,
-        name: name,
-        url: image,
+      const item: UpdateDto = {
+        id: anchorElData.item.id,
+        categoryName: name,
+        isDelete: anchorElData.item.isDeleted ?? false,
       };
-      dispatch(updateCategory({ item: item }));
+      const res: ResultApi<CategoryAdmin> = await requestPutUpdateCategory(
+        item
+      );
+      if (isParent) dispatch(updateCategory({ item: res.data }));
+      else
+        dispatch(
+          updateCategoryChilden({ item: res.data, id: category_parent_id })
+        );
       handleClose();
     }
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateCategory) => {
+  const onSubmitCreate = async (dataCreate: PropsCreateCategory) => {
     const { name } = dataCreate;
-    const item: CategoryAdmin = {
-      status: 1,
-      create_date: moment(new Date()).format("DD/MM/YYYY").toString(),
-      id: data[data.length - 1].id + 1,
-      name: name,
-      url: image,
+
+    const itemCreate: CreateDto = {
+      categoryName: name,
+      categoryParentId: 0,
     };
-    dispatch(createCategory({ item: item }));
+    const res: ResultApi<CategoryAdmin> = await requestPostCreateCategory(
+      itemCreate
+    );
+    if (isParent) {
+      dispatch(createCategory({ item: res.data }));
+    } else
+      dispatch(
+        createCategoryChilden({ item: res.data, id: category_parent_id })
+      );
+
     handleClose();
   };
 
-  const onImageChange = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      console.log({ img });
-      setImage(URL.createObjectURL(img));
-    }
-  };
+  // const onImageChange = (event: any) => {
+  //   if (event.target.files && event.target.files[0]) {
+  //     let img = event.target.files[0];
+  //     setImage(URL.createObjectURL(img));
+  //   }
+  // };
   return (
     <Dialog
       open={open}
@@ -83,13 +117,13 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                name: anchorElData?.item.name ?? "",
+                name: anchorElData?.item.categoryName ?? "",
               }
         }
         onSubmit={(data) => {
           type === TYPE_DIALOG.CREATE
             ? onSubmitCreate({ ...data })
-            : onSubmit(data);
+            : onSubmitUpdate(data);
         }}
         validateOnChange
         validationSchema={validateCategory}
@@ -108,7 +142,7 @@ const FormDialog = (props: Props) => {
                 Cập nhật thông tin của Category, vui lòng điền tất cả thông tin
                 cần thiết
               </DialogContentText>
-              <div>
+              {/* <div>
                 <img
                   src={image ? image : anchorElData?.item.url}
                   alt=""
@@ -116,7 +150,7 @@ const FormDialog = (props: Props) => {
                 />
                 <h1>Select Image</h1>
                 <input type="file" name="myImage" onChange={onImageChange} />
-              </div>
+              </div> */}
               <TextInputComponent
                 error={errors.name}
                 touched={touched.name}
@@ -125,6 +159,29 @@ const FormDialog = (props: Props) => {
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
               />
+              {!isParent && (
+                <TextInputComponent
+                  label="Category cha"
+                  value={category}
+                  onChange={(event: any) => {
+                    const value = event.target.value;
+                    setCategory(value);
+                  }}
+                  isSelected={true}
+                  childrentSeleted={
+                    <>
+                      <option key={0} value={0}>
+                        Chưa chọn
+                      </option>
+                      {LIST_CATEGORY.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.categoryName}
+                        </option>
+                      ))}
+                    </>
+                  }
+                />
+              )}
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">

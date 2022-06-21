@@ -2,7 +2,8 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import BranchAdminSlice from "./admin/branch/slice/BranchAdminSlice";
 import CategoryAdminSlice from "./admin/category/slice/CategoryAdminSlice";
 import MaterialAdminSlice from "./admin/material/slice/MaterialAdminSlice";
-import OptionAdminSlice from "./admin/option/slice/OptionAdminSlice";
+import OptionAdminSlice from "./admin/option/slice/OptionSizeSlice";
+import OptionColorSlice from "./admin/option/slice/OptionColorSlice";
 import ProductAdminSlice from "./admin/product/slice/ProductAdminSlice";
 import switchRoleSlice from "./admin/sliceSwitchRole/switchRoleSlice";
 import TagAdminSlice from "./admin/tag/slice/TagAdminSlice";
@@ -28,6 +29,7 @@ export const store = configureStore({
     branchAdmin: BranchAdminSlice,
     optionAdmin: OptionAdminSlice,
     productAdmin: ProductAdminSlice,
+    colorAdmin: OptionColorSlice,
   },
 });
 

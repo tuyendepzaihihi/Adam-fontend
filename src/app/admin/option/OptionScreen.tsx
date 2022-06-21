@@ -22,7 +22,7 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import {
   headCellsOptionColor,
@@ -35,7 +35,12 @@ import { colors } from "../../utils/color";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialogColor from "./components/FormDialogColor";
 import FormDialogSize from "./components/FormDialogSize";
-import { updateColor, updateSize } from "./slice/OptionAdminSlice";
+import { incrementAsyncOptionSize, updateSize } from "./slice/OptionSizeSlice";
+import {
+  incrementAsyncOptionColor,
+  updateColor,
+} from "./slice/OptionColorSlice";
+import { Delete } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,11 +88,27 @@ export default function OptionScreen() {
   const menuId = "primary-search-account-menu";
 
   const { data } = useAppSelector((state) => state.optionAdmin);
+  const dataColor = useAppSelector((state) => state.colorAdmin).data;
+
   const [typeDialogSize, setTypeDialogSize] = useState(TYPE_DIALOG.CREATE);
   const handleCloseSize = () => {
     setOpenSize(false);
     setAnchorElSize(null);
     setAnchorElDataSize(null);
+  };
+
+  useEffect(() => {
+    getDataColor();
+    getDataSize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getDataColor = async () => {
+    await dispatch(incrementAsyncOptionColor());
+  };
+
+  const getDataSize = async () => {
+    await dispatch(incrementAsyncOptionSize());
   };
 
   const createSortHandlerSize =
@@ -111,8 +132,7 @@ export default function OptionScreen() {
   const isSelectedSize = (name: string) => selectedSize.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, data.sizes.length - pageSize * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, data.length - pageSize * rowsPerPage);
 
   const handleMenuCloseSize = () => {
     setAnchorElSize(null);
@@ -171,10 +191,7 @@ export default function OptionScreen() {
 
   const emptyRowsColor =
     rowsPerPageColor -
-    Math.min(
-      rowsPerPageColor,
-      data.colors.length - pageColor * rowsPerPageColor
-    );
+    Math.min(rowsPerPageColor, dataColor.length - pageColor * rowsPerPageColor);
 
   const handleMenuCloseColor = () => {
     setAnchorElColor(null);
@@ -323,17 +340,17 @@ export default function OptionScreen() {
                       orderBy={orderByColor}
                       onSelectAllClick={(event) => {
                         setSelectedColor(
-                          FunctionUtil.handleSelectAllClick(event, data.colors)
+                          FunctionUtil.handleSelectAllClick(event, dataColor)
                         );
                       }}
-                      rowCount={data.colors.length}
+                      rowCount={dataColor.length}
                       headCells={headCellsOptionColor}
                       createSortHandler={createSortHandlerColor}
                     />
                     <TableBody>
-                      {data.colors.length > 0 &&
+                      {dataColor.length > 0 &&
                         FunctionUtil.stableSort(
-                          data.colors,
+                          dataColor,
                           FunctionUtil.getComparator(orderColor, orderByColor)
                         )
                           .slice(
@@ -378,7 +395,7 @@ export default function OptionScreen() {
                                   {row.id}
                                 </TableCell>
                                 <TableCell align="right">
-                                  {row.color_name}
+                                  {row.colorName}
                                 </TableCell>
 
                                 <TableCell align="right">
@@ -419,7 +436,7 @@ export default function OptionScreen() {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={data.colors.length}
+                  count={dataColor.length}
                   rowsPerPage={rowsPerPageColor}
                   page={pageColor}
                   onPageChange={handleChangePageColor}
@@ -458,6 +475,9 @@ export default function OptionScreen() {
                     justifyContent: "flex-end",
                   }}
                 >
+                  {/* <IconButton>
+                    <Delete />
+                  </IconButton> */}
                   <Button
                     variant="contained"
                     color="primary"
@@ -483,17 +503,17 @@ export default function OptionScreen() {
                       orderBy={orderBySize}
                       onSelectAllClick={(event) => {
                         setSelectedSize(
-                          FunctionUtil.handleSelectAllClick(event, data.sizes)
+                          FunctionUtil.handleSelectAllClick(event, data)
                         );
                       }}
-                      rowCount={data.sizes.length}
+                      rowCount={data.length}
                       headCells={headCellsOptionSize}
                       createSortHandler={createSortHandlerSize}
                     />
                     <TableBody>
-                      {data.sizes.length > 0 &&
+                      {data.length > 0 &&
                         FunctionUtil.stableSort(
-                          data.sizes,
+                          data,
                           FunctionUtil.getComparator(orderSize, orderBySize)
                         )
                           .slice(
@@ -538,7 +558,7 @@ export default function OptionScreen() {
                                   {row.id}
                                 </TableCell>
                                 <TableCell align="right">
-                                  {row.size_name}
+                                  {row.sizeName}
                                 </TableCell>
 
                                 <TableCell align="right">
@@ -579,7 +599,7 @@ export default function OptionScreen() {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={data.sizes.length}
+                  count={data.length}
                   rowsPerPage={rowsPerPage}
                   page={pageSize}
                   onPageChange={handleChangePageSize}
@@ -597,14 +617,14 @@ export default function OptionScreen() {
         handleClose={handleCloseColor}
         anchorElData={anchorElDataColor}
         type={typeDialogColor}
-        data={data.colors}
+        data={dataColor}
       />
       <FormDialogSize
         open={openSize}
         handleClose={handleCloseSize}
         anchorElData={anchorElDataSize}
         type={typeDialogSize}
-        data={data.sizes}
+        data={data}
       />
     </div>
   );

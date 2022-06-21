@@ -153,7 +153,7 @@ const ComponentFormCreate = (props: Props) => {
                   </option>
                   {LIST_CATEGORY.map((option) => (
                     <option key={option.id} value={option.id}>
-                      {option.name}
+                      {option.categoryName}
                     </option>
                   ))}
                 </>

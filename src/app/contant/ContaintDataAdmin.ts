@@ -116,58 +116,59 @@ export const headCellsCategory: HeadCell<CategoryAdmin>[] = [
     disablePadding: true,
     label: "Id",
   },
-  { id: "name", numeric: true, disablePadding: false, label: "Name" },
-  {
-    id: "create_date",
-    numeric: true,
-    disablePadding: false,
-    label: "create_date",
-  },
-  { id: "status", numeric: true, disablePadding: false, label: "Status" },
+  { id: "categoryName", numeric: true, disablePadding: false, label: "Name" },
+
+  { id: "isDeleted", numeric: true, disablePadding: false, label: "Status" },
 ];
 
 export const LIST_CATEGORY: CategoryAdmin[] = [
   {
     id: 1,
     create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 1,
+    categoryName: "Thu đông",
+    isDeleted: false,
     url: R.images.img_product,
+    categoryParentId: 0,
   },
   {
     id: 2,
     create_date: "12/20/2022",
-    name: "Đồng hồ",
-    status: 1,
+    categoryName: "Đồng hồ",
+    isDeleted: false,
     url: R.images.img_product,
+    categoryParentId: 0,
   },
   {
     id: 3,
     create_date: "12/20/2022",
-    name: "Hạ chí",
-    status: 1,
+    categoryName: "Hạ chí",
+    isDeleted: false,
     url: R.images.img_product,
+    categoryParentId: 0,
   },
   {
     id: 4,
     create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 0,
+    categoryName: "Thu đông",
+    isDeleted: false,
     url: R.images.img_product,
+    categoryParentId: 0,
   },
   {
     id: 5,
     create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 1,
+    categoryName: "Thu đông",
+    isDeleted: true,
     url: R.images.img_product,
+    categoryParentId: 0,
   },
   {
     id: 6,
     create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 1,
+    categoryName: "Thu đông",
+    isDeleted: false,
     url: R.images.img_product,
+    categoryParentId: 0,
   },
 ];
 
@@ -330,16 +331,16 @@ export const headCellsTag: HeadCell<Tag>[] = [
 
 export const OPTIONS_DATA: DataStateOption = {
   colors: [
-    { id: 1, color_name: "Xanh", status: 1 },
-    { id: 2, color_name: "Đỏ", status: 1 },
-    { id: 3, color_name: "Vàng", status: 1 },
+    { id: 1, colorName: "Xanh", status: 1 },
+    { id: 2, colorName: "Đỏ", status: 1 },
+    { id: 3, colorName: "Vàng", status: 1 },
   ],
   sizes: [
-    { id: 1, size_name: "S", status: 1 },
-    { id: 2, size_name: "M", status: 1 },
-    { id: 3, size_name: "L", status: 1 },
-    { id: 4, size_name: "XL", status: 1 },
-    { id: 5, size_name: "XXL", status: 1 },
+    { id: 1, sizeName: "S", status: 1 },
+    { id: 2, sizeName: "M", status: 1 },
+    { id: 3, sizeName: "L", status: 1 },
+    { id: 4, sizeName: "XL", status: 1 },
+    { id: 5, sizeName: "XXL", status: 1 },
   ],
 };
 
@@ -366,7 +367,7 @@ export const headCellsOptionColor: HeadCell<OptionColor>[] = [
     label: "Id",
   },
   {
-    id: "color_name",
+    id: "colorName",
     numeric: true,
     disablePadding: false,
     label: "Color name",
@@ -382,7 +383,7 @@ export const headCellsOptionSize: HeadCell<OptionSize>[] = [
     label: "Id",
   },
   {
-    id: "size_name",
+    id: "sizeName",
     numeric: true,
     disablePadding: false,
     label: "Size name",

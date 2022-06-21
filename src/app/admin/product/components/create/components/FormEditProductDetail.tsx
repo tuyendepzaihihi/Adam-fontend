@@ -63,10 +63,10 @@ const FormEditProductDetail = (props: Props) => {
         {LIST_PRODUCT.find((e) => e.id === row.product_id)?.product_name}
       </TableCell>
       <TableCell align="right">
-        {OPTIONS_DATA.colors.find((e) => e.id === row.color_id)?.color_name}
+        {OPTIONS_DATA.colors.find((e) => e.id === row.color_id)?.colorName}
       </TableCell>
       <TableCell align="right">
-        {OPTIONS_DATA.sizes.find((e) => e.id === row.size_id)?.size_name}
+        {OPTIONS_DATA.sizes.find((e) => e.id === row.size_id)?.sizeName}
       </TableCell>
 
       <TableCell align="right">

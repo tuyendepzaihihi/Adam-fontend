@@ -23,10 +23,12 @@ export interface DataState<T> {
 
 export interface CategoryAdmin {
   id: number;
-  name: string;
+  categoryName: string;
   create_date: string;
-  status: number;
+  isDeleted: boolean;
   url: string;
+  categoryParentId: number;
+  categoryChildren?: CategoryAdmin[] | null;
 }
 
 export interface VoucherAdmin {
@@ -77,12 +79,12 @@ export interface Branch {
 
 export interface OptionColor {
   id: any;
-  color_name: string;
+  colorName: string;
   status: number;
 }
 export interface OptionSize {
   id: any;
-  size_name: string;
+  sizeName: string;
   status: number;
 }
 
@@ -151,4 +153,10 @@ export interface HistoryOrder {
   description: string;
   status: number;
   order_id: number;
+}
+
+export interface ResultApi<T> {
+  data: T;
+  message: string;
+  status: number;
 }

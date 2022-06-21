@@ -17,7 +17,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCellsTag } from "../../contant/ContaintDataAdmin";
@@ -26,7 +26,12 @@ import { Tag } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteTag, updateTag } from "./slice/TagAdminSlice";
+import {
+  deleteTag,
+  incrementAsyncTagAdmin,
+  updateTag,
+} from "./slice/TagAdminSlice";
+import { requestGetTagAll } from "./TagApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,6 +77,16 @@ export default function TagScreen() {
 
   const { data } = useAppSelector((state) => state.tagAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+
+  useEffect(() => {
+    getDataTag();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getDataTag = async () => {
+    await dispatch(incrementAsyncTagAdmin());
+  };
+
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);

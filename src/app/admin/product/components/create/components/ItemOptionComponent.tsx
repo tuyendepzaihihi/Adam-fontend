@@ -52,14 +52,14 @@ const RenderItemOption = (props: PropsRenderOption) => {
     if (Number(valueOption) === 1) {
       setListOption(
         OPTIONS_DATA.colors.map((e) => {
-          return { id: e.id, name: e.color_name };
+          return { id: e.id, name: e.colorName };
         })
       );
       setOptionValue([]);
     } else if (Number(valueOption) === 2) {
       setListOption(
         OPTIONS_DATA.sizes.map((e) => {
-          return { id: e.id, name: e.size_name };
+          return { id: e.id, name: e.sizeName };
         })
       );
       setOptionValue([]);

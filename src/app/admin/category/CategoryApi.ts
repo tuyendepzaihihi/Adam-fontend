@@ -4,7 +4,6 @@ export interface UpdateDto {
   id: number;
   isDelete: boolean;
   categoryName: string;
-  status: boolean;
 }
 
 export interface CreateDto {
@@ -13,14 +12,14 @@ export interface CreateDto {
 }
 
 // function
-export const requestGetMaterialAll = (payload: any) =>
-  ApiClient.get("/admin/category/findAll", payload);
+export const requestGetCategoryAll = () =>
+  ApiClient.get("/admin/category/findAll", {});
 
-export const requestPutUpdateMaterial = (payload: UpdateDto) =>
+export const requestPutUpdateCategory = (payload: UpdateDto) =>
   ApiClient.put("/admin/category/update", payload);
 
-export const requestDeleteMaterial = (payload: { category_id: number }) =>
+export const requestDeleteCategory = (payload: { category_id: number }) =>
   ApiClient.delete("/admin/category/delete", { params: payload });
 
-export const requestPostCreateMaterial = (payload: CreateDto) =>
+export const requestPostCreateCategory = (payload: CreateDto) =>
   ApiClient.post("/admin/category/create", payload);

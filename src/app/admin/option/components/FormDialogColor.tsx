@@ -12,7 +12,7 @@ import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { OptionColor } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createColor, updateColor } from "../slice/OptionAdminSlice";
+import { createColor, updateColor } from "../slice/OptionColorSlice";
 interface Props {
   open: any;
   handleClose: any;
@@ -47,7 +47,7 @@ const FormDialogColor = (props: Props) => {
   const onSubmitCreate = (dataCreate: PropsCreateColor) => {
     const { color_name } = dataCreate;
     const item: OptionColor = {
-      color_name: color_name,
+      colorName: color_name,
       id: data[data.length - 1].id + 1,
       status: 1,
     };
@@ -70,7 +70,7 @@ const FormDialogColor = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                color_name: anchorElData?.item.color_name ?? "",
+                color_name: anchorElData?.item.colorName ?? "",
               }
         }
         onSubmit={(data) => {

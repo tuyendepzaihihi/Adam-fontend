@@ -13,6 +13,7 @@ import { TYPE_DIALOG } from "../../../contant/Contant";
 import { Tag } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
 import { createTag, updateTag } from "../slice/TagAdminSlice";
+import { CreateDto, requestPostCreateTag } from "../TagApi";
 interface Props {
   open: any;
   handleClose: any;
@@ -47,15 +48,21 @@ const FormDialog = (props: Props) => {
     handleClose();
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateTag) => {
+  const onSubmitCreate = async (dataCreate: PropsCreateTag) => {
     const { tag_name } = dataCreate;
-    const item: Tag = {
-      tag_name: tag_name,
-      id: data[data.length - 1].id + 1,
-      status: 1,
+    // const item: Tag = {
+    //   tag_name: tag_name,
+    //   id: data[data.length - 1].id + 1,
+    //   status: 1,
+    // };
+    const itemCreate: CreateDto = {
+      tagName: tag_name,
     };
-    dispatch(createTag({ item: item }));
-    handleClose();
+    const res = await requestPostCreateTag(itemCreate);
+    console.log({ res });
+
+    // dispatch(createTag({ item: item }));
+    // handleClose();
   };
 
   return (

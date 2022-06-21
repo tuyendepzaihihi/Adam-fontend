@@ -14,7 +14,7 @@ const ProductInfomation = (props: { item: ProductAdmin | null }) => {
   const renderBranch = () =>
     LIST_BRANCH.find((e) => e.id === item?.branch_id)?.branch_name;
   const renderCategory = () =>
-    LIST_CATEGORY.find((e) => e.id === item?.category_id)?.name;
+    LIST_CATEGORY.find((e) => e.id === item?.category_id)?.categoryName;
   const classes = useStylesInfo();
   return (
     <div style={{ display: "flex", justifyContent: "flex-start" }}>

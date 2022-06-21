@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LIST_TAG } from "../../../contant/ContaintDataAdmin";
-import { DataState, Tag } from "../../../contant/IntefaceContaint";
+import { DataState, ResultApi, Tag } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+import { requestGetTagAll } from "../TagApi";
 
 const initialState: DataState<Tag[]> = {
   data: LIST_TAG,
@@ -13,7 +14,8 @@ export const incrementAsyncTagAdmin = createAsyncThunk(
   "tag/admin",
   async () => {
     // call api here
-    return true;
+    const result: ResultApi<Tag[]> = await requestGetTagAll();
+    return result;
   }
 );
 
@@ -55,7 +57,7 @@ export const tagAdminSlice = createSlice({
       .addCase(incrementAsyncTagAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = [];
+        state.data = action.payload?.data;
       })
       .addCase(incrementAsyncTagAdmin.rejected, (state) => {
         state.isError = true;

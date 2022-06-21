@@ -10,9 +10,15 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { OptionSize } from "../../../contant/IntefaceContaint";
+import { OptionSize, ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createSize, updateSize } from "../slice/OptionAdminSlice";
+import {
+  CreateSizeDto,
+  requestPostCreateSize,
+  requestPutUpdateSize,
+  UpdateSizeDto,
+} from "../OptionApi";
+import { createSize, updateSize } from "../slice/OptionSizeSlice";
 interface Props {
   open: any;
   handleClose: any;
@@ -32,26 +38,26 @@ const initialValues: PropsCreateSize = {
 };
 const FormDialogSize = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
+  const { handleClose, open, anchorElData, type } = props;
 
-  const onSubmit = (data: PropsCreateSize) => {
+  const onSubmit = async (data: PropsCreateSize) => {
     const { Size_name } = data;
-    const item: OptionSize = {
-      ...anchorElData.item,
-      size_name: Size_name,
+    const payload: UpdateSizeDto = {
+      ...anchorElData,
+      sizeName: Size_name,
     };
-    dispatch(updateSize({ item: item }));
+    const result: ResultApi<OptionSize> = await requestPutUpdateSize(payload);
+    dispatch(updateSize({ item: result.data }));
     handleClose();
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateSize) => {
+  const onSubmitCreate = async (dataCreate: PropsCreateSize) => {
     const { Size_name } = dataCreate;
-    const item: OptionSize = {
-      size_name: Size_name,
-      id: data[data.length - 1].id + 1,
-      status: 1,
+    const payload: CreateSizeDto = {
+      sizeName: Size_name,
     };
-    dispatch(createSize({ item: item }));
+    const result: ResultApi<OptionSize> = await requestPostCreateSize(payload);
+    dispatch(createSize({ item: result.data }));
     handleClose();
   };
 
@@ -70,7 +76,7 @@ const FormDialogSize = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                Size_name: anchorElData?.item.size_name ?? "",
+                Size_name: anchorElData?.item.sizeName ?? "",
               }
         }
         onSubmit={(data) => {

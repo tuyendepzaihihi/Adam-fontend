@@ -1,0 +1,72 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { OPTIONS_DATA } from "../../../contant/ContaintDataAdmin";
+import {
+  DataState,
+  OptionSize,
+  ResultApi,
+} from "../../../contant/IntefaceContaint";
+import { createNotification } from "../../../utils/MessageUtil";
+import { requestGetSizeAll } from "../OptionApi";
+
+const initialState: DataState<OptionSize[]> = {
+  data: OPTIONS_DATA.sizes,
+  isError: false,
+  isLoading: false,
+};
+
+export const incrementAsyncOptionSize = createAsyncThunk(
+  "option/Size",
+  async () => {
+    const res: ResultApi<OptionSize[]> = await requestGetSizeAll();
+    return res;
+  }
+);
+
+export const optionSizeSlice = createSlice({
+  name: "option/Size",
+  initialState,
+  reducers: {
+    updateSize: (state, action) => {
+      let oldArray = state.data;
+      let item: OptionSize = action.payload?.item;
+      state.data = oldArray?.map((e) => {
+        if (e.id === item.id) return item;
+        else return e;
+      });
+    },
+    createSize: (state, action) => {
+      let item: OptionSize = action.payload?.item;
+      state.data = state.data.concat([item]);
+    },
+    deleteSize: (state, action) => {
+      let array = state.data;
+      let deleteArray = action.payload?.array;
+      deleteArray.map((e: any) => {
+        array = array.filter((v) => e !== `${v.id}`);
+      });
+      state.data = array;
+      createNotification({
+        type: "success",
+        message: "Xoá thành công",
+      });
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(incrementAsyncOptionSize.pending, (state) => {
+        state.isError = false;
+        state.isLoading = true;
+      })
+      .addCase(incrementAsyncOptionSize.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.data = action.payload.data;
+      })
+      .addCase(incrementAsyncOptionSize.rejected, (state) => {
+        state.isError = true;
+        state.isLoading = false;
+      });
+  },
+});
+export const { createSize, deleteSize, updateSize } = optionSizeSlice.actions;
+export default optionSizeSlice.reducer;

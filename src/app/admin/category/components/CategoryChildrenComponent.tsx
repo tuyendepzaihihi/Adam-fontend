@@ -1,7 +1,5 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -17,29 +15,22 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import { Settings } from "@material-ui/icons";
+import { Delete } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useEffect, useState } from "react";
-import EnhancedTableHead from "../../component/EnhancedTableHead";
-import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import LoadingProgress from "../../component/LoadingProccess";
+import React, { useState } from "react";
+
+import EnhancedTableHead from "../../../component/EnhancedTableHead";
+import { headCellsCategory } from "../../../contant/ContaintDataAdmin";
+import { TYPE_DIALOG } from "../../../contant/Contant";
+import { CategoryAdmin } from "../../../contant/IntefaceContaint";
+import { useAppDispatch } from "../../../hooks";
+import { FunctionUtil, Order } from "../../../utils/function";
 import {
-  headCellsCategory,
-  LIST_CATEGORY,
-} from "../../contant/ContaintDataAdmin";
-import { TYPE_DIALOG } from "../../contant/Contant";
-import { CategoryAdmin } from "../../contant/IntefaceContaint";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { FunctionUtil, Order } from "../../utils/function";
-import CategoryChildrenComponent from "./components/CategoryChildrenComponent";
-import FormDialog from "./components/FormDialog";
-import {
-  deleteCategory,
-  incrementAsyncCategoryAdmin,
-  updateCategory,
-} from "./slice/CategoryAdminSlice";
+  deleteCategoryChilden,
+  updateCategoryChilden,
+} from "../slice/CategoryAdminSlice";
+import FormDialog from "./FormDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,7 +58,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function CategoryScreen() {
+interface Props {
+  data: CategoryAdmin[];
+  category_parent_id: number;
+}
+
+export default function CategoryChildrenComponent(props: Props) {
+  const { data, category_parent_id } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
@@ -83,17 +80,7 @@ export default function CategoryScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data, isLoading } = useAppSelector((state) => state.categoryAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
-
-  useEffect(() => {
-    getDataCategory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getDataCategory = async () => {
-    await dispatch(incrementAsyncCategoryAdmin());
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -137,6 +124,19 @@ export default function CategoryScreen() {
     setAnchorElData({ item: item });
   };
 
+  const handleChangeStatus = (row: CategoryAdmin, id: number) => {
+    let item = {
+      ...row,
+      isDeleted: !row.isDeleted,
+    };
+    dispatch(updateCategoryChilden({ item: item, id: id }));
+  };
+
+  const handleDelete = (array: any[]) => {
+    dispatch(deleteCategoryChilden({ array: array, id: category_parent_id }));
+    setSelected([]);
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -148,10 +148,7 @@ export default function CategoryScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          dispatch(deleteCategory({ array: selected }));
-          setSelected([]);
-        }}
+        onClick={() => handleDelete([`${anchorElData?.item.id}`])}
         button
       >
         <Tooltip title="Delete">
@@ -178,20 +175,34 @@ export default function CategoryScreen() {
   );
 
   return (
-    <div className={classes.root} style={{ position: "relative" }}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          onCreate={() => {
+    <div className={classes.root}>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          paddingBottom: 20,
+        }}
+      >
+        {selected.length > 0 ? (
+          <IconButton onClick={() => handleDelete(selected)}>
+            <Delete color="secondary" />
+          </IconButton>
+        ) : (
+          <div />
+        )}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteCategory({ array: selected }));
-            setSelected([]);
-          }}
-          label={"Danh mục sản phẩm"}
-        />
+        >
+          Tạo mới
+        </Button>
+      </div>
+      <Paper className={classes.paper}>
         <TableContainer>
           <Table
             className={classes.table}
@@ -210,15 +221,11 @@ export default function CategoryScreen() {
               rowCount={data.length}
               headCells={headCellsCategory}
               createSortHandler={createSortHandler}
-              childrenMore={
-                <>
-                  <TableCell align="center">Category children</TableCell>
-                </>
-              }
             />
             <TableBody>
               {data.length > 0 &&
                 data
+
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(`${row.id}`);
@@ -262,57 +269,22 @@ export default function CategoryScreen() {
                           <TableCell align="right">
                             <Switch
                               checked={row.isDeleted ? row.isDeleted : false}
-                              onChange={(data) => {
-                                let item = {
-                                  ...row,
-                                  isDeleted: !row.isDeleted,
-                                };
-                                dispatch(updateCategory({ item: item }));
-                              }}
+                              onChange={() =>
+                                handleChangeStatus(row, category_parent_id)
+                              }
                               name={labelId}
                               inputProps={{ "aria-label": labelId }}
                               color="primary"
                             />
                           </TableCell>
-                          <div style={{ padding: 10 }}>
-                            <Accordion variant="elevation">
-                              <AccordionSummary
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1bh-content"
-                                id="panel1bh-header"
-                              >
-                                <TableCell
-                                  style={{
-                                    borderBottomColor: "white",
-                                    width: "100%",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                  }}
-                                >
-                                  {row.categoryChildren?.length ?? 0} danh mục
-                                  con
-                                </TableCell>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <CategoryChildrenComponent
-                                  data={row.categoryChildren ?? LIST_CATEGORY}
-                                  category_parent_id={row.id}
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </div>
-                          <TableCell align="center">
-                            <IconButton
+                          <TableCell align="right">
+                            <Button
                               onClick={(event) => {
                                 handleProfileMenuOpen(event, row);
                               }}
                             >
-                              <Settings />
-                            </IconButton>
+                              ...
+                            </Button>
                           </TableCell>
                         </TableRow>
                       </>
@@ -343,9 +315,9 @@ export default function CategoryScreen() {
         anchorElData={anchorElData}
         type={typeDialog}
         data={data}
-        isParent={true}
+        isParent={false}
+        category_parent_id={category_parent_id}
       />
-      {isLoading && <LoadingProgress />}
     </div>
   );
 }
