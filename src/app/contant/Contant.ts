@@ -4,9 +4,7 @@ import User from "@material-ui/icons/AccountBalance";
 
 import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
-import { PermMediaOutlined } from "@material-ui/icons";
-import CategoryIcon from "@material-ui/icons/Category";
-import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
+import { Category, PermMediaOutlined } from "@material-ui/icons";
 
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
@@ -50,9 +48,7 @@ export const ROUTE = {
   FORGOT_PASS: "/auth/forgotPassword",
   EMAIL_INPUT: "/auth/emailInput",
   PRODUCT_DETAIL: "/product/detail",
-  CART: "/cart",
-  ADDRESS: '/address',
-  ORDER: '/order'
+  CART: "cart",
 };
 
 export const ROUTE_ADMIN = {
@@ -63,7 +59,6 @@ export const ROUTE_ADMIN = {
   SETTING: "/SETTING_ADMIN",
   CATEGORY: "/CATEGORY_ADMIN",
   MEDIA: "/MEDIA_ADMIN",
-  VOUCHER: "/VOUCHER_ADMIN",
 };
 
 export const LIST_MENU_DRAWER = [
@@ -73,23 +68,23 @@ export const LIST_MENU_DRAWER = [
     icon: Dashboard,
   },
   {
-    name: "Quản lý sản phẩm",
+    name: "Product",
     route: ROUTE_ADMIN.PRODUCT,
     icon: Product,
   },
   {
-    name: "Quản lý người dùng",
+    name: "User",
     route: ROUTE_ADMIN.USER,
     icon: User,
   },
   {
-    name: "Quản lý danh mục",
+    name: "Category",
     route: ROUTE_ADMIN.CATEGORY,
-    icon: CategoryIcon,
+    icon: Category,
   },
   {
-    name: "Quản lý khuyến mãi",
-    route: ROUTE_ADMIN.VOUCHER,
+    name: "Media",
+    route: ROUTE_ADMIN.MEDIA,
     icon: PermMediaOutlined,
   },
 ];
@@ -131,15 +126,17 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 1,
-    name: "Áo sơ mi xấu tệ",
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 2,
@@ -147,23 +144,26 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 3,
-    name: "Áo sơ xấu đui",
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 4,
-    name: "Áo sơ mi thấp ",
+    name: "Áo sơ mi ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 5,
@@ -171,7 +171,8 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 6,
@@ -179,24 +180,18 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 7,
-    name: "Áo cổ cao ",
+    name: "Áo sơ mi ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
-  // {
-  //   id: 8,
-  //   name: "Cổ cao ",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   url_image: R.images.img_product,
-  // },
 ];
 export interface ItemCart extends ItemProduct {
   totalPrice: number;
@@ -204,29 +199,41 @@ export interface ItemCart extends ItemProduct {
   product_id?: number;
 }
 export const LIST_CART: ItemCart[] = [
-   {
-    id: 100,
-    name: "Áo sơ mi nam",
+  {
+    id: 0,
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
     totalPrice: 628000 * 2,
     count: 2,
     url_image:
-      R.images.img_product,
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
     product_id: 7,
   },
   {
-    id: 150,
-    name: "Áo kẻ sọc đẹp",
+    id: 1,
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
     totalPrice: 628000 * 2,
     count: 2,
     url_image:
-      R.images.img_product,
-    product_id: 7,
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    product_id: 5,
+  },
+  {
+    id: 2,
+    name: "Áo sơ mi",
+    price: 628000,
+    discountPersent: 10,
+    descriptionDiscount: "Giảm 10% cho sp thứ 2",
+    totalPrice: 628000 * 2,
+    count: 2,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    product_id: 2,
   },
 ];
 
@@ -369,20 +376,3 @@ export const dataFilter = {
     },
   ],
 };
-
-
-export const LIST_ADDRESS : DataAddress[] =[
-  {
-    id:1,
-    addressDetail: 'khn',
-    districtId: 1,
-    districtName:'Nam từ liêm',
-    isDefault: false,
-    name: 'Phạm Văn Khánh',
-    phone:'0965259441',
-    provinceId: 1,
-  provinceName:'Ha noi',
-  wardId: 1,
-  wardName:'Mỹ Đình'
-  }
-]

@@ -16,7 +16,6 @@ interface EnhancedTableProps {
   rowCount: number;
   headCells: any[];
   createSortHandler: any;
-  childrenMore?: any;
 }
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
@@ -29,7 +28,6 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
     rowCount,
     headCells,
     createSortHandler,
-    childrenMore,
   } = props;
   return (
     <TableHead>
@@ -42,7 +40,6 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             inputProps={{ "aria-label": "select all desserts" }}
           />
         </TableCell>
-
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -64,8 +61,6 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             </TableSortLabel>
           </TableCell>
         ))}
-        {childrenMore}
-        <TableCell align="right">Hoạt động</TableCell>
       </TableRow>
     </TableHead>
   );

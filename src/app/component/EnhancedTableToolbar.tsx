@@ -24,12 +24,11 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
   onCreate: Function;
   onDelete: Function;
-  label: string;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, onCreate, onDelete, label } = props;
+  const { numSelected, onCreate, onDelete } = props;
   const [textFilter, setTextFilter] = useState("");
   const [status, setStatus] = useState(`0`);
 
@@ -38,16 +37,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   };
   return (
     <div>
-      <Typography
-        style={{
-          fontWeight: "bold",
-          fontSize: 20,
-          marginTop: 10,
-          marginLeft: 15,
-        }}
-      >
-        {label}
-      </Typography>
       <div className={classes.filter}>
         <div className={classes.containerFilter}>
           <TextField

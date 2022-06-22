@@ -1,6 +1,5 @@
 const icons = {
     
-    ic_voucher: require("./images/ic_voucher.png"),
     img_banner1: require("./images/img_banner1.jpg"),
     img_banner2: require("./images/img_banner2.jpg"),
     img_banner3: require("./images/img_banner3.jpg"),

@@ -166,7 +166,6 @@ export default function UserScreen() {
             dispatch(deleteUser({ array: selected }));
             setSelected([]);
           }}
-          label={"Quản lý user"}
         />
         <TableContainer>
           <Table

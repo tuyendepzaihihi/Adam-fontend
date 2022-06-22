@@ -1,10 +1,5 @@
-import {
-  CategoryAdmin,
-  HeadCell,
-  UserAdminInteface,
-  VoucherAdmin,
-} from "./IntefaceContaint";
-import R from "../assets/R";
+import { CategoryAdmin, HeadCell, UserAdminInteface } from "./IntefaceContaint";
+
 export const rows_example_user: UserAdminInteface[] = [
   {
     id: 1,
@@ -118,111 +113,10 @@ export const headCellsCategory: HeadCell<CategoryAdmin>[] = [
 ];
 
 export const LIST_CATEGORY: CategoryAdmin[] = [
-  {
-    id: 1,
-    create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 1,
-    url: R.images.img_product,
-  },
-  {
-    id: 2,
-    create_date: "12/20/2022",
-    name: "Đồng hồ",
-    status: 1,
-    url: R.images.img_product,
-  },
-  {
-    id: 3,
-    create_date: "12/20/2022",
-    name: "Hạ chí",
-    status: 1,
-    url: R.images.img_product,
-  },
-  {
-    id: 4,
-    create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 0,
-    url: R.images.img_product,
-  },
-  {
-    id: 5,
-    create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 1,
-    url: R.images.img_product,
-  },
-  {
-    id: 6,
-    create_date: "12/20/2022",
-    name: "Thu đông",
-    status: 1,
-    url: R.images.img_product,
-  },
-];
-
-export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
-  {
-    id: "id",
-    numeric: false,
-    disablePadding: true,
-    label: "Id",
-  },
-  { id: "title", numeric: true, disablePadding: false, label: "Title" },
-  {
-    id: "description",
-    numeric: true,
-    disablePadding: false,
-    label: "Description",
-  },
-  {
-    id: "startDate",
-    numeric: true,
-    disablePadding: false,
-    label: "Start time",
-  },
-  { id: "endDate", numeric: true, disablePadding: false, label: "End time" },
-  {
-    id: "create_date",
-    numeric: true,
-    disablePadding: false,
-    label: " Create date",
-  },
-  {
-    id: "discountPersent",
-    numeric: true,
-    disablePadding: false,
-    label: "Discount persent",
-  },
-  { id: "status", numeric: true, disablePadding: false, label: "Status" },
-];
-
-export const LIST_VOUCHER: VoucherAdmin[] = [
-  {
-    id: 1,
-    title: "Hè đỏ lửa",
-    status: 1,
-    url: R.images.img_banner1,
-    startDate: "10/08/2022 18:00",
-    endDate: "15/10/2022 16:00",
-    create_date: "04/06/2022",
-    description: "Hưởng ứng mùa hè sôi động",
-    discountPersent: 10,
-    discountMinValue: 10000,
-    discountMaxValue: 25000000,
-  },
-  {
-    id: 2,
-    title: "Mùa hè đỏ lửa 1972",
-    status: 1,
-    url: R.images.img_banner2,
-    startDate: "10/08/2022 18:00",
-    endDate: "18/10/2022 18:00",
-    create_date: "04/06/2022",
-    description: "Hưởng ứng mùa hè sôi động của quân giải phóng",
-    discountPersent: 5,
-    discountMinValue: 10000,
-    discountMaxValue: 25000000,
-  },
+  { id: 1, create_date: "12/20/2022", name: "Thu đông", status: 1 },
+  { id: 2, create_date: "12/20/2022", name: "Đồng hồ", status: 1 },
+  { id: 3, create_date: "12/20/2022", name: "Hạ chí", status: 1 },
+  { id: 4, create_date: "12/20/2022", name: "Thu đông", status: 0 },
+  { id: 5, create_date: "12/20/2022", name: "Thu đông", status: 1 },
+  { id: 6, create_date: "12/20/2022", name: "Thu đông", status: 1 },
 ];

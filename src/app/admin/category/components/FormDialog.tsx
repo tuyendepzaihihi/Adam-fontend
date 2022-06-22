@@ -8,7 +8,6 @@ import {
 } from "@material-ui/core";
 import { Formik } from "formik";
 import moment from "moment";
-import { useState } from "react";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
@@ -33,7 +32,6 @@ const initialValues: PropsCreateCategory = {
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
-  const [image, setImage] = useState<any>(null);
 
   const onSubmit = (data: { name: string }) => {
     const { name } = data;
@@ -41,7 +39,6 @@ const FormDialog = (props: Props) => {
       const item: CategoryAdmin = {
         ...anchorElData.item,
         name: name,
-        url: image,
       };
       dispatch(updateCategory({ item: item }));
       handleClose();
@@ -55,19 +52,11 @@ const FormDialog = (props: Props) => {
       create_date: moment(new Date()).format("DD/MM/YYYY").toString(),
       id: data[data.length - 1].id + 1,
       name: name,
-      url: image,
     };
     dispatch(createCategory({ item: item }));
     handleClose();
   };
 
-  const onImageChange = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      console.log({ img });
-      setImage(URL.createObjectURL(img));
-    }
-  };
   return (
     <Dialog
       open={open}
@@ -108,20 +97,11 @@ const FormDialog = (props: Props) => {
                 Cập nhật thông tin của Category, vui lòng điền tất cả thông tin
                 cần thiết
               </DialogContentText>
-              <div>
-                <img
-                  src={image ? image : anchorElData?.item.url}
-                  alt=""
-                  style={{ width: 200 }}
-                />
-                <h1>Select Image</h1>
-                <input type="file" name="myImage" onChange={onImageChange} />
-              </div>
               <TextInputComponent
                 error={errors.name}
                 touched={touched.name}
                 value={values.name}
-                label={"Name Category"}
+                label={"Name"}
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
               />

@@ -15,7 +15,6 @@ import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
 import FooterComponent from "../../component/footer/FooterComponent";
 import { ROUTE } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -23,23 +22,24 @@ import {
   deleteItemCart,
   updateQuantity,
 } from "../../screen/cart/slice/CartSlice";
-import { getAdmin } from "../../service/StorageService";
 import { colors } from "../../utils/color";
-import { formatPrice } from "../../utils/function";
 import { useWindowSize } from "../../utils/helper";
-import { createNotification } from "../../utils/MessageUtil";
+import ActiveBreadcrumbs from "../Breadcrumbs";
 import MiniDrawer from "../Drawer";
 import MainApp from "../MainApp";
 import { useNavBarStyles } from "./styles";
 
 export default function NavBar() {
-  const token = localStorage.getItem("token");
   const size = useWindowSize();
   const classes = useNavBarStyles();
   const navigate = useNavigate();
   const { data } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -55,15 +55,7 @@ export default function NavBar() {
     setAnchorEl(event.currentTarget);
   };
   const handleCartOpen = (event: React.MouseEvent<HTMLElement>) => {
-    if (token) {
-      setCartMoreAnchorEl(event.currentTarget);
-    } else {
-      navigate(ROUTE.LOGIN);
-      createNotification({
-        type: "warning",
-        message: "Bạn cần đăng nhập để thực hiện chức năng này",
-      });
-    }
+    setCartMoreAnchorEl(event.currentTarget);
   };
 
   const handleMobileMenuClose = () => {
@@ -84,7 +76,6 @@ export default function NavBar() {
   };
 
   const menuId = "primary-search-account-menu";
-
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -95,29 +86,16 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {token && (
-        <>
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-        </>
-      )}
-
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem
         onClick={() => {
-          if (token) {
-            localStorage.clear();
-            dispatch(updateSwitchRole(false));
-
-            createNotification({
-              type: "success",
-              message: "Đăng xuất thành công",
-            });
-            handleMenuClose();
-          }
+          localStorage.clear();
           navigate(ROUTE.LOGIN, { replace: true });
+          handleMenuClose();
         }}
       >
-        {token ? "Log out" : "Login app"}
+        Log out
       </MenuItem>
     </Menu>
   );
@@ -148,10 +126,7 @@ export default function NavBar() {
               </div>
               <div className={classes.containerInfoCart}>
                 <p className={classes.textNameProductCart}>{e.name}</p>
-                <p className={classes.textPriceCart}>
-                  {" "}
-                  {formatPrice(e.price)}đ
-                </p>
+                <p className={classes.textPriceCart}> {e.price}đ</p>
               </div>
               <div className={classes.containerQuantity}>
                 <button
@@ -280,14 +255,14 @@ export default function NavBar() {
       </MenuItem>
     </Menu>
   );
-  const isAdmin = getAdmin();
+  const isAdmin = false;
   return (
     <div className={classes.grow}>
       {isAdmin ? (
         <div className={classes.containerAdmin}>
           <MiniDrawer open={open} setOpen={setOpen} />
           <div style={{ padding: 10, flex: 1 }}>
-            <MainApp isAdmin={isAdmin ? true : false} />
+            <MainApp isAdmin={isAdmin} />
           </div>
         </div>
       ) : (
@@ -303,7 +278,7 @@ export default function NavBar() {
             <AppBar
               position="fixed"
               className={clsx(classes.appBar, {
-                // [classes.appBarShift]: open,
+                [classes.appBarShift]: open,
               })}
             >
               <Toolbar>
@@ -386,7 +361,7 @@ export default function NavBar() {
                   >
                     <Cart />
                   </IconButton>
-                  {token && data && data?.length > 0 && (
+                  {data && data?.length > 0 && (
                     <div
                       style={{
                         position: "absolute",
@@ -441,7 +416,7 @@ export default function NavBar() {
               }}
             >
               {/* <ActiveBreadcrumbs /> */}
-              <MainApp isAdmin={isAdmin ? true : false} />
+              <MainApp isAdmin={isAdmin} />
             </div>
             {renderMobileMenu}
             {renderMenu}
