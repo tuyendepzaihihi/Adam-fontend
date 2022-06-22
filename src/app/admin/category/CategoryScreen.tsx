@@ -1,5 +1,7 @@
 import {
-  Button,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   IconButton,
   Menu,
   MenuItem,
@@ -15,18 +17,29 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import { Settings } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import { headCells, headCellsCategory } from "../../contant/ContaintDataAdmin";
+import LoadingProgress from "../../component/LoadingProccess";
+import {
+  headCellsCategory,
+  LIST_CATEGORY,
+} from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
 import { CategoryAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
+import CategoryChildrenComponent from "./components/CategoryChildrenComponent";
 import FormDialog from "./components/FormDialog";
-import { deleteCategory, updateCategory } from "./slice/CategoryAdminSlice";
+import {
+  deleteCategory,
+  incrementAsyncCategoryAdmin,
+  updateCategory,
+} from "./slice/CategoryAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,8 +83,18 @@ export default function CategoryScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.categoryAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.categoryAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+
+  useEffect(() => {
+    getDataCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getDataCategory = async () => {
+    await dispatch(incrementAsyncCategoryAdmin());
+  };
+
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
@@ -125,7 +148,8 @@ export default function CategoryScreen() {
     >
       <MenuItem
         onClick={() => {
-          console.log({ anchorElData });
+          dispatch(deleteCategory({ array: selected }));
+          setSelected([]);
         }}
         button
       >
@@ -153,7 +177,7 @@ export default function CategoryScreen() {
   );
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{ position: "relative" }}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -184,76 +208,112 @@ export default function CategoryScreen() {
               rowCount={data.length}
               headCells={headCellsCategory}
               createSortHandler={createSortHandler}
+              childrenMore={
+                <>
+                  <TableCell align="center">Category children</TableCell>
+                </>
+              }
             />
             <TableBody>
               {data.length > 0 &&
-                FunctionUtil.stableSort(
-                  data,
-                  FunctionUtil.getComparator(order, orderBy)
-                )
+                data
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(`${row.id}`);
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={`${row.id}`}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                            onClick={(event) => {
-                              setSelected(
-                                FunctionUtil.handleClick(
-                                  event,
-                                  `${row.id}`,
-                                  selected
-                                )
-                              );
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
+                      <>
+                        <TableRow
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={`${row.id}`}
+                          selected={isItemSelected}
+                          className={classes.table}
                         >
-                          {row.id}
-                        </TableCell>
-                        <TableCell align="right">{row.name}</TableCell>
-                        <TableCell align="right">{row.create_date}</TableCell>
-                        <TableCell align="right">
-                          <Switch
-                            checked={row.status === 1 ? true : false}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                status: row.status === 1 ? 0 : 1,
-                              };
-                              dispatch(updateCategory({ item: item }));
-                            }}
-                            name={labelId}
-                            inputProps={{ "aria-label": labelId }}
-                            color="primary"
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Button
-                            onClick={(event) => {
-                              handleProfileMenuOpen(event, row);
-                            }}
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={isItemSelected}
+                              inputProps={{ "aria-labelledby": labelId }}
+                              onClick={(event) => {
+                                setSelected(
+                                  FunctionUtil.handleClick(
+                                    event,
+                                    `${row.id}`,
+                                    selected
+                                  )
+                                );
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none"
                           >
-                            ...
-                          </Button>
-                        </TableCell>
-                      </TableRow>
+                            {row.id}
+                          </TableCell>
+                          <TableCell align="right">
+                            {row.categoryName}
+                          </TableCell>
+                          <TableCell align="right">
+                            <Switch
+                              checked={row.isDeleted ? row.isDeleted : false}
+                              onChange={(data) => {
+                                let item = {
+                                  ...row,
+                                  isDeleted: !row.isDeleted,
+                                };
+                                dispatch(updateCategory({ item: item }));
+                              }}
+                              name={labelId}
+                              inputProps={{ "aria-label": labelId }}
+                              color="primary"
+                            />
+                          </TableCell>
+                          <div style={{ padding: 10 }}>
+                            <Accordion variant="elevation">
+                              <AccordionSummary
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                }}
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1bh-content"
+                                id="panel1bh-header"
+                              >
+                                <TableCell
+                                  style={{
+                                    borderBottomColor: "white",
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  {row.categoryChildren?.length ?? 0} danh mục
+                                  con
+                                </TableCell>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <CategoryChildrenComponent
+                                  data={row.categoryChildren ?? LIST_CATEGORY}
+                                  category_parent_id={row.id}
+                                />
+                              </AccordionDetails>
+                            </Accordion>
+                          </div>
+                          <TableCell align="center">
+                            <IconButton
+                              onClick={(event) => {
+                                handleProfileMenuOpen(event, row);
+                              }}
+                            >
+                              <Settings />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      </>
                     );
                   })}
               {emptyRows > 0 && (
@@ -281,7 +341,9 @@ export default function CategoryScreen() {
         anchorElData={anchorElData}
         type={typeDialog}
         data={data}
+        isParent={true}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

@@ -14,6 +14,7 @@ import R from "../assets/R";
 import TextInputComponent from "../component/TextInputComponent";
 import { ROUTE } from "../contant/Contant";
 import { colors } from "../utils/color";
+import { requestLoginApp } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -72,7 +73,7 @@ const LoginScreen = () => {
   const validateLogin = Yup.object({
     user_name: Yup.string()
       .min(2, "Mininum 2 characters")
-      .max(15, "Maximum 15 characters")
+      .max(55, "Maximum 55 characters")
       .required("Required!"),
     password: Yup.string().min(6, "Minimum 6 characters").required("Required!"),
   });
@@ -86,14 +87,22 @@ const LoginScreen = () => {
   });
 
   const handleSubmit = async (data: LoginInterface) => {
-    // try {
-    //   const responseLogin: { data: { data: UserInterface } } =
-    //     await requestLogin(data);
-    //   if (responseLogin) {
-    //     // setToken(responseLogin.data.data.token);
-    //     navigate("/");
-    //   }
-    // } catch (e) {}
+    try {
+      // const result = await requestLoginApp({
+      //   password: data.password,
+      //   username: data.user_name,
+      // });
+      // console.log({ result });
+      setToken("dangthunghiem");
+      if (Number(value) === 1) {
+        dispatch(updateSwitchRole(true));
+        setAdmin("1");
+        navigate(ROUTE_ADMIN.DASHBOARD);
+      } else {
+        dispatch(updateSwitchRole(false));
+        navigate(ROUTE.HOME);
+      }
+    } catch (e) {}
   };
 
   return (

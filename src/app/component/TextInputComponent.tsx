@@ -59,23 +59,46 @@ const TextInputComponent = (props: Props) => {
           onBlur={onBlur}
           required={require}
           style={{ height: 50 }}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => {
-                  onRightIcon && onRightIcon();
-                }}
-                onMouseDown={() => {}}
-                edge="end"
-              >
-                {rightIcon}
-              </IconButton>
-            </InputAdornment>
-          }
-          labelWidth={`${label}`.length * 8.5}
-        />
-      </FormControl>
+          className={clsx(className.textField, classNameStyle)}
+        >
+          {childrentSeleted}
+        </TextField>
+      ) : (
+        <FormControl
+          className={clsx(className.textField, classNameStyle)}
+          variant="outlined"
+        >
+          {label && (
+            <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
+              {label}
+            </InputLabel>
+          )}
+          <OutlinedInput
+            id={id ?? "outlined-adornment-amount"}
+            type={type ?? "text"}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            required={require}
+            style={{ height: 50 }}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => {
+                    onRightIcon && onRightIcon();
+                  }}
+                  onMouseDown={() => {}}
+                  edge="end"
+                >
+                  {rightIcon}
+                </IconButton>
+              </InputAdornment>
+            }
+            labelWidth={`${label}`.length * 8.5}
+          />
+        </FormControl>
+      )}
       <div className={className.errorContainer}>
         {error && touched ? (
           <p className={className.textErr}> {error}</p>

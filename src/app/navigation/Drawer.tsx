@@ -131,6 +131,35 @@ export default function MiniDrawer(props: Props) {
               </Link>
             );
           })}
+          <button
+            onClick={() => {
+              localStorage.clear();
+              dispatch(updateSwitchRole(false));
+              navigate(ROUTE.LOGIN);
+              setSelected(LIST_MENU_DRAWER.length + 1);
+            }}
+          >
+            <ListItem button>
+              <ListItemIcon>
+                <Logout
+                  color={
+                    selected === LIST_MENU_DRAWER.length + 1
+                      ? "primary"
+                      : "inherit"
+                  }
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Đăng xuất"}
+                style={{
+                  color:
+                    selected === LIST_MENU_DRAWER.length + 1
+                      ? colors.black
+                      : colors.gray59,
+                }}
+              />
+            </ListItem>
+          </button>
         </List>
       </Drawer>
     </div>

@@ -4,7 +4,14 @@ import User from "@material-ui/icons/AccountBalance";
 
 import R from "../assets/R";
 import { ItemProduct } from "../component/product_item/ProductItemComponent";
-import { Category, PermMediaOutlined } from "@material-ui/icons";
+import {
+  PermMediaOutlined,
+  BrandingWatermark,
+  TagFaces,
+  ColorLens,
+} from "@material-ui/icons";
+import CategoryIcon from "@material-ui/icons/Category";
+import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
 
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
@@ -48,7 +55,9 @@ export const ROUTE = {
   FORGOT_PASS: "/auth/forgotPassword",
   EMAIL_INPUT: "/auth/emailInput",
   PRODUCT_DETAIL: "/product/detail",
-  CART: "cart",
+  CART: "/cart",
+  ADDRESS: "/address",
+  ORDER: "/order",
 };
 
 export const ROUTE_ADMIN = {
@@ -59,6 +68,12 @@ export const ROUTE_ADMIN = {
   SETTING: "/SETTING_ADMIN",
   CATEGORY: "/CATEGORY_ADMIN",
   MEDIA: "/MEDIA_ADMIN",
+  VOUCHER: "/VOUCHER_ADMIN",
+  TAG: "/TAG_AMDIN",
+  BRANCH: "/BRANCH_ADMIN",
+  MATERIAL: "/MATERIAL_ADMIN",
+  OPTION: "/OPTION_ADMIN",
+  COMMENT: "COMMENT_ADMIN",
 };
 
 export const LIST_MENU_DRAWER = [
@@ -86,6 +101,26 @@ export const LIST_MENU_DRAWER = [
     name: "Media",
     route: ROUTE_ADMIN.MEDIA,
     icon: PermMediaOutlined,
+  },
+  {
+    name: "Quản lý chất liệu",
+    route: ROUTE_ADMIN.MATERIAL,
+    icon: PermMediaOutlined,
+  },
+  {
+    name: "Quản lý Order",
+    route: ROUTE_ADMIN.ORDER,
+    icon: BrandingWatermark,
+  },
+  {
+    name: "Quản lý Tag",
+    route: ROUTE_ADMIN.TAG,
+    icon: TagFaces,
+  },
+  {
+    name: "Quản lý Option",
+    route: ROUTE_ADMIN.OPTION,
+    icon: ColorLens,
   },
 ];
 
@@ -200,15 +235,14 @@ export interface ItemCart extends ItemProduct {
 }
 export const LIST_CART: ItemCart[] = [
   {
-    id: 0,
-    name: "Áo sơ mi",
+    id: 100,
+    name: "Áo sơ mi nam",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
     totalPrice: 628000 * 2,
     count: 2,
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
+    url_image: R.images.img_product,
     product_id: 7,
   },
   {
@@ -219,21 +253,8 @@ export const LIST_CART: ItemCart[] = [
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
     totalPrice: 628000 * 2,
     count: 2,
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
-    product_id: 5,
-  },
-  {
-    id: 2,
-    name: "Áo sơ mi",
-    price: 628000,
-    discountPersent: 10,
-    descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    totalPrice: 628000 * 2,
-    count: 2,
-    url_image:
-      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
-    product_id: 2,
+    url_image: R.images.img_product,
+    product_id: 7,
   },
 ];
 
@@ -267,6 +288,20 @@ export const data_detail = {
     {
       id: 2,
       name: "Size",
+      option_values: [
+        {
+          id: 1,
+          name: "X",
+        },
+        {
+          id: 2,
+          name: "M",
+        },
+      ],
+    },
+    {
+      id: 3,
+      name: "mate",
       option_values: [
         {
           id: 1,
@@ -376,3 +411,19 @@ export const dataFilter = {
     },
   ],
 };
+
+export const LIST_ADDRESS: DataAddress[] = [
+  {
+    id: 1,
+    addressDetail: "khn",
+    districtId: 1,
+    districtName: "Nam từ liêm",
+    isDefault: false,
+    name: "Lê Văn Cử",
+    phone: "0965259555",
+    provinceId: 1,
+    provinceName: "Ha noi",
+    wardId: 1,
+    wardName: "Mỹ Đình",
+  },
+];
