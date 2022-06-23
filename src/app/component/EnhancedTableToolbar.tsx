@@ -39,16 +39,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   };
   return (
     <div>
-      <Typography
-        style={{
-          fontWeight: "bold",
-          fontSize: 20,
-          marginTop: 10,
-          marginLeft: 15,
-        }}
-      >
-        {label}
-      </Typography>
       <div className={classes.filter}>
         <div className={classes.containerFilter}>
           <TextField

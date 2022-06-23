@@ -6,7 +6,6 @@ import {
   InputLabel,
   makeStyles,
   OutlinedInput,
-  TextField,
   Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -19,16 +18,13 @@ interface Props {
   error?: any;
   onChange?: any;
   onBlur?: any;
-  value: any;
+  value: string;
   touched?: any;
   type?: any;
   id?: any;
   isPass?: boolean;
   rightIcon?: any;
   onRightIcon?: any;
-  isSelected?: any;
-  childrentSeleted?: any;
-  helperText?: string;
 }
 const TextInputComponent = (props: Props) => {
   const {
@@ -44,26 +40,24 @@ const TextInputComponent = (props: Props) => {
     type,
     rightIcon,
     onRightIcon,
-    isSelected,
-    childrentSeleted,
-    helperText,
   } = props;
   const className = useStyles();
   return (
     <>
-      {isSelected ? (
-        <TextField
-          id="outlined-select-currency-native"
-          select
-          label={label}
+      <FormControl
+        className={clsx(className.textField, classNameStyle)}
+        variant="outlined"
+      >
+        <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
+          {label}
+        </InputLabel>
+        <OutlinedInput
+          id={id ?? "outlined-adornment-amount"}
+          type={type ?? "text"}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          SelectProps={{
-            native: true,
-          }}
-          helperText={helperText}
-          variant="outlined"
+          required={require}
           style={{ height: 50 }}
           className={clsx(className.textField, classNameStyle)}
         >

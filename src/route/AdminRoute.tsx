@@ -7,9 +7,8 @@ import OptionScreen from "../app/admin/option/OptionScreen";
 import ProductAdminScreen from "../app/admin/product/ProductAdminScreen";
 import TagScreen from "../app/admin/tag/TagScreen";
 import UserScreen from "../app/admin/user/UserScreen";
-import VoucherScreen from "../app/admin/voucher/VoucherScreen";
 import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
-import { getAdmin, getToken } from "../app/service/StorageService";
+import { getToken } from "../app/service/StorageService";
 
 export const PRIVATE_ROUTE_ADMIN = [
   {
@@ -51,8 +50,8 @@ export const PRIVATE_ROUTE_ADMIN = [
 ];
 
 export function PrivateRouteAdmin(props: { children: any; isAdmin?: boolean }) {
-  const { children } = props;
+  const { children, isAdmin } = props;
   const token = getToken();
-  const admin = getAdmin();
-  return token && admin ? children : <Navigate replace to={ROUTE.LOGIN} />;
+  return children;
+  return token && isAdmin ? children : <Navigate replace to={ROUTE.LOGIN} />;
 }

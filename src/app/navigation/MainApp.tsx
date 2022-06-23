@@ -6,17 +6,16 @@ import {
   PrivateRoute,
   PRIVATE_ROUTE,
 } from "../../route/DefineRoute";
-import { useAppSelector } from "../hooks";
 
 const MainApp = (props: { isAdmin: boolean }) => {
-  const { data } = useAppSelector((state) => state.swicth);
+  const { isAdmin } = props;
   return (
     <Routes>
       {PRIVATE_ROUTE.map((e, index) => {
         return (
           <Route
             path={e.route}
-            element={<PrivateRoute isAdmin={data}>{e.screen}</PrivateRoute>}
+            element={<PrivateRoute isAdmin={isAdmin}>{e.screen}</PrivateRoute>}
             key={index}
           />
         );
@@ -25,7 +24,7 @@ const MainApp = (props: { isAdmin: boolean }) => {
         return (
           <Route
             path={e.route}
-            element={<AuthRoute isAdmin={data}>{e.screen}</AuthRoute>}
+            element={<AuthRoute isAdmin={isAdmin}>{e.screen}</AuthRoute>}
             key={index}
           />
         );
@@ -35,7 +34,9 @@ const MainApp = (props: { isAdmin: boolean }) => {
           <Route
             path={e.route}
             element={
-              <PrivateRouteAdmin isAdmin={data}>{e.screen}</PrivateRouteAdmin>
+              <PrivateRouteAdmin isAdmin={isAdmin}>
+                {e.screen}
+              </PrivateRouteAdmin>
             }
             key={index}
           />

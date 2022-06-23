@@ -9,14 +9,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import Logout from "@material-ui/icons/ExitToApp";
 import clsx from "clsx";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { updateSwitchRole } from "../admin/sliceSwitchRole/switchRoleSlice";
-import { LIST_MENU_DRAWER, ROUTE } from "../contant/Contant";
-import { useAppDispatch } from "../hooks";
-import { colors } from "../utils/color";
+import React from "react";
+import { Link } from "react-router-dom";
+import { LIST_MENU_DRAWER } from "../contant/Contant";
 
 const drawerWidth = 240;
 
@@ -90,13 +86,10 @@ interface Props {
 export default function MiniDrawer(props: Props) {
   const { open, setOpen } = props;
   const classes = useStyles();
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const handleDrawerClose = () => {
     setOpen(!open);
   };
-  const [selected, setSelected] = useState(0);
 
   return (
     <div className={classes.root}>
@@ -124,24 +117,18 @@ export default function MiniDrawer(props: Props) {
           {LIST_MENU_DRAWER.map((val, index) => {
             const Icon = val.icon;
             return (
-              <ListItem
-                button
+              <Link
+                to={val.route}
+                style={{ textDecorationLine: "none", color: "black" }}
                 key={index}
-                onClick={() => {
-                  navigate(val.route);
-                  setSelected(index);
-                }}
               >
-                <ListItemIcon>
-                  <Icon color={selected === index ? "primary" : "inherit"} />
-                </ListItemIcon>
-                <ListItemText
-                  primary={val.name}
-                  style={{
-                    color: selected === index ? colors.black : colors.gray59,
-                  }}
-                />
-              </ListItem>
+                <ListItem button key={index}>
+                  <ListItemIcon>
+                    <Icon />
+                  </ListItemIcon>
+                  <ListItemText primary={val.name} />
+                </ListItem>
+              </Link>
             );
           })}
           <button

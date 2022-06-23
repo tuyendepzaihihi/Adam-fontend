@@ -128,7 +128,6 @@ export default function CategoryScreen() {
     setAnchorEl(null);
     setAnchorElData(null);
   };
-
   const handleProfileMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     item: any
@@ -190,7 +189,6 @@ export default function CategoryScreen() {
             dispatch(deleteCategory({ array: selected }));
             setSelected([]);
           }}
-          label={"Danh mục sản phẩm"}
         />
         <TableContainer>
           <Table
