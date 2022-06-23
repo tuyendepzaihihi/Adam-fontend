@@ -12,7 +12,6 @@ import {
 } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
-
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
