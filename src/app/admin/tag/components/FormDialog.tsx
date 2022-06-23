@@ -10,10 +10,15 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { Tag } from "../../../contant/IntefaceContaint";
+import { ResultApi, Tag } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createTag, updateTag } from "../slice/TagAdminSlice";
-import { CreateDto, requestPostCreateTag } from "../TagApi";
+import { chaneLoading, createTag, updateTag } from "../slice/TagAdminSlice";
+import {
+  CreateDto,
+  requestPostCreateTag,
+  requestPutUpdateTag,
+  UpdateDto,
+} from "../TagApi";
 interface Props {
   open: any;
   handleClose: any;
@@ -36,33 +41,39 @@ const initialValues: PropsCreateTag = {
 };
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
+  const { handleClose, open, anchorElData, type } = props;
 
-  const onSubmit = (data: PropsCreateTag) => {
+  const onSubmit = async (data: PropsCreateTag) => {
     const { tag_name } = data;
-    const item: Tag = {
+    const item: UpdateDto = {
       ...anchorElData.item,
-      tag_name: tag_name,
+      tagName: tag_name,
     };
-    dispatch(updateTag({ item: item }));
-    handleClose();
+    try {
+      dispatch(chaneLoading({ statusLoading: true }));
+      const res: ResultApi<Tag> = await requestPutUpdateTag(item);
+      dispatch(updateTag({ item: res.data }));
+      handleClose();
+      dispatch(chaneLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(chaneLoading({ statusLoading: false }));
+    }
   };
 
   const onSubmitCreate = async (dataCreate: PropsCreateTag) => {
     const { tag_name } = dataCreate;
-    // const item: Tag = {
-    //   tag_name: tag_name,
-    //   id: data[data.length - 1].id + 1,
-    //   status: 1,
-    // };
     const itemCreate: CreateDto = {
       tagName: tag_name,
     };
-    const res = await requestPostCreateTag(itemCreate);
-    console.log({ res });
-
-    // dispatch(createTag({ item: item }));
-    // handleClose();
+    try {
+      dispatch(chaneLoading({ statusLoading: true }));
+      const res: ResultApi<Tag> = await requestPostCreateTag(itemCreate);
+      dispatch(createTag({ item: res.data }));
+      handleClose();
+      dispatch(chaneLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(chaneLoading({ statusLoading: false }));
+    }
   };
 
   return (
@@ -80,7 +91,7 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                tag_name: anchorElData?.item.tag_name ?? "",
+                tag_name: anchorElData?.item.tagName ?? "",
               }
         }
         onSubmit={(data) => {

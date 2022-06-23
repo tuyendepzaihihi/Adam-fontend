@@ -18,7 +18,11 @@ import {
   requestPutUpdateSize,
   UpdateSizeDto,
 } from "../OptionApi";
-import { createSize, updateSize } from "../slice/OptionSizeSlice";
+import {
+  changeLoading,
+  createSize,
+  updateSize,
+} from "../slice/OptionSizeSlice";
 interface Props {
   open: any;
   handleClose: any;
@@ -42,23 +46,37 @@ const FormDialogSize = (props: Props) => {
 
   const onSubmit = async (data: PropsCreateSize) => {
     const { Size_name } = data;
-    const payload: UpdateSizeDto = {
-      ...anchorElData,
-      sizeName: Size_name,
-    };
-    const result: ResultApi<OptionSize> = await requestPutUpdateSize(payload);
-    dispatch(updateSize({ item: result.data }));
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      const payload: UpdateSizeDto = {
+        ...anchorElData,
+        sizeName: Size_name,
+      };
+      const result: ResultApi<OptionSize> = await requestPutUpdateSize(payload);
+      dispatch(updateSize({ item: result.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const onSubmitCreate = async (dataCreate: PropsCreateSize) => {
     const { Size_name } = dataCreate;
-    const payload: CreateSizeDto = {
-      sizeName: Size_name,
-    };
-    const result: ResultApi<OptionSize> = await requestPostCreateSize(payload);
-    dispatch(createSize({ item: result.data }));
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      const payload: CreateSizeDto = {
+        sizeName: Size_name,
+      };
+      const result: ResultApi<OptionSize> = await requestPostCreateSize(
+        payload
+      );
+      dispatch(createSize({ item: result.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (

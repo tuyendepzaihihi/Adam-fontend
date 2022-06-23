@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LIST_PRODUCT } from "../../../contant/ContaintDataAdmin";
-import { DataState, ProductAdmin } from "../../../contant/IntefaceContaint";
+import {
+  DataState,
+  ProductAdmin,
+  ResultApi,
+} from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+import { GetProductDto, requestGetProductAll } from "../ProductAdminApi";
 
 const initialState: DataState<ProductAdmin[]> = {
   data: LIST_PRODUCT,
@@ -11,9 +16,9 @@ const initialState: DataState<ProductAdmin[]> = {
 
 export const incrementAsyncProductAdmin = createAsyncThunk(
   "product/admin",
-  async () => {
-    // call api here
-    return true;
+  async (payload: GetProductDto) => {
+    const res: ResultApi<ProductAdmin[]> = await requestGetProductAll(payload);
+    return res.data;
   }
 );
 
@@ -55,7 +60,6 @@ export const productAdminSlice = createSlice({
       .addCase(incrementAsyncProductAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = [];
       })
       .addCase(incrementAsyncProductAdmin.rejected, (state) => {
         state.isError = true;

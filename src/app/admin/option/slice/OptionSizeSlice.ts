@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { OPTIONS_DATA } from "../../../contant/ContaintDataAdmin";
 import {
   DataState,
   OptionSize,
@@ -9,7 +8,7 @@ import { createNotification } from "../../../utils/MessageUtil";
 import { requestGetSizeAll } from "../OptionApi";
 
 const initialState: DataState<OptionSize[]> = {
-  data: OPTIONS_DATA.sizes,
+  data: [],
   isError: false,
   isLoading: false,
 };
@@ -50,6 +49,12 @@ export const optionSizeSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -68,5 +73,11 @@ export const optionSizeSlice = createSlice({
       });
   },
 });
-export const { createSize, deleteSize, updateSize } = optionSizeSlice.actions;
+export const {
+  createSize,
+  deleteSize,
+  updateSize,
+  changeError,
+  changeLoading,
+} = optionSizeSlice.actions;
 export default optionSizeSlice.reducer;

@@ -1,10 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_MATERIAL } from "../../../contant/ContaintDataAdmin";
-import { DataState, Material } from "../../../contant/IntefaceContaint";
+import {
+  DataState,
+  Material,
+  ResultApi,
+} from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+import { requestGetMaterialAll } from "../MaterialApi";
 
 const initialState: DataState<Material[]> = {
-  data: LIST_MATERIAL,
+  data: [],
   isError: false,
   isLoading: false,
 };
@@ -12,8 +16,8 @@ const initialState: DataState<Material[]> = {
 export const incrementAsyncMaterialAdmin = createAsyncThunk(
   "material/admin",
   async () => {
-    // call api here
-    return true;
+    const res: ResultApi<Material[]> = await requestGetMaterialAll();
+    return res;
   }
 );
 
@@ -45,6 +49,12 @@ export const materialAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -55,7 +65,7 @@ export const materialAdminSlice = createSlice({
       .addCase(incrementAsyncMaterialAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = [];
+        state.data = action.payload.data;
       })
       .addCase(incrementAsyncMaterialAdmin.rejected, (state) => {
         state.isError = true;
@@ -63,6 +73,11 @@ export const materialAdminSlice = createSlice({
       });
   },
 });
-export const { createMaterial, updateMaterial, deleteMaterial } =
-  materialAdminSlice.actions;
+export const {
+  createMaterial,
+  updateMaterial,
+  deleteMaterial,
+  changeError,
+  changeLoading,
+} = materialAdminSlice.actions;
 export default materialAdminSlice.reducer;

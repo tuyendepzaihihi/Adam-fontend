@@ -1,19 +1,42 @@
 import {
   Button,
+  Chip,
+  createStyles,
   DialogActions,
   DialogContent,
   DialogContentText,
+  FormControl,
+  Input,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+  Theme,
+  useTheme,
 } from "@material-ui/core";
 import { Formik } from "formik";
 import { useState } from "react";
 import TextInputComponent from "../../../../component/TextInputComponent";
+import { ProductAdmin, ResultApi } from "../../../../contant/IntefaceContaint";
+import { useAppSelector } from "../../../../hooks";
+import { colors } from "../../../../utils/color";
 import {
-  LIST_BRANCH,
-  LIST_CATEGORY,
-  LIST_TAG,
-} from "../../../../contant/ContaintDataAdmin";
-import { ProductAdmin } from "../../../../contant/IntefaceContaint";
+  CreateProductDto,
+  requestPostCreateProduct,
+} from "../../ProductAdminApi";
 import { PropsCreateProduct } from "../DialogCreateProduct";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 interface Props {
   initialValues: PropsCreateProduct;
   validateProduct: any;
@@ -22,33 +45,67 @@ interface Props {
   steps: any;
   dataProduct: ProductAdmin | null;
 }
+
+function getStyles(name: string, personName: string[], theme: Theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
 const ComponentFormCreate = (props: Props) => {
   const { initialValues, onSubmit, validateProduct, handleClose, dataProduct } =
     props;
-  const [branch, setBranch] = useState<string | null>(
-    dataProduct ? `${dataProduct.branch_id}` : null
-  );
-  const [tag, setTag] = useState<string | null>(
-    dataProduct ? `${dataProduct.tag_id}` : null
-  );
+  const classes = useStyles();
+  const theme = useTheme();
+
+  const tags = useAppSelector((state) => state.tagAdmin).data;
+  const materials = useAppSelector((state) => state.materialAdmin).data;
+  const categories = useAppSelector((state) => state.categoryAdmin).data;
+
+  const [personTag, setPersonTag] = useState<string[]>([]);
+  const [personMaterial, setPersonMaterial] = useState<string[]>([]);
+
+  const handleChangeTag = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setPersonTag(event.target.value as string[]);
+  };
+  const handleChangeMaterial = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    setPersonMaterial(event.target.value as string[]);
+  };
+
   const [category, setCategory] = useState<string | null>(
     dataProduct ? `${dataProduct.category_id}` : null
   );
-  const handleSubmitCreate = (data: PropsCreateProduct) => {
+  const handleSubmitCreate = async (data: PropsCreateProduct) => {
     const { description, product_name } = data;
-    const item: ProductAdmin = {
-      branch_id: Number(branch),
-      category_id: Number(category),
+    let materialList: number[] = [];
+    materials.map((e) => {
+      let res = personMaterial.find((m) => m.includes(`${e.materialName}`));
+      if (res !== undefined) materialList = materialList.concat([e.id]);
+    });
+
+    let tagsList: number[] = [];
+    tags.map((e) => {
+      let res = personTag.find((m) => m.includes(`${e.tagName}`));
+      if (res !== undefined) tagsList = tagsList.concat([e.id]);
+    });
+
+    const itemCreate: CreateProductDto = {
+      categoryId: Number(category) ?? 0,
       description: description,
-      product_name: product_name,
-      status: 1,
-      is_delete: 1,
-      create_date: "25/05/2021",
-      id: Math.random() * 1000,
+      productName: product_name,
+      tagProductIdList: tagsList,
+      materialProductIdList: materialList,
       image: "",
-      tag_id: Number(tag),
     };
-    onSubmit(item);
+    const res: ResultApi<ProductAdmin> = await requestPostCreateProduct(
+      itemCreate
+    );
+    onSubmit(res.data);
   };
   return (
     <Formik
@@ -97,48 +154,6 @@ const ComponentFormCreate = (props: Props) => {
               onBlur={handleBlur("description")}
             />
             <TextInputComponent
-              label="Branch"
-              value={branch}
-              onChange={(event: any) => {
-                const value = event.target.value;
-                setBranch(value);
-              }}
-              isSelected={true}
-              childrentSeleted={
-                <>
-                  <option key={0} value={0}>
-                    Chưa chọn
-                  </option>
-                  {LIST_BRANCH.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.branch_name}
-                    </option>
-                  ))}
-                </>
-              }
-            />
-            <TextInputComponent
-              label="Tag"
-              value={tag}
-              onChange={(event: any) => {
-                const value = event.target.value;
-                setTag(value);
-              }}
-              isSelected={true}
-              childrentSeleted={
-                <>
-                  <option key={0} value={0}>
-                    Chưa chọn
-                  </option>
-                  {LIST_TAG.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.tag_name}
-                    </option>
-                  ))}
-                </>
-              }
-            />
-            <TextInputComponent
               label="Category"
               value={category}
               onChange={(event: any) => {
@@ -151,7 +166,7 @@ const ComponentFormCreate = (props: Props) => {
                   <option key={0} value={0}>
                     Chưa chọn
                   </option>
-                  {LIST_CATEGORY.map((option) => (
+                  {categories.map((option) => (
                     <option key={option.id} value={option.id}>
                       {option.categoryName}
                     </option>
@@ -159,6 +174,87 @@ const ComponentFormCreate = (props: Props) => {
                 </>
               }
             />
+            <div>
+              <FormControl className={classes.formControl} variant="outlined">
+                <InputLabel id="demo-mutiple-chip-label">Tag</InputLabel>
+                <Select
+                  labelId="demo-mutiple-chip-label"
+                  id="demo-mutiple-chip"
+                  multiple
+                  value={personTag}
+                  onChange={handleChangeTag}
+                  input={<Input id="select-multiple-chip" />}
+                  renderValue={(selected) => (
+                    <div className={classes.chips}>
+                      {(selected as string[]).map((value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          className={classes.chip}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {tags.map((tag, index) => (
+                    <MenuItem
+                      key={index}
+                      value={tag.tagName}
+                      style={
+                        (getStyles(tag.tagName, personTag, theme),
+                        { marginTop: 5, marginRight: 5, marginLeft: 5 })
+                      }
+                    >
+                      {tag.tagName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+
+            <div>
+              <FormControl className={classes.formControl} variant="outlined">
+                <InputLabel id="demo-mutiple-chip-label">Material</InputLabel>
+                <Select
+                  labelId="demo-mutiple-chip-label"
+                  id="demo-mutiple-chip"
+                  multiple
+                  value={personMaterial}
+                  onChange={handleChangeMaterial}
+                  input={<Input id="select-multiple-chip" />}
+                  renderValue={(selected) => (
+                    <div className={classes.chips}>
+                      {(selected as string[]).map((value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          className={classes.chip}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {materials.map((material, index) => (
+                    <MenuItem
+                      key={index}
+                      value={material.materialName}
+                      style={
+                        (getStyles(
+                          material.materialName,
+                          personMaterial,
+                          theme
+                        ),
+                        { marginTop: 5, marginRight: 5, marginLeft: 5 })
+                      }
+                    >
+                      {material.materialName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">
@@ -175,3 +271,23 @@ const ComponentFormCreate = (props: Props) => {
   );
 };
 export default ComponentFormCreate;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formControl: {
+      width: "100%",
+      borderColor: colors.grayC4,
+      borderWidth: 0.8,
+      marginTop: 20,
+    },
+    chips: {
+      display: "flex",
+      flexWrap: "wrap",
+    },
+    chip: {
+      margin: 2,
+    },
+    noLabel: {
+      marginTop: theme.spacing(3),
+    },
+  })
+);

@@ -17,16 +17,23 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import LoadingProgress from "../../component/LoadingProccess";
 import { headCells, headCellsMaterial } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { Material } from "../../contant/IntefaceContaint";
+import { Material, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteMaterial, updateMaterial } from "./slice/MaterialAdminSlice";
+import { requestPutUpdateMaterial, UpdateDto } from "./MaterialApi";
+import {
+  changeLoading,
+  deleteMaterial,
+  incrementAsyncMaterialAdmin,
+  updateMaterial,
+} from "./slice/MaterialAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,8 +77,18 @@ export default function MaterialScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.materialAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.materialAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    await dispatch(incrementAsyncMaterialAdmin());
+  };
+
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
@@ -111,6 +128,21 @@ export default function MaterialScreen() {
   ) => {
     setAnchorEl(event.currentTarget);
     setAnchorElData({ item: item });
+  };
+
+  const handleUpdate = async (row: any) => {
+    const payload: UpdateDto = {
+      ...row,
+      isDelete: !row.isDelete,
+    };
+    try {
+      dispatch(changeLoading({ statusLoading: true }));
+      const res: ResultApi<Material> = await requestPutUpdateMaterial(payload);
+      dispatch(updateMaterial({ item: res.data }));
+      dispatch(changeLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(changeLoading({ statusLoading: false }));
+    }
   };
 
   const renderMenu = (
@@ -229,18 +261,12 @@ export default function MaterialScreen() {
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.material_name}</TableCell>
+                        <TableCell align="right">{row.materialName}</TableCell>
 
                         <TableCell align="right">
                           <Switch
-                            checked={row.status === 1 ? true : false}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                status: row.status === 1 ? 0 : 1,
-                              };
-                              dispatch(updateMaterial({ item: item }));
-                            }}
+                            checked={row.isDelete ? true : false}
+                            onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}
                             color="primary"
@@ -284,6 +310,7 @@ export default function MaterialScreen() {
         type={typeDialog}
         data={data}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

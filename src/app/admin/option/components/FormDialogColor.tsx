@@ -10,9 +10,19 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { OptionColor } from "../../../contant/IntefaceContaint";
+import { OptionColor, ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createColor, updateColor } from "../slice/OptionColorSlice";
+import {
+  CreateColorDto,
+  requestPostCreateColor,
+  requestPutUpdateColor,
+  UpdateColorDto,
+} from "../OptionApi";
+import {
+  changeLoading,
+  createColor,
+  updateColor,
+} from "../slice/OptionColorSlice";
 interface Props {
   open: any;
   handleClose: any;
@@ -32,27 +42,39 @@ const initialValues: PropsCreateColor = {
 };
 const FormDialogColor = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
+  const { handleClose, open, anchorElData, type } = props;
 
-  const onSubmit = (data: PropsCreateColor) => {
+  const onSubmit = async (data: PropsCreateColor) => {
     const { color_name } = data;
-    const item: OptionColor = {
-      ...anchorElData.item,
-      color_name: color_name,
-    };
-    dispatch(updateColor({ item: item }));
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      const item: UpdateColorDto = {
+        ...anchorElData.item,
+        colorName: color_name,
+      };
+      const res: ResultApi<OptionColor> = await requestPutUpdateColor(item);
+      dispatch(updateColor({ item: res.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateColor) => {
+  const onSubmitCreate = async (dataCreate: PropsCreateColor) => {
     const { color_name } = dataCreate;
-    const item: OptionColor = {
-      colorName: color_name,
-      id: data[data.length - 1].id + 1,
-      status: 1,
-    };
-    dispatch(createColor({ item: item }));
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      const item: CreateColorDto = {
+        colorName: color_name,
+      };
+      const res: ResultApi<OptionColor> = await requestPostCreateColor(item);
+      dispatch(createColor({ item: res.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (

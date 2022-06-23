@@ -8,14 +8,20 @@ import {
   Stepper,
   Theme,
 } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
+import LoadingProgress from "../../../component/LoadingProccess";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import {
   DetailProductAdmin,
   ProductAdmin,
 } from "../../../contant/IntefaceContaint";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { incrementAsyncCategoryAdmin } from "../../category/slice/CategoryAdminSlice";
+import { incrementAsyncMaterialAdmin } from "../../material/slice/MaterialAdminSlice";
+import { incrementAsyncOptionColor } from "../../option/slice/OptionColorSlice";
+import { incrementAsyncOptionSize } from "../../option/slice/OptionSizeSlice";
+import { incrementAsyncTagAdmin } from "../../tag/slice/TagAdminSlice";
 import ComponentFormCreate from "./create/ComponentFormCreate";
 import CreateProductDetail from "./create/CreateProductDetail";
 import ListProductDetail from "./create/ListProductDeail";
@@ -64,6 +70,27 @@ const FormDialogProductCreate = (props: Props) => {
   const { handleClose, open, anchorElData, type, data } = props;
   const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(null);
   const [option, setOption] = useState<any[]>([]);
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getData = async () => {
+    await dispatch(incrementAsyncMaterialAdmin());
+    await dispatch(incrementAsyncTagAdmin());
+    await dispatch(incrementAsyncCategoryAdmin());
+    await dispatch(incrementAsyncOptionColor());
+    await dispatch(incrementAsyncOptionSize());
+  };
+
+  const loadingTags = useAppSelector((state) => state.tagAdmin).isLoading;
+  const loadingMaterials = useAppSelector(
+    (state) => state.materialAdmin
+  ).isLoading;
+  const loadingCategories = useAppSelector(
+    (state) => state.categoryAdmin
+  ).isLoading;
+
   const onClose = () => {
     handleReset();
     handleClose();
@@ -138,6 +165,9 @@ const FormDialogProductCreate = (props: Props) => {
           <div>{getStepContent(activeStep)}</div>
         </div>
       </div>
+      {(loadingCategories || loadingMaterials || loadingTags) && (
+        <LoadingProgress />
+      )}
     </Dialog>
   );
 };

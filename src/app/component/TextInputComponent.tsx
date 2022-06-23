@@ -135,3 +135,5 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+export const textInputStyles = useStyles;
