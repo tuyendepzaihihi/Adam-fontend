@@ -2,9 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { rows_example_user } from "../../../contant/ContaintDataAdmin";
 import {
   DataState,
+  ResultApi,
   UserAdminInteface,
 } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+import { requestGetUserAll } from "../UserApi";
 
 const initialState: DataState<UserAdminInteface[]> = {
   data: rows_example_user,
@@ -15,7 +17,9 @@ const initialState: DataState<UserAdminInteface[]> = {
 export const incrementAsyncUserAdmin = createAsyncThunk(
   "user/admin",
   async () => {
-    // call api here
+    const res: ResultApi<any> = await requestGetUserAll();
+    console.log({ res });
+
     return true;
   }
 );
@@ -58,7 +62,6 @@ export const userAdminSlice = createSlice({
       .addCase(incrementAsyncUserAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = [];
       })
       .addCase(incrementAsyncUserAdmin.rejected, (state) => {
         state.isError = true;

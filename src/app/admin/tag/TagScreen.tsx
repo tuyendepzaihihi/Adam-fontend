@@ -20,18 +20,20 @@ import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsTag } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { Tag } from "../../contant/IntefaceContaint";
+import { ResultApi, Tag } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
 import {
+  chaneLoading,
   deleteTag,
   incrementAsyncTagAdmin,
   updateTag,
 } from "./slice/TagAdminSlice";
-import { requestGetTagAll } from "./TagApi";
+import { requestPutUpdateTag, UpdateDto } from "./TagApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,7 +77,7 @@ export default function TagScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.tagAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.tagAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
 
   useEffect(() => {
@@ -167,6 +169,21 @@ export default function TagScreen() {
     </Menu>
   );
 
+  const handleUpdate = async (row: any) => {
+    const payload: UpdateDto = {
+      ...row,
+      isDelete: !row.isDelete,
+    };
+    try {
+      dispatch(chaneLoading({ statusLoading: true }));
+      const res: ResultApi<Tag> = await requestPutUpdateTag(payload);
+      dispatch(updateTag({ item: res.data }));
+      dispatch(chaneLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(chaneLoading({ statusLoading: false }));
+    }
+  };
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -244,18 +261,12 @@ export default function TagScreen() {
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.tag_name}</TableCell>
+                        <TableCell align="right">{row.tagName}</TableCell>
 
                         <TableCell align="right">
                           <Switch
-                            checked={row.status === 1 ? true : false}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                status: row.status === 1 ? 0 : 1,
-                              };
-                              dispatch(updateTag({ item: item }));
-                            }}
+                            checked={row.isDelete ? true : false}
+                            onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}
                             color="primary"
@@ -299,6 +310,7 @@ export default function TagScreen() {
         type={typeDialog}
         data={data}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

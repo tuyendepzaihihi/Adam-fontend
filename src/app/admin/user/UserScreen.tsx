@@ -17,7 +17,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCells } from "../../contant/ContaintDataAdmin";
@@ -26,7 +26,11 @@ import { UserAdminInteface } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteUser, updateUser } from "./slice/UserAdminSlice";
+import {
+  deleteUser,
+  incrementAsyncUserAdmin,
+  updateUser,
+} from "./slice/UserAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,6 +76,15 @@ export default function UserScreen() {
 
   const { data } = useAppSelector((state) => state.userAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getData = async () => {
+    await dispatch(incrementAsyncUserAdmin());
+  };
+
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);

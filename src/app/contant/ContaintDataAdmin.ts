@@ -245,24 +245,24 @@ export const headCellsMaterial: HeadCell<Material>[] = [
     label: "Id",
   },
   {
-    id: "material_name",
+    id: "materialName",
     numeric: true,
     disablePadding: false,
     label: "Material name",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isDelete", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 export const LIST_MATERIAL: Material[] = [
   {
     id: 1,
-    status: 2,
-    material_name: "Lụa mềm",
+    isDelete: true,
+    materialName: "Lụa mềm",
   },
   {
     id: 2,
-    status: 1,
-    material_name: "Cotton",
+    isDelete: true,
+    materialName: "Cotton",
   },
 ];
 
@@ -303,13 +303,13 @@ export const headCellsBranch: HeadCell<Branch>[] = [
 export const LIST_TAG: Tag[] = [
   {
     id: 1,
-    status: 2,
-    tag_name: "Tag 1",
+    isDelete: false,
+    tagName: "Tag 1",
   },
   {
     id: 2,
-    status: 1,
-    tag_name: "Tag 2",
+    isDelete: false,
+    tagName: "Tag 2",
   },
 ];
 
@@ -321,12 +321,12 @@ export const headCellsTag: HeadCell<Tag>[] = [
     label: "Id",
   },
   {
-    id: "tag_name",
+    id: "tagName",
     numeric: true,
     disablePadding: false,
     label: "Tag name",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isDelete", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 export const OPTIONS_DATA: DataStateOption = {
@@ -418,7 +418,7 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
 export const LIST_PRODUCT: ProductAdmin[] = [
   {
     product_name: "Áo",
-    branch_id: 1,
+
     category_id: 1,
     description: "khanh",
     image: R.images.img_product,
@@ -430,7 +430,7 @@ export const LIST_PRODUCT: ProductAdmin[] = [
   },
   {
     product_name: "Áo sơ mi",
-    branch_id: 1,
+
     category_id: 1,
     description: "khanh",
     image: R.images.img_product,
@@ -442,7 +442,7 @@ export const LIST_PRODUCT: ProductAdmin[] = [
   },
   {
     product_name: "Áo gió",
-    branch_id: 1,
+
     category_id: 1,
     description: "khanh",
     image: R.images.img_product,

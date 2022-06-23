@@ -63,13 +63,13 @@ export interface AddressOrderInterface {
 
 export interface Material {
   id: any;
-  material_name: string;
-  status: number;
+  materialName: string;
+  isDelete: boolean;
 }
 export interface Tag {
   id: any;
-  tag_name: string;
-  status: number;
+  tagName: string;
+  isDelete: boolean;
 }
 export interface Branch {
   id: any;
@@ -107,7 +107,6 @@ export interface ProductAdmin {
   image: string;
   is_delete: number;
   category_id: any;
-  branch_id: number;
   id: any;
   status: any;
   tag_id: any;

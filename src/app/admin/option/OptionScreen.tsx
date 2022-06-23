@@ -40,7 +40,7 @@ import {
   incrementAsyncOptionColor,
   updateColor,
 } from "./slice/OptionColorSlice";
-import { Delete } from "@material-ui/icons";
+import LoadingProgress from "../../component/LoadingProccess";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,6 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function OptionScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
+  const [expanded, setExpanded] = React.useState<string | false>("panel1");
+
+  const handleChange =
+    (panel: string) => (event: React.ChangeEvent<{}>, newExpanded: boolean) => {
+      setExpanded(newExpanded ? panel : false);
+    };
   const [orderSize, setOrderSize] = React.useState<Order>("asc");
   const [orderBySize, setOrderBySize] = React.useState<keyof OptionSize>("id");
   const [selectedSize, setSelectedSize] = React.useState<string[]>([]);
@@ -87,8 +93,9 @@ export default function OptionScreen() {
   const isMenuOpenSize = Boolean(anchorElSize);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.optionAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.optionAdmin);
   const dataColor = useAppSelector((state) => state.colorAdmin).data;
+  const loadingColor = useAppSelector((state) => state.colorAdmin).isLoading;
 
   const [typeDialogSize, setTypeDialogSize] = useState(TYPE_DIALOG.CREATE);
   const handleCloseSize = () => {
@@ -288,7 +295,11 @@ export default function OptionScreen() {
       <Paper className={classes.paper}>
         <Typography variant="h5">Option Manager</Typography>
         <div className={classes.root}>
-          <Accordion>
+          <Accordion
+            square
+            expanded={expanded === "panel1"}
+            onChange={handleChange("panel1")}
+          >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-label="Expand"
@@ -448,7 +459,11 @@ export default function OptionScreen() {
         </div>
 
         <div className={classes.root}>
-          <Accordion>
+          <Accordion
+            square
+            expanded={expanded === "panel2"}
+            onChange={handleChange("panel2")}
+          >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-label="Expand"
@@ -626,6 +641,7 @@ export default function OptionScreen() {
         type={typeDialogSize}
         data={data}
       />
+      {(isLoading || loadingColor) && <LoadingProgress />}
     </div>
   );
 }

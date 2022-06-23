@@ -1,11 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_TAG } from "../../../contant/ContaintDataAdmin";
 import { DataState, ResultApi, Tag } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
 import { requestGetTagAll } from "../TagApi";
 
 const initialState: DataState<Tag[]> = {
-  data: LIST_TAG,
+  data: [],
   isError: false,
   isLoading: false,
 };
@@ -30,10 +29,18 @@ export const tagAdminSlice = createSlice({
         if (e.id === item.id) return item;
         else return e;
       });
+      createNotification({
+        type: "success",
+        message: "Cập nhật thành công",
+      });
     },
     createTag: (state, action) => {
       let item: Tag = action.payload?.item;
       state.data = state.data?.concat([item]);
+      createNotification({
+        type: "success",
+        message: "Thêm mới thành công",
+      });
     },
     deleteTag: (state, action) => {
       let array = state.data;
@@ -46,6 +53,12 @@ export const tagAdminSlice = createSlice({
         type: "success",
         message: "Xoá thành công",
       });
+    },
+    chaneLoading: (state, action) => {
+      state.isLoading = action.payload.statusLoading;
+    },
+    chaneError: (state, action) => {
+      state.isError = action.payload.statusError;
     },
   },
   extraReducers: (builder) => {
@@ -65,5 +78,6 @@ export const tagAdminSlice = createSlice({
       });
   },
 });
-export const { createTag, updateTag, deleteTag } = tagAdminSlice.actions;
+export const { createTag, updateTag, deleteTag, chaneError, chaneLoading } =
+  tagAdminSlice.actions;
 export default tagAdminSlice.reducer;

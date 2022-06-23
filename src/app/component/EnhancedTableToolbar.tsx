@@ -59,7 +59,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
               setTextFilter(event.target.value);
             }}
           />
-          {!isNonSearchTime && (
+          {/* {!isNonSearchTime && (
             <div className={classes.containerDate}>
               <div>
                 <p>Start date</p>
@@ -85,8 +85,8 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
                 />
               </div>
             </div>
-          )}
-          <FormControl className={classes.formControl}>
+          )} */}
+          {/* <FormControl className={classes.formControl}>
             <InputLabel
               id="demo-simple-select-label"
               style={{ color: colors.gray59 }}
@@ -106,7 +106,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
               <MenuItem value={10}>Active</MenuItem>
               <MenuItem value={20}>InActive</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
         </div>
         <div className={classes.containerButton}>
           <Button

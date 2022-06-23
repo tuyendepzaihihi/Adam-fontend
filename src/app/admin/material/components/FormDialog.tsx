@@ -10,9 +10,19 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { Material } from "../../../contant/IntefaceContaint";
+import { Material, ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createMaterial, updateMaterial } from "../slice/MaterialAdminSlice";
+import {
+  CreateDto,
+  requestPostCreateMaterial,
+  requestPutUpdateMaterial,
+  UpdateDto,
+} from "../MaterialApi";
+import {
+  changeLoading,
+  createMaterial,
+  updateMaterial,
+} from "../slice/MaterialAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
@@ -21,41 +31,53 @@ interface Props {
   data: Material[];
 }
 const validateMaterial = Yup.object({
-  material_name: Yup.string()
+  materialName: Yup.string()
     .required("Vui lòng nhập")
 
     .trim(),
 });
 
 interface PropsCreateMaterial {
-  material_name: string;
+  materialName: string;
 }
 const initialValues: PropsCreateMaterial = {
-  material_name: "",
+  materialName: "",
 };
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
 
-  const onSubmit = (data: PropsCreateMaterial) => {
-    const { material_name } = data;
-    const item: Material = {
+  const onSubmit = async (data: PropsCreateMaterial) => {
+    const { materialName } = data;
+    const item: UpdateDto = {
       ...anchorElData.item,
-      material_name: material_name,
+      materialName: materialName,
     };
-    dispatch(updateMaterial({ item: item }));
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      const res: ResultApi<Material> = await requestPutUpdateMaterial(item);
+      dispatch(updateMaterial({ item: res.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateMaterial) => {
-    const { material_name } = dataCreate;
-    const item: Material = {
-      material_name: material_name,
-      id: data[data.length - 1].id + 1,
-      status: 1,
+  const onSubmitCreate = async (dataCreate: PropsCreateMaterial) => {
+    const { materialName } = dataCreate;
+    const item: CreateDto = {
+      materialName: materialName,
     };
-    dispatch(createMaterial({ item: item }));
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      const res: ResultApi<Material> = await requestPostCreateMaterial(item);
+      dispatch(createMaterial({ item: res.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (
@@ -73,7 +95,7 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                material_name: anchorElData?.item.material_name ?? "",
+                materialName: anchorElData?.item.materialName ?? "",
               }
         }
         onSubmit={(data) => {
@@ -99,12 +121,12 @@ const FormDialog = (props: Props) => {
                 thông tin cần thiết
               </DialogContentText>
               <TextInputComponent
-                error={errors.material_name}
-                touched={touched.material_name}
-                value={values.material_name}
+                error={errors.materialName}
+                touched={touched.materialName}
+                value={values.materialName}
                 label={"Material name"}
-                onChange={handleChange("material_name")}
-                onBlur={handleBlur("material_name")}
+                onChange={handleChange("materialName")}
+                onBlur={handleBlur("materialName")}
               />
             </DialogContent>
             <DialogActions>

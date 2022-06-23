@@ -1,7 +1,6 @@
 import { createStyles, makeStyles, Typography } from "@material-ui/core";
 import R from "../../../../../assets/R";
 import {
-  LIST_BRANCH,
   LIST_CATEGORY,
   LIST_TAG,
 } from "../../../../../contant/ContaintDataAdmin";
@@ -10,9 +9,7 @@ import { colors } from "../../../../../utils/color";
 
 const ProductInfomation = (props: { item: ProductAdmin | null }) => {
   const { item } = props;
-  const renderTag = () => LIST_TAG.find((e) => e.id === item?.tag_id)?.tag_name;
-  const renderBranch = () =>
-    LIST_BRANCH.find((e) => e.id === item?.branch_id)?.branch_name;
+  const renderTag = () => LIST_TAG.find((e) => e.id === item?.tag_id)?.tagName;
   const renderCategory = () =>
     LIST_CATEGORY.find((e) => e.id === item?.category_id)?.categoryName;
   const classes = useStylesInfo();
@@ -35,12 +32,7 @@ const ProductInfomation = (props: { item: ProductAdmin | null }) => {
             {renderCategory() ? renderCategory() : "..."}
           </p>
         </Typography>
-        <Typography className={classes.containerItem}>
-          Branch:{" "}
-          <p className={classes.textValue}>
-            {renderBranch() ? renderBranch() : "..."}
-          </p>
-        </Typography>
+
         <Typography className={classes.containerItem}>
           Tag:{" "}
           <p className={classes.textValue}>

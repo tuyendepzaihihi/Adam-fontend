@@ -17,7 +17,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCellsProduct } from "../../contant/ContaintDataAdmin";
@@ -27,7 +27,11 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import { deleteTag } from "../tag/slice/TagAdminSlice";
 import FormDialogProductCreate from "./components/DialogCreateProduct";
-import { updateProduct } from "./slice/ProductAdminSlice";
+import { GetProductDto } from "./ProductAdminApi";
+import {
+  incrementAsyncProductAdmin,
+  updateProduct,
+} from "./slice/ProductAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,6 +77,20 @@ export default function ProductScreen() {
 
   const { data } = useAppSelector((state) => state.productAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    const payload: GetProductDto = {
+      limit: 20,
+      page: 1,
+    };
+    await dispatch(incrementAsyncProductAdmin(payload));
+  };
+
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);

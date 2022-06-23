@@ -12,7 +12,7 @@ export interface CreateDto {
 }
 
 // function
-export const requestGetMaterialAll = (payload: any) =>
+export const requestGetMaterialAll = (payload?: any) =>
   ApiClient.get("/admin/material/findAll", payload);
 
 export const requestPutUpdateMaterial = (payload: UpdateDto) =>

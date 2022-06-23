@@ -1,6 +1,5 @@
 import { requestGetColorAll } from "./../OptionApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { OPTIONS_DATA } from "../../../contant/ContaintDataAdmin";
 import {
   DataState,
   OptionColor,
@@ -9,7 +8,7 @@ import {
 import { createNotification } from "../../../utils/MessageUtil";
 
 const initialState: DataState<OptionColor[]> = {
-  data: OPTIONS_DATA.colors,
+  data: [],
   isError: false,
   isLoading: false,
 };
@@ -51,6 +50,12 @@ export const optionColorSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -69,6 +74,11 @@ export const optionColorSlice = createSlice({
       });
   },
 });
-export const { createColor, deleteColor, updateColor } =
-  optionColorSlice.actions;
+export const {
+  createColor,
+  deleteColor,
+  updateColor,
+  changeError,
+  changeLoading,
+} = optionColorSlice.actions;
 export default optionColorSlice.reducer;
