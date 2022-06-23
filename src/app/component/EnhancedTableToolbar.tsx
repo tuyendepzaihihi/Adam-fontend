@@ -24,7 +24,7 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
   onCreate: Function;
   onDelete: Function;
-  label: string;
+  label?: string;
   isNonSearchTime?: boolean;
 }
 
