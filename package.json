@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.61",
     "@reduxjs/toolkit": "^1.8.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -19,12 +20,16 @@
     "axios": "^0.26.1",
     "clsx": "^1.1.1",
     "formik": "^2.2.9",
+    "moment": "^2.29.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-material-ui-carousel": "^2.3.11",
+    "react-notifications-component": "^4.0.1",
     "react-redux": "^7.2.6",
     "react-router": "^6.2.2",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "react-slideshow-image": "^3.7.5",
     "typescript": "^4.1.6",
     "yup": "^0.32.11"
   },
@@ -33,7 +38,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "li": " node generateAssetResource.ts prettier --write ./src/app/assets/ImagesAsset.ts "
+    "li": " node generateAssetResource.ts prettier --write ./src/app/assets/ImagesAsset.ts ",
+    "start:prod": "serve -s dist -l 3000"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -1,12 +1,16 @@
 import { Navigate } from "react-router-dom";
 import LoginScreen from "../app/auth/LoginScreen";
 import RegisterScreen from "../app/auth/RegisterScreen";
-import { ROUTE } from "../app/contant/Contant";
+import { ROUTE, ROUTE_ADMIN } from "../app/contant/Contant";
 import HomeScreen from "../app/screen/home/HomeScreen";
 import ProductScreen from "../app/screen/product/ProductScreen";
 import EmailInputScreen from "../app/auth/EmailInputScreen";
-import { getToken } from "../app/service/StorageService";
+import { getAdmin, getToken } from "../app/service/StorageService";
 import ForgotPasswordScreen from "../app/auth/ForgotPasswordScreen";
+import ProductDetailScreen from "../app/screen/product/ProductDetailScreen";
+import CartScreen from "../app/screen/cart/CartScreen";
+import AddressUser from "../app/screen/setting/address/AddressUser";
+import OrderScreen from "../app/screen/order/OrderScreen";
 
 export const AUTH_ROUTE = [
   {
@@ -36,15 +40,37 @@ export const PRIVATE_ROUTE = [
     route: ROUTE.PRODUCT,
     screen: <ProductScreen />,
   },
+  {
+    route: ROUTE.PRODUCT_DETAIL,
+    screen: <ProductDetailScreen />,
+  },
+  {
+    route: ROUTE.CART,
+    screen: <CartScreen />,
+  },
+  {
+    route: ROUTE.ADDRESS,
+    screen: <AddressUser />,
+  },
+  {
+    route: ROUTE.ORDER,
+    screen: <OrderScreen />,
+  },
 ];
 
-export function PrivateRoute(props: { children: any }) {
+export function PrivateRoute(props: { children: any; isAdmin?: boolean }) {
   const { children } = props;
-  return children;
+  const admin = getAdmin();
+  return !admin ? children : <Navigate replace to={ROUTE_ADMIN.DASHBOARD} />;
 }
 
-export function AuthRoute(props: { children: any }) {
+export function AuthRoute(props: { children: any; isAdmin?: boolean }) {
   const { children } = props;
   const token = getToken();
-  return !token ? children : <Navigate replace to="/" />;
+  const admin = getAdmin();
+  return !token ? (
+    children
+  ) : (
+    <Navigate replace to={admin ? ROUTE_ADMIN.DASHBOARD : ROUTE.HOME} />
+  );
 }

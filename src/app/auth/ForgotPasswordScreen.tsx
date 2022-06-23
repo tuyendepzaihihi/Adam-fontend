@@ -1,7 +1,3 @@
-// const EmailInputScreen = () => {
-//   return <div>khanh</div>;
-// };
-// export default EmailInputScreen;
 import {
   Button,
   createStyles,
@@ -12,7 +8,7 @@ import {
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as Yup from "yup";
 import TextInputComponent from "../component/TextInputComponent";
 import { ROUTE, textValidate } from "../contant/Contant";
@@ -21,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      paddingLeft: "40%",
-      paddingRight: "40%",
+      paddingLeft: "30%",
+      paddingRight: "30%",
       paddingTop: 100,
     },
     button: {
@@ -58,6 +54,8 @@ const initValuesLogin: LoginInterface = {
 
 const ForgotPasswordScreen = () => {
   const className = useStyles();
+  const location = useLocation();
+
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(true);
   const [showRePass, setShowRePass] = useState(true);

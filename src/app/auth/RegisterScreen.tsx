@@ -23,8 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      paddingLeft: "20%",
-      paddingRight: "20%",
+
       paddingTop: 100,
     },
     container: {
@@ -67,7 +66,7 @@ interface RegisterInterface {
   phone: string;
   fullname: string;
 }
-const initValuesLogin: RegisterInterface = {
+const initValuesRegister: RegisterInterface = {
   password: "",
   email: "",
   fullname: "",
@@ -80,7 +79,7 @@ const RegisterScreen = () => {
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(true);
   const [showRePass, setShowRePass] = useState(true);
-  const validateLogin = Yup.object({
+  const validateRegister = Yup.object({
     phone: Yup.string()
       .min(10, textValidate.phone.error_validate)
       .max(11, textValidate.phone.error_validate)
@@ -108,19 +107,19 @@ const RegisterScreen = () => {
   });
 
   const formik = useFormik({
-    initialValues: initValuesLogin,
+    initialValues: initValuesRegister,
     onSubmit: (value) => {
       handleSubmit(value);
     },
-    validationSchema: validateLogin,
+    validationSchema: validateRegister,
   });
 
   const handleSubmit = async (data: RegisterInterface) => {
     try {
-      //   const responseLogin: { data: { data: UserInterface } } =
-      //     await requestLogin(data);
-      //   if (responseLogin) {
-      //     // setToken(responseLogin.data.data.token);
+      //   const responseRegister: { data: { data: UserInterface } } =
+      //     await requestRegister(data);
+      //   if (responseRegister) {
+      //     // setToken(responseRegister.data.data.token);
       //     navigate("/");
       //   }
     } catch (e) {}
@@ -197,7 +196,7 @@ const RegisterScreen = () => {
             variant="outlined"
             color="primary"
             onClick={() => {
-              navigate("/login");
+              navigate("/Register");
             }}
             className={className.button}
             style={{

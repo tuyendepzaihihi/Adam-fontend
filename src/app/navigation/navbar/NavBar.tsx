@@ -5,48 +5,73 @@ import InputBase from "@material-ui/core/InputBase";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import { NotInterested } from "@material-ui/icons";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import Delete from "@material-ui/icons/Delete";
 import Favorite from "@material-ui/icons/FavoriteBorder";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
+import FooterComponent from "../../component/footer/FooterComponent";
+import { ROUTE } from "../../contant/Contant";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
-  AuthRoute,
-  AUTH_ROUTE,
-  PrivateRoute,
-  PRIVATE_ROUTE,
-} from "../../../route/DefineRoute";
-import LoginScreen from "../../auth/LoginScreen";
+  deleteItemCart,
+  updateQuantity,
+} from "../../screen/cart/slice/CartSlice";
+import { getAdmin } from "../../service/StorageService";
+import { colors } from "../../utils/color";
+import { formatPrice } from "../../utils/function";
+import { useWindowSize } from "../../utils/helper";
+import { createNotification } from "../../utils/MessageUtil";
+import MiniDrawer from "../Drawer";
 import MainApp from "../MainApp";
 import { useNavBarStyles } from "./styles";
 
 export default function NavBar() {
+  const token = localStorage.getItem("token");
+  const size = useWindowSize();
   const classes = useNavBarStyles();
   const navigate = useNavigate();
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  const { data } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
+  const [open, setOpen] = React.useState(true);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
+  const [cartMoreAnchorEl, setCartMoreAnchorEl] =
+    React.useState<null | HTMLElement>(null);
 
   const isMenuOpen = Boolean(anchorEl);
+  const isCartOpen = Boolean(cartMoreAnchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleCartOpen = (event: React.MouseEvent<HTMLElement>) => {
+    if (token) {
+      setCartMoreAnchorEl(event.currentTarget);
+    } else {
+      navigate(ROUTE.LOGIN);
+      createNotification({
+        type: "warning",
+        message: "Bạn cần đăng nhập để thực hiện chức năng này",
+      });
+    }
+  };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
+  };
+
+  const handleCartClose = () => {
+    setCartMoreAnchorEl(null);
   };
 
   const handleMenuClose = () => {
@@ -59,6 +84,7 @@ export default function NavBar() {
   };
 
   const menuId = "primary-search-account-menu";
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -69,16 +95,142 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      {token && (
+        <>
+          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+          <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+        </>
+      )}
+
       <MenuItem
         onClick={() => {
-          localStorage.clear();
-          console.log("khanh");
+          if (token) {
+            localStorage.clear();
+            dispatch(updateSwitchRole(false));
+
+            createNotification({
+              type: "success",
+              message: "Đăng xuất thành công",
+            });
+            handleMenuClose();
+          }
+          navigate(ROUTE.LOGIN, { replace: true });
         }}
       >
-        Log out
+        {token ? "Log out" : "Login app"}
       </MenuItem>
+    </Menu>
+  );
+
+  const renderCart = (
+    <Menu
+      anchorEl={cartMoreAnchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isCartOpen}
+      onClose={handleCartClose}
+    >
+      {
+        <MenuItem>
+          <p style={{ color: colors.gray59, fontWeight: "bold" }}>
+            Giỏ hàng của bạn
+          </p>
+        </MenuItem>
+      }
+      {data && data?.length > 0 ? (
+        data?.map((e, index) => {
+          return (
+            <div className={classes.containerItemCart} key={index}>
+              <div className={classes.containerInfoCart}>
+                <img src={e.url_image} style={{ width: 25 }} alt="" />
+              </div>
+              <div className={classes.containerInfoCart}>
+                <p className={classes.textNameProductCart}>{e.name}</p>
+                <p className={classes.textPriceCart}>
+                  {" "}
+                  {formatPrice(e.price)}đ
+                </p>
+              </div>
+              <div className={classes.containerQuantity}>
+                <button
+                  className={classes.buttonChangeQuantityCart}
+                  onClick={() => {
+                    e.count > 1 &&
+                      dispatch(
+                        updateQuantity({ id: e.id, new_quantity: e.count - 1 })
+                      );
+                  }}
+                >
+                  -
+                </button>
+                <input
+                  value={e.count}
+                  style={{ width: 50, height: 40, textAlign: "center" }}
+                />
+                <button
+                  className={classes.buttonChangeQuantityCart}
+                  onClick={() => {
+                    dispatch(
+                      updateQuantity({ id: e.id, new_quantity: e.count + 1 })
+                    );
+                  }}
+                >
+                  +
+                </button>
+              </div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="primary-search-account-menu"
+                aria-haspopup="true"
+                color="inherit"
+                style={{ marginLeft: 5 }}
+                onClick={() => {
+                  dispatch(deleteItemCart({ id: e.id }));
+                }}
+              >
+                <Delete />
+              </IconButton>
+            </div>
+          );
+        })
+      ) : (
+        <div
+          style={{
+            textAlign: "center",
+            padding: 10,
+            paddingTop: 50,
+            paddingBottom: 50,
+            paddingLeft: 20,
+            paddingRight: 20,
+          }}
+        >
+          Giỏ hàng của bạn không có sản phẩm nào
+          <div>
+            <NotInterested />
+          </div>
+        </div>
+      )}
+
+      {data && data.length > 0 && (
+        <div style={{ padding: 5 }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            style={{
+              width: "100%",
+              display: "flex",
+            }}
+            onClick={() => {
+              navigate(ROUTE.CART);
+              handleCartClose();
+            }}
+          >
+            Mua hàng
+          </Button>
+        </div>
+      )}
     </Menu>
   );
 
@@ -128,111 +280,176 @@ export default function NavBar() {
       </MenuItem>
     </Menu>
   );
-
+  const isAdmin = getAdmin();
   return (
     <div className={classes.grow}>
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          {/* <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton> */}
-          <Typography className={classes.title} variant="h6" noWrap>
-            Adam store
-          </Typography>
-          <Button className={classes.button} onClick={() => navigate("/admin")}>
-            Áo
-          </Button>
-          <Button className={classes.button}>
-            <Link to={"/product"}>Quần</Link>
-          </Button>
-          <Button className={classes.button}>Phụ kiện</Button>
-          <Button className={classes.button}>Ưu đãi</Button>
-          <Button className={classes.button}>Liên hệ</Button>
+      {isAdmin ? (
+        <div className={classes.containerAdmin}>
+          <MiniDrawer open={open} setOpen={setOpen} />
+          <div style={{ padding: 10, flex: 1 }}>
+            <MainApp isAdmin={isAdmin ? true : false} />
+          </div>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "column",
+            flex: 1,
+          }}
+        >
+          <div className={classes.grow}>
+            <AppBar
+              position="fixed"
+              className={clsx(classes.appBar, {
+                // [classes.appBarShift]: open,
+              })}
+            >
+              <Toolbar>
+                <Button
+                  className={classes.title}
+                  onClick={() => navigate(ROUTE.HOME)}
+                >
+                  Adam store
+                </Button>
+                <div className={classes.margin} />
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Áo
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  <Link to={"/product"}>Quần</Link>
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Phụ kiện
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Ưu đãi
+                </Button>
+                <Button
+                  className={classes.button}
+                  onClick={() => navigate(ROUTE.PRODUCT)}
+                >
+                  Liên hệ
+                </Button>
 
-          <div className={classes.grow} />
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
+                <div className={classes.grow} />
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder="Search…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    inputProps={{ "aria-label": "search" }}
+                  />
+                </div>
+
+                <div className={classes.sectionDesktop}>
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={() => {}}
+                    color="default"
+                  >
+                    <Favorite />
+                  </IconButton>
+                </div>
+                <div
+                  className={classes.sectionDesktop}
+                  style={{ position: "relative" }}
+                >
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleCartOpen}
+                    color="default"
+                  >
+                    <Cart />
+                  </IconButton>
+                  {token && data && data?.length > 0 && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 1,
+                        right: -5,
+                        backgroundColor: colors.gray59,
+                        borderRadius: 20,
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        color: colors.white,
+                        fontSize: 12,
+                        alignSelf: "center",
+                      }}
+                    >
+                      {data?.length}
+                    </div>
+                  )}
+                </div>
+                <div className={classes.sectionDesktop}>
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="default"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </div>
+
+                <div className={classes.sectionMobile}>
+                  <IconButton
+                    aria-label="show more"
+                    aria-controls={mobileMenuId}
+                    aria-haspopup="true"
+                    onClick={handleMobileMenuOpen}
+                    color="default"
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </div>
+              </Toolbar>
+            </AppBar>
+            <div
+              style={{
+                flex: 1,
+                marginTop: 70,
+                paddingRight: "18%",
+                paddingLeft: "18%",
+                minHeight: size && size?.height ? size?.height - 370 : 0,
               }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
-
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={() => {}}
-              color="default"
             >
-              <Favorite />
-            </IconButton>
+              {/* <ActiveBreadcrumbs /> */}
+              <MainApp isAdmin={isAdmin ? true : false} />
+            </div>
+            {renderMobileMenu}
+            {renderMenu}
+            {renderCart}
           </div>
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={() => {}}
-              color="default"
-            >
-              <Cart />
-            </IconButton>
-          </div>
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="default"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div>
-
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="default"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
-      <div style={{ flex: 1, paddingTop: 65 }}>
-        <MainApp open={open} />
-        {/* <LoginScreen /> */}
-      </div>
-      {renderMobileMenu}
-      {renderMenu}
+          <FooterComponent />
+        </div>
+      )}
     </div>
   );
 }
