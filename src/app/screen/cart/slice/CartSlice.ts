@@ -1,17 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ItemCart, LIST_CART } from "../../../contant/Contant";
-import {
-  AddressOrderInterface,
-  DataState,
-  VoucherAdmin,
-} from "../../../contant/IntefaceContaint";
+import { DataState } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
-interface DataStateCart extends DataState<ItemCart[]> {
-  addressSelected?: AddressOrderInterface | null;
-  voucherSelected?: VoucherAdmin | null;
-}
 
-const initialState: DataStateCart = {
+const initialState: DataState<ItemCart[]> = {
   data: LIST_CART,
   isError: false,
   isLoading: false,
@@ -39,32 +31,20 @@ export const cartSlice = createSlice({
         return e;
       });
     },
-    deleteMoreCart:(state, action)=>{
-      let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
-        array = array.filter((v) => e !== `${v.id}`);
-      });
-      state.data = array;
-      createNotification({
-        type: "success",
-        message: "Xoá thành công",
-      });
-    },
     deleteItemCart: (state, action) => {
       state.data = state.data?.filter((e) => e.id !== action.payload?.id);
-      createNotification({
-        type: "success",
-        message: `Bạn đã xoá sản phẩm khỏi giỏ hàng thành công`,
-      });
+      // createNotification({
+      //   type: "success",
+      //   message: `Bạn đã xoá sản phẩm khỏi giỏ hàng thành công`,
+      // });
     },
     addProductToCart: (state, action) => {
       let carts = state.data;
       let item: ItemCart = action.payload?.item;
-      let checkExistItem = carts?.find((e) => e.product_id === item.product_id);
+      let checkExistItem = carts?.find((e) => e.id === item.id);
       if (checkExistItem) {
         carts = carts?.map((e) => {
-          if (e.product_id === item?.product_id) {
+          if (e.id === item?.id) {
             return {
               ...e,
               count: e.count + item.count,
@@ -101,6 +81,6 @@ export const cartSlice = createSlice({
       });
   },
 });
-export const { updateQuantity, addProductToCart, deleteItemCart ,deleteMoreCart} =
+export const { updateQuantity, addProductToCart, deleteItemCart } =
   cartSlice.actions;
 export default cartSlice.reducer;

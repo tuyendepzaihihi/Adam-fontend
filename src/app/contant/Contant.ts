@@ -83,23 +83,23 @@ export const LIST_MENU_DRAWER = [
     icon: Dashboard,
   },
   {
-    name: "Quản lý sản phẩm",
+    name: "Product",
     route: ROUTE_ADMIN.PRODUCT,
     icon: Product,
   },
   {
-    name: "Quản lý người dùng",
+    name: "User",
     route: ROUTE_ADMIN.USER,
     icon: User,
   },
   {
-    name: "Quản lý danh mục",
+    name: "Category",
     route: ROUTE_ADMIN.CATEGORY,
-    icon: CategoryIcon,
+    icon: Category,
   },
   {
-    name: "Quản lý khuyến mãi",
-    route: ROUTE_ADMIN.VOUCHER,
+    name: "Media",
+    route: ROUTE_ADMIN.MEDIA,
     icon: PermMediaOutlined,
   },
   {
@@ -161,15 +161,17 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 1,
-    name: "Áo sơ mi xấu tệ",
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 2,
@@ -177,23 +179,26 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 3,
-    name: "Áo sơ xấu đui",
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 4,
-    name: "Áo sơ mi thấp ",
+    name: "Áo sơ mi ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 5,
@@ -201,7 +206,8 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 6,
@@ -209,24 +215,18 @@ export const LIST_PRODUCT = [
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
   {
     id: 7,
-    name: "Áo cổ cao ",
+    name: "Áo sơ mi ",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    url_image: R.images.img_product,
+    url_image:
+      "https://owen.vn/media/catalog/product/cache/01755127bd64f5dde3182fd2f139143a/b/a/ba220409nt.jpg",
   },
-  // {
-  //   id: 8,
-  //   name: "Cổ cao ",
-  //   price: 628000,
-  //   discountPersent: 10,
-  //   descriptionDiscount: "Giảm 10% cho sp thứ 2",
-  //   url_image: R.images.img_product,
-  // },
 ];
 export interface ItemCart extends ItemProduct {
   totalPrice: number;
@@ -246,8 +246,8 @@ export const LIST_CART: ItemCart[] = [
     product_id: 7,
   },
   {
-    id: 150,
-    name: "Áo kẻ sọc đẹp",
+    id: 1,
+    name: "Áo sơ mi",
     price: 628000,
     discountPersent: 10,
     descriptionDiscount: "Giảm 10% cho sp thứ 2",

@@ -46,7 +46,6 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             />
           )}
         </TableCell>
-
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}

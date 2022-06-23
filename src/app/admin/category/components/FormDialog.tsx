@@ -155,7 +155,7 @@ const FormDialog = (props: Props) => {
                 error={errors.name}
                 touched={touched.name}
                 value={values.name}
-                label={"Name Category"}
+                label={"Name"}
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
               />
