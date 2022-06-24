@@ -1,7 +1,9 @@
 import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import R from "../../assets/R";
 import { ROUTE } from "../../contant/Contant";
+import { ProductAdmin } from "../../contant/IntefaceContaint";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
 export interface ItemProduct {
@@ -16,7 +18,7 @@ export interface ItemProduct {
 }
 
 interface Props {
-  item: ItemProduct;
+  item: ProductAdmin;
   width?: number | string;
 }
 
@@ -37,11 +39,15 @@ const ProductItemComponent = (props: Props) => {
       }}
       style={{ width: width }}
     >
-      <img src={item.url_image} alt="" className={className.image_banner} />
+      <img
+        src={R.images.img_product}
+        alt=""
+        className={className.image_banner}
+      />
       <div className={className.containerInfo}>
-        <p className={className.textDiscount}>{item.descriptionDiscount}</p>
-        <p className={className.textName}>{item.name}</p>
-        <p className={className.textPrice}>{formatPrice(item.price)} đ</p>
+        <p className={className.textDiscount}>{item.description}</p>
+        <p className={className.textName}>{item.productName}</p>
+        <p className={className.textPrice}>{formatPrice(2500000)} đ</p>
       </div>
       {show && (
         <div className={className.positionContainer}>
@@ -64,19 +70,17 @@ export default ProductItemComponent;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      width: "23%",
+      width: "20%",
       position: "relative",
       marginRight: `${(100 - 32 * 3) / 3}%`,
     },
     image_banner: {
       width: "100%",
-      height: 350,
+      height: 250,
     },
     textDiscount: {
-      color: colors.white,
-      fontWeight: "bold",
-      fontSize: 16,
-      backgroundColor: colors.gray,
+      color: colors.black,
+      fontSize: 14,
     },
     containerInfo: {
       padding: 10,
@@ -95,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       backgroundColor: "rgba(0,0,0,0.5)",
       width: "100%",
-      height: 350,
+      height: 400,
       top: 0,
       display: "flex",
       justifyContent: "center",

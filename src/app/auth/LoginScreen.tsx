@@ -132,7 +132,7 @@ const LoginScreen = () => {
             error={formik.errors.user_name}
             touched={formik.touched.user_name}
             value={formik.values.user_name}
-            label={"Email hoặc số điện thoại"}
+            label={"user name"}
             onChange={formik.handleChange("user_name")}
             onBlur={formik.handleBlur("user_name")}
           />

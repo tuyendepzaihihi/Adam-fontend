@@ -1,4 +1,6 @@
-import { BaseUrl } from "../../contant/Contant";
-import { handleGet } from "../../service/Services";
+import { ApiClient } from "../../service/ApiService";
 
-export const requestGetListUser = () => handleGet("image/list");
+export const requestGetBestSale = () =>
+  ApiClient.get("/product/findTop10ProductBestSale", {});
+export const requestGetNewProduct = () =>
+  ApiClient.get("/product/findTop10productByCreateDate", {});

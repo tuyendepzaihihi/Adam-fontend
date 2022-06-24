@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { requestGetListUser } from "../HomeApi";
 
 export interface Image {
   id: number;
@@ -22,8 +21,7 @@ const initialState: DataState<Image[]> = {
 export const incrementAsyncHome = createAsyncThunk(
   "home/getImage",
   async () => {
-    const response = await requestGetListUser();
-    return response.data;
+    return true;
   }
 );
 
@@ -38,10 +36,8 @@ export const homeSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(incrementAsyncHome.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isError = false;
         state.isLoading = false;
-        state.data = action.payload?.data ?? [];
       })
       .addCase(incrementAsyncHome.rejected, (state) => {
         state.isError = true;
