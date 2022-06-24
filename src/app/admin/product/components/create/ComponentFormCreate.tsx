@@ -18,12 +18,13 @@ import { Formik } from "formik";
 import { useState } from "react";
 import TextInputComponent from "../../../../component/TextInputComponent";
 import { ProductAdmin, ResultApi } from "../../../../contant/IntefaceContaint";
-import { useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { colors } from "../../../../utils/color";
 import {
   CreateProductDto,
   requestPostCreateProduct,
 } from "../../ProductAdminApi";
+import { changeLoading } from "../../slice/ProductAdminSlice";
 import { PropsCreateProduct } from "../DialogCreateProduct";
 
 const ITEM_HEIGHT = 48;
@@ -58,6 +59,7 @@ function getStyles(name: string, personName: string[], theme: Theme) {
 const ComponentFormCreate = (props: Props) => {
   const { initialValues, onSubmit, validateProduct, handleClose, dataProduct } =
     props;
+  const dispatch = useAppDispatch();
   const classes = useStyles();
   const theme = useTheme();
 
@@ -83,36 +85,42 @@ const ComponentFormCreate = (props: Props) => {
   const handleSubmitCreate = async (data: PropsCreateProduct) => {
     const { description, product_name } = data;
     let materialList: number[] = [];
-    materials.map((e) => {
-      let res = personMaterial.find((m) => m.includes(`${e.materialName}`));
-      if (res !== undefined) materialList = materialList.concat([e.id]);
-    });
+    try {
+      dispatch(changeLoading(true));
+      materials.map((e) => {
+        let res = personMaterial.find((m) => m.includes(`${e.materialName}`));
+        if (res !== undefined) materialList = materialList.concat([e.id]);
+      });
 
-    let tagsList: number[] = [];
-    tags.map((e) => {
-      let res = personTag.find((m) => m.includes(`${e.tagName}`));
-      if (res !== undefined) tagsList = tagsList.concat([e.id]);
-    });
+      let tagsList: number[] = [];
+      tags.map((e) => {
+        let res = personTag.find((m) => m.includes(`${e.tagName}`));
+        if (res !== undefined) tagsList = tagsList.concat([e.id]);
+      });
 
-    const itemCreate: CreateProductDto = {
-      categoryId: Number(category) ?? 0,
-      description: description,
-      productName: product_name,
-      tagProductIdList: tagsList,
-      materialProductIdList: materialList,
-      image: "",
-    };
-    const res: ResultApi<ProductAdmin> = await requestPostCreateProduct(
-      itemCreate
-    );
-    onSubmit(res.data);
+      const itemCreate: CreateProductDto = {
+        categoryId: Number(category) ?? 0,
+        description: description,
+        productName: product_name,
+        tagProductIdList: tagsList,
+        materialProductIdList: materialList,
+        image: "d",
+      };
+      const res: ResultApi<ProductAdmin> = await requestPostCreateProduct(
+        itemCreate
+      );
+      onSubmit(res.data);
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
   return (
     <Formik
       initialValues={
         dataProduct
           ? {
-              product_name: dataProduct.product_name,
+              product_name: dataProduct.productName,
               description: dataProduct.description,
             }
           : initialValues

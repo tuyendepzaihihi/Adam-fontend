@@ -1,17 +1,13 @@
 import { createStyles, makeStyles, Typography } from "@material-ui/core";
 import R from "../../../../../assets/R";
-import {
-  LIST_CATEGORY,
-  LIST_TAG,
-} from "../../../../../contant/ContaintDataAdmin";
+import { LIST_TAG } from "../../../../../contant/ContaintDataAdmin";
 import { ProductAdmin } from "../../../../../contant/IntefaceContaint";
 import { colors } from "../../../../../utils/color";
 
 const ProductInfomation = (props: { item: ProductAdmin | null }) => {
   const { item } = props;
-  const renderTag = () => LIST_TAG.find((e) => e.id === item?.tag_id)?.tagName;
-  const renderCategory = () =>
-    LIST_CATEGORY.find((e) => e.id === item?.category_id)?.categoryName;
+  // const renderTag = () => LIST_TAG.find((e) => e.id === item?.tag_id)?.tagName;
+  const renderCategory = () => item?.category.id;
   const classes = useStylesInfo();
   return (
     <div style={{ display: "flex", justifyContent: "flex-start" }}>
@@ -24,7 +20,7 @@ const ProductInfomation = (props: { item: ProductAdmin | null }) => {
       </div>
       <div>
         <Typography className={classes.containerItem}>
-          Name: <p className={classes.textValue}>{item?.product_name}</p>
+          Name: <p className={classes.textValue}>{item?.productName}</p>
         </Typography>
         <Typography className={classes.containerItem}>
           Category:{" "}
@@ -33,12 +29,12 @@ const ProductInfomation = (props: { item: ProductAdmin | null }) => {
           </p>
         </Typography>
 
-        <Typography className={classes.containerItem}>
+        {/* <Typography className={classes.containerItem}>
           Tag:{" "}
           <p className={classes.textValue}>
             {renderTag() ? renderTag() : "..."}
           </p>
-        </Typography>
+        </Typography> */}
 
         <p style={{ color: colors.gray59 }}>{item?.description}</p>
       </div>

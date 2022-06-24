@@ -399,7 +399,7 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
     disablePadding: true,
     label: "Id",
   },
-  { id: "product_name", numeric: true, disablePadding: false, label: "Name" },
+  { id: "productName", numeric: true, disablePadding: false, label: "Name" },
   {
     id: "category_id",
     numeric: true,
@@ -407,51 +407,48 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
     label: "Category id",
   },
   {
-    id: "create_date",
+    id: "createDate",
     numeric: true,
     disablePadding: false,
     label: "Create date",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 export const LIST_PRODUCT: ProductAdmin[] = [
-  {
-    product_name: "Áo",
-
-    category_id: 1,
-    description: "khanh",
-    image: R.images.img_product,
-    id: 1,
-    create_date: "15/10/2021",
-    is_delete: 0,
-    status: 1,
-    tag_id: 1,
-  },
-  {
-    product_name: "Áo sơ mi",
-
-    category_id: 1,
-    description: "khanh",
-    image: R.images.img_product,
-    id: 2,
-    create_date: "15/10/2021",
-    is_delete: 0,
-    status: 1,
-    tag_id: 1,
-  },
-  {
-    product_name: "Áo gió",
-
-    category_id: 1,
-    description: "khanh",
-    image: R.images.img_product,
-    id: 3,
-    create_date: "15/10/2021",
-    is_delete: 0,
-    status: 1,
-    tag_id: 1,
-  },
+  // {
+  //   productName: "Áo",
+  //   category_id: 1,
+  //   description: "khanh",
+  //   image: R.images.img_product,
+  //   id: 1,
+  //   createDate: "15/10/2021",
+  //   isActive: 0,
+  //   tag_id: 1,
+  //   voteAverage: 0,
+  // },
+  // {
+  //   productName: "Áo sơ mi",
+  //   category_id: 1,
+  //   description: "khanh",
+  //   image: R.images.img_product,
+  //   id: 2,
+  //   createDate: "15/10/2021",
+  //   isActive: 0,
+  //   tag_id: 1,
+  //   voteAverage: 0,
+  // },
+  // {
+  //   productName: "Áo gió",
+  //   category_id: 1,
+  //   description: "khanh",
+  //   image: R.images.img_product,
+  //   id: 3,
+  //   createDate: "15/10/2021",
+  //   isActive: 0,
+  //   tag_id: 1,
+  //   voteAverage: 0,
+  // },
 ];
 
 export const headCellsProductDetail: HeadCell<DetailProductAdmin>[] = [

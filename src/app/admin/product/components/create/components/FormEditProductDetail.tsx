@@ -60,7 +60,7 @@ const FormEditProductDetail = (props: Props) => {
         {row.id}
       </TableCell>
       <TableCell align="right">
-        {LIST_PRODUCT.find((e) => e.id === row.product_id)?.product_name}
+        {LIST_PRODUCT.find((e) => e.id === row.product_id)?.productName}
       </TableCell>
       <TableCell align="right">
         {OPTIONS_DATA.colors.find((e) => e.id === row.color_id)?.colorName}

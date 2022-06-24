@@ -51,8 +51,8 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string | boolean },
-  b: { [key in Key]: number | string | boolean }
+  a: { [key in Key]: number | string | boolean | any },
+  b: { [key in Key]: number | string | boolean | any }
 ) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -80,6 +80,31 @@ const checkIsNumber = (number: number | string) => {
   return true;
 };
 
+export const getDifferenValue = (params: {
+  initList: any[];
+  option: any[];
+}) => {
+  const { initList, option } = params;
+  let m = 0;
+  let resArray = initList.filter((e) => !option.some((o) => +o === e?.id));
+  if (option.length === 0) {
+    m = initList[0].id;
+  } else {
+    m = resArray[0].id;
+  }
+  return m;
+};
+
+export const checkExist = (params: { item: any; option: any[] }) => {
+  const { item, option } = params;
+  let res = option.find((e) => +e === +item);
+  if (!res) {
+    return true;
+  } else {
+    createNotification({ type: "warning", message: "Đã tồn tại" });
+    return false;
+  }
+};
 export const FunctionUtil = {
   handleClick,
   handleSelectAllClick,

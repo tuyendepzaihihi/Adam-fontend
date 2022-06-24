@@ -90,6 +90,9 @@ const FormDialogProductCreate = (props: Props) => {
   const loadingCategories = useAppSelector(
     (state) => state.categoryAdmin
   ).isLoading;
+  const loadingProducts = useAppSelector(
+    (state) => state.productAdmin
+  ).isLoading;
 
   const onClose = () => {
     handleReset();
@@ -149,7 +152,7 @@ const FormDialogProductCreate = (props: Props) => {
     }
   }
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={false}>
+    <Dialog open={open} onClose={() => {}} maxWidth="lg">
       <DialogTitle id="form-dialog-title">
         {TYPE_DIALOG.CREATE === type ? "Tạo mới Product" : `Cập nhật Product`}
       </DialogTitle>
@@ -165,9 +168,10 @@ const FormDialogProductCreate = (props: Props) => {
           <div>{getStepContent(activeStep)}</div>
         </div>
       </div>
-      {(loadingCategories || loadingMaterials || loadingTags) && (
-        <LoadingProgress />
-      )}
+      {(loadingCategories ||
+        loadingMaterials ||
+        loadingTags ||
+        loadingProducts) && <LoadingProgress />}
     </Dialog>
   );
 };

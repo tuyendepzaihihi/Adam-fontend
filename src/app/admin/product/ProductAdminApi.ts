@@ -8,17 +8,12 @@ export interface UpdateDto {
 }
 
 export interface CreateDto {
-  colorList: [
-    {
-      id: number;
-    }
-  ];
-
-  sizeList: [
-    {
-      id: number;
-    }
-  ];
+  colorList: number[];
+  sizeList: number[];
+  priceExport: number;
+  priceImport: number;
+  productId: number;
+  quantity: number;
 }
 
 export interface DeleteInterface {
@@ -37,7 +32,10 @@ export const requestDeleteDetailProduct = (payload: DeleteInterface) =>
   ApiClient.delete("/admin/detailProduct/delete", { params: payload });
 
 export const requestPostCreateDetailProduct = (payload: CreateDto) =>
-  ApiClient.post("/admin/detailProduct/create", payload);
+  ApiClient.post(
+    "/admin/detailProduct/createArrayOptionValueDetailProduct",
+    payload
+  );
 
 // interface product
 
@@ -51,12 +49,12 @@ export interface CreateProductDto {
 }
 export interface GetProductDto {
   page: number;
-  limit: number;
+  size: number;
 }
 
 // function product detail
 export const requestGetProductAll = (payload: GetProductDto) =>
-  ApiClient.get("/admin/product/findAllByPageble", payload);
+  ApiClient.get("/admin/product/findAllByPageble", { params: payload });
 
 export const requestPutUpdateProduct = (payload: UpdateDto) =>
   ApiClient.put("/admin/product/update", payload);

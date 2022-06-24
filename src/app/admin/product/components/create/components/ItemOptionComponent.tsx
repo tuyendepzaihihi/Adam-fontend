@@ -9,11 +9,10 @@ import { Close } from "@material-ui/icons";
 import Delete from "@material-ui/icons/Delete";
 import { useEffect, useState } from "react";
 import TextInputComponent from "../../../../../component/TextInputComponent";
-import {
-  LIST_OPTION,
-  OPTIONS_DATA,
-} from "../../../../../contant/ContaintDataAdmin";
+import { LIST_OPTION } from "../../../../../contant/ContaintDataAdmin";
+import { useAppSelector } from "../../../../../hooks";
 import { colors } from "../../../../../utils/color";
+import { checkExist, getDifferenValue } from "../../../../../utils/function";
 
 const ChildrenOption = (params: { list: any[]; isNoOption?: boolean }) => {
   const { list, isNoOption } = params;
@@ -40,25 +39,37 @@ interface PropsRenderOption {
   setOption: any;
   index: number;
   valueOption: any;
+  optionValues: { colors: number[]; sizes: number[] };
+  setOptionValues: any;
 }
 
 const RenderItemOption = (props: PropsRenderOption) => {
-  const { handleDeleteOption, option, setOption, index, valueOption } = props;
+  const {
+    handleDeleteOption,
+    option,
+    setOption,
+    index,
+    valueOption,
+    optionValues,
+    setOptionValues,
+  } = props;
   const classes = useStylesOption();
   const [optionValue, setOptionValue] = useState<any[]>([]);
   const [listOption, setListOption] = useState<{ id: any; name: string }[]>([]);
+  const colorData = useAppSelector((state) => state.colorAdmin).data;
+  const sizesData = useAppSelector((state) => state.optionAdmin).data;
 
   useEffect(() => {
     if (Number(valueOption) === 1) {
       setListOption(
-        OPTIONS_DATA.colors.map((e) => {
+        colorData.map((e) => {
           return { id: e.id, name: e.colorName };
         })
       );
       setOptionValue([]);
     } else if (Number(valueOption) === 2) {
       setListOption(
-        OPTIONS_DATA.sizes.map((e) => {
+        sizesData.map((e) => {
           return { id: e.id, name: e.sizeName };
         })
       );
@@ -67,37 +78,66 @@ const RenderItemOption = (props: PropsRenderOption) => {
       setListOption([]);
       setOptionValue([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueOption]);
+
+  const addOptionValues = (array: string[]) => {
+    const res = array.map((e) => Number(e));
+    if (Number(valueOption) === 1) {
+      let newValues = { ...optionValues, colors: res };
+      setOptionValues(newValues);
+    } else if (Number(valueOption) === 2) {
+      let newValues = { ...optionValues, sizes: res };
+      setOptionValues(newValues);
+    }
+  };
 
   const chaneOption = (event: { target: { value: any } }) => {
     const value = event.target.value;
-    const res = option.map((val: any, ind: number) => {
-      if (ind === index) {
-        return value;
-      } else return val;
-    });
-    setOption(res);
+    if (checkExist({ item: value, option: option })) {
+      const res = option.map((val: any, ind: number) => {
+        if (ind === index) {
+          return value;
+        } else return val;
+      });
+      setOption(res);
+    }
   };
 
   const changeOptionValue = (event: any, index: number) => {
     const value = event.target.value;
-    const res = optionValue.map((val, ind) => {
-      if (ind === index) {
-        return value;
-      } else return val;
-    });
-    setOptionValue(res);
+    if (checkExist({ item: value, option: optionValue })) {
+      const res = optionValue.map((val, ind) => {
+        if (ind === index) {
+          return value;
+        } else return val;
+      });
+      addOptionValues(res);
+      setOptionValue(res);
+    }
   };
-
   const deleteOptionValue = (index: number) => {
     const newRes = optionValue.filter((e, idx) => idx !== index);
     setOptionValue(newRes);
+    addOptionValues(newRes);
   };
 
   const addOptionValue = () => {
     if (Number(valueOption) !== 0) {
-      let newOptionValue = "0";
-      setOptionValue(optionValue.concat(newOptionValue));
+      let m = getDifferenValue({ initList: listOption, option: optionValue });
+
+      setOptionValue(optionValue.concat([`${m}`]));
+      if (Number(valueOption) === 1) {
+        setOptionValues({
+          ...optionValues,
+          colors: optionValues.colors.concat([m]),
+        });
+      } else if (Number(valueOption) === 2) {
+        setOptionValues({
+          ...optionValues,
+          sizes: optionValues.sizes.concat([m]),
+        });
+      }
     }
   };
 

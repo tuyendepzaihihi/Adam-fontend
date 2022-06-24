@@ -101,15 +101,16 @@ export interface Option extends DataStateOption {
 }
 
 export interface ProductAdmin {
-  product_name: string;
-  create_date: string;
+  productName: string;
+  createDate: string;
   description: string;
   image: string;
-  is_delete: number;
   category_id: any;
   id: any;
-  status: any;
+  isActive: any;
   tag_id: any;
+  voteAverage: number;
+  category: CategoryAdmin;
 }
 
 export interface DetailProductAdmin {

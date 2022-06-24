@@ -4,7 +4,14 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
+import { useState } from "react";
+import { LIST_OPTION } from "../../../../contant/ContaintDataAdmin";
 import { ProductAdmin } from "../../../../contant/IntefaceContaint";
+import { getDifferenValue } from "../../../../utils/function";
+import {
+  CreateDto,
+  requestPostCreateDetailProduct,
+} from "../../ProductAdminApi";
 import RenderItemOption from "./components/ItemOptionComponent";
 import ProductInfomation from "./components/ProductInfomationComponent";
 
@@ -19,14 +26,44 @@ interface Props {
 const CreateProductDetail = (props: Props) => {
   const { handleBack, handleNext, productItem, option, setOption } = props;
   const classes = useStyles();
-
+  const [optionValues, setOptionValues] = useState({
+    colors: [],
+    sizes: [],
+  });
   const handleChooseOption = () => {
-    setOption(option.concat(["0"]));
+    let m = getDifferenValue({ initList: LIST_OPTION, option: option });
+    setOption(option.concat([`${m}`]));
   };
-
-  const handleDeleteOption = (number_key: number) => {
+  const changeOptionValues = (keyNumber: number) => {
+    if (Number(keyNumber) === 1) {
+      let newValues: any = { ...optionValues, colors: [] };
+      setOptionValues(newValues);
+    } else if (Number(keyNumber) === 2) {
+      let newValues: any = { ...optionValues, sizes: [] };
+      setOptionValues(newValues);
+    }
+  };
+  const handleDeleteOption = (number_key: number, item: any) => {
     const newRes = option.filter((e, idx) => idx !== number_key);
     setOption(newRes);
+    changeOptionValues(item);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const payload: CreateDto = {
+        colorList: optionValues.colors,
+        priceExport: 0,
+        priceImport: 0,
+        productId: productItem?.id,
+        quantity: 0,
+        sizeList: optionValues.sizes,
+      };
+      console.log({ payload });
+      const res = await requestPostCreateDetailProduct(payload);
+      console.log({ res });
+      // handleNext();
+    } catch (e) {}
   };
 
   return (
@@ -57,12 +94,16 @@ const CreateProductDetail = (props: Props) => {
         {option.map((e, index) => {
           return (
             <RenderItemOption
-              handleDeleteOption={() => handleDeleteOption(index)}
+              handleDeleteOption={() =>
+                handleDeleteOption(index, option[index])
+              }
               key={index}
               option={option}
               index={index}
               valueOption={option[index]}
               setOption={setOption}
+              optionValues={optionValues}
+              setOptionValues={setOptionValues}
             />
           );
         })}
@@ -78,7 +119,7 @@ const CreateProductDetail = (props: Props) => {
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button onClick={handleBack}>Back</Button>
-        <Button variant="contained" color="primary" onClick={handleNext}>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Next
         </Button>
       </div>

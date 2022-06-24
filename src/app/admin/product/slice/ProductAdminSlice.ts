@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_PRODUCT } from "../../../contant/ContaintDataAdmin";
 import {
   DataState,
   ProductAdmin,
@@ -9,7 +8,7 @@ import { createNotification } from "../../../utils/MessageUtil";
 import { GetProductDto, requestGetProductAll } from "../ProductAdminApi";
 
 const initialState: DataState<ProductAdmin[]> = {
-  data: LIST_PRODUCT,
+  data: [],
   isError: false,
   isLoading: false,
 };
@@ -17,8 +16,9 @@ const initialState: DataState<ProductAdmin[]> = {
 export const incrementAsyncProductAdmin = createAsyncThunk(
   "product/admin",
   async (payload: GetProductDto) => {
-    const res: ResultApi<ProductAdmin[]> = await requestGetProductAll(payload);
-    return res.data;
+    const res: ResultApi<{ content: ProductAdmin[] }> =
+      await requestGetProductAll(payload);
+    return res;
   }
 );
 
@@ -50,6 +50,12 @@ export const productAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -60,6 +66,7 @@ export const productAdminSlice = createSlice({
       .addCase(incrementAsyncProductAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
+        state.data = action.payload.data.content;
       })
       .addCase(incrementAsyncProductAdmin.rejected, (state) => {
         state.isError = true;
@@ -67,6 +74,11 @@ export const productAdminSlice = createSlice({
       });
   },
 });
-export const { createProduct, updateProduct, deleteProduct } =
-  productAdminSlice.actions;
+export const {
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  changeError,
+  changeLoading,
+} = productAdminSlice.actions;
 export default productAdminSlice.reducer;

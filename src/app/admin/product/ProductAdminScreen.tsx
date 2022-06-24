@@ -20,6 +20,7 @@ import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsProduct } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
 import { ProductAdmin } from "../../contant/IntefaceContaint";
@@ -75,7 +76,7 @@ export default function ProductScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.productAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.productAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
 
   useEffect(() => {
@@ -85,8 +86,8 @@ export default function ProductScreen() {
 
   const getData = async () => {
     const payload: GetProductDto = {
-      limit: 20,
-      page: 1,
+      size: 20,
+      page: 0,
     };
     await dispatch(incrementAsyncProductAdmin(payload));
   };
@@ -96,6 +97,8 @@ export default function ProductScreen() {
     setAnchorEl(null);
     setAnchorElData(null);
   };
+
+  const handleUpdate = (row: ProductAdmin) => {};
 
   const createSortHandler =
     (property: keyof ProductAdmin) => (event: React.MouseEvent<unknown>) => {
@@ -247,17 +250,17 @@ export default function ProductScreen() {
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.product_name}</TableCell>
+                        <TableCell align="right">{row.productName}</TableCell>
                         <TableCell align="right">{row.category_id}</TableCell>
-                        <TableCell align="right">{row.create_date}</TableCell>
+                        <TableCell align="right">{row.createDate}</TableCell>
 
                         <TableCell align="right">
                           <Switch
-                            checked={row.status === 1 ? true : false}
-                            onChange={(data) => {
+                            checked={row.isActive === 1 ? true : false}
+                            onChange={() => {
                               let item = {
                                 ...row,
-                                status: row.status === 1 ? 0 : 1,
+                                isActive: row.isActive === 1 ? 0 : 1,
                               };
                               dispatch(updateProduct({ item: item }));
                             }}
@@ -304,6 +307,7 @@ export default function ProductScreen() {
         type={typeDialog}
         data={data}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }
