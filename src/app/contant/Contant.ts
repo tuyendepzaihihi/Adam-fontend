@@ -298,20 +298,6 @@ export const data_detail = {
         },
       ],
     },
-    {
-      id: 3,
-      name: "mate",
-      option_values: [
-        {
-          id: 1,
-          name: "X",
-        },
-        {
-          id: 2,
-          name: "M",
-        },
-      ],
-    },
   ],
 };
 export const dataFilter = {
