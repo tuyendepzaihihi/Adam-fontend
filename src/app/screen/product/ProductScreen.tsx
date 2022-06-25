@@ -286,7 +286,7 @@ const ProductScreen = () => {
 
         <Accordion
           className={className.containerFilterValue}
-          defaultExpanded={true}
+          // defaultExpanded={true}
         >
           <AccordionSummary
             expandIcon={<ExpandMore />}
@@ -344,7 +344,7 @@ const ProductScreen = () => {
 
         <Accordion
           className={className.containerFilterValue}
-          defaultExpanded={true}
+          // defaultExpanded={true}
         >
           <AccordionSummary
             expandIcon={<ExpandMore />}
