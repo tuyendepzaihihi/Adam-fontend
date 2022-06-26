@@ -31,7 +31,7 @@ export const orderAdminSlice = createSlice({
     },
     createBranch: (state, action) => {
       let item: Branch = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteBranch: (state, action) => {
       let array = state.data;

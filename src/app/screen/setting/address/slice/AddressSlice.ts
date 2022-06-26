@@ -4,28 +4,28 @@ import { DataState } from "../../../../contant/IntefaceContaint";
 import { createNotification } from "../../../../utils/MessageUtil";
 
 export interface DataAddress {
-  wardId?: number
-  wardName?: string 
-  districtId?: number
-  districtName?: string 
-  provinceId?: number
-  provinceName?: string 
-  addressDetail?: string
-  isDefault?: boolean
-  phone?: string
-  name?: string
-  id?: any
+  wardId?: number;
+  wardName?: string;
+  districtId?: number;
+  districtName?: string;
+  provinceId?: number;
+  provinceName?: string;
+  addressDetail?: string;
+  isDefault?: boolean;
+  phone?: string;
+  name?: string;
+  id?: any;
 }
 
-interface DataStateAddress extends DataState<DataAddress[]>{
-  dataSelected: DataAddress | null
+interface DataStateAddress extends DataState<DataAddress[]> {
+  dataSelected: DataAddress | null;
 }
 
 const initialState: DataStateAddress = {
   data: LIST_ADDRESS,
   isError: false,
   isLoading: false,
-  dataSelected: null
+  dataSelected: null,
 };
 
 export const getAddressInfo = createAsyncThunk("address", async () => {
@@ -46,7 +46,7 @@ export const addressSlice = createSlice({
     },
     createAddress: (state, action) => {
       let item: DataAddress = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteAddress: (state, action) => {
       let array = state.data;
@@ -60,9 +60,9 @@ export const addressSlice = createSlice({
         message: "Xoá thành công",
       });
     },
-    setSelectedAddress:(state, action: {payload: {item: DataAddress}})=>{
-      state.dataSelected = action.payload.item
-    }
+    setSelectedAddress: (state, action: { payload: { item: DataAddress } }) => {
+      state.dataSelected = action.payload.item;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -71,7 +71,6 @@ export const addressSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAddressInfo.fulfilled, (state, action) => {
-        
         state.isError = false;
         state.isLoading = false;
       })
@@ -81,6 +80,11 @@ export const addressSlice = createSlice({
       });
   },
 });
-export const {createAddress,deleteAddress,updateAddress,setSelectedAddress} = addressSlice.actions
+export const {
+  createAddress,
+  deleteAddress,
+  updateAddress,
+  setSelectedAddress,
+} = addressSlice.actions;
 
 export default addressSlice.reducer;

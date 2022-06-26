@@ -1,8 +1,4 @@
 import { Switch, TableCell, TableRow, TextField } from "@material-ui/core";
-import {
-  LIST_PRODUCT,
-  OPTIONS_DATA,
-} from "../../../../../contant/ContaintDataAdmin";
 import { DetailProductAdmin } from "../../../../../contant/IntefaceContaint";
 import { formatPrice } from "../../../../../utils/function";
 import { createNotification } from "../../../../../utils/MessageUtil";
@@ -18,7 +14,7 @@ const FormEditProductDetail = (props: Props) => {
   const { row, labelId, listProductDetail, setListProductDetail } = props;
 
   const handleChangePrice = (params: {
-    keyString: "price_import" | "price_export" | "quantity";
+    keyString: "priceImport" | "priceExport" | "quantity";
     text: string;
   }) => {
     const { keyString, text } = params;
@@ -54,27 +50,31 @@ const FormEditProductDetail = (props: Props) => {
     });
     setListProductDetail(newProductDetail);
   };
+  const changeStatus = () => {
+    const newRes = listProductDetail.map((e) => {
+      if (e.id === row.id) return { ...e, isActive: !e.isActive };
+      else return e;
+    });
+    setListProductDetail(newRes);
+  };
+
   return (
     <TableRow hover tabIndex={-1} key={`${row.id}`}>
       <TableCell component="th" id={labelId} scope="row" padding="none">
         {row.id}
       </TableCell>
+      <TableCell align="right">{row.product.productName}</TableCell>
       <TableCell align="right">
-        {LIST_PRODUCT.find((e) => e.id === row.product_id)?.productName}
-      </TableCell>
-      <TableCell align="right">
-        {OPTIONS_DATA.colors.find((e) => e.id === row.color_id)?.colorName}
-      </TableCell>
-      <TableCell align="right">
-        {OPTIONS_DATA.sizes.find((e) => e.id === row.size_id)?.sizeName}
+        {row.color.colorName ? row.color.colorName : ""}
+        {row.size.sizeName ? "/" + row.size.sizeName : ""}
       </TableCell>
 
       <TableCell align="right">
         <TextField
-          value={`${formatPrice(row.price_import)}`}
+          value={`${formatPrice(row.priceImport)}`}
           onChange={(event) =>
             handleChangePrice({
-              keyString: "price_import",
+              keyString: "priceImport",
               text: `${event.target.value}`,
             })
           }
@@ -83,17 +83,17 @@ const FormEditProductDetail = (props: Props) => {
       </TableCell>
       <TableCell align="right">
         <TextField
-          value={`${formatPrice(row.price_export)}`}
+          value={`${formatPrice(row.priceExport)}`}
           onChange={(event) =>
             handleChangePrice({
-              keyString: "price_export",
+              keyString: "priceExport",
               text: `${event.target.value}`,
             })
           }
           variant="outlined"
         />
       </TableCell>
-      <TableCell align="right">{row.image_product}</TableCell>
+      <TableCell align="right">{row.productImage}</TableCell>
       <TableCell align="right">
         <TextField
           value={`${formatPrice(row.quantity)}`}
@@ -108,8 +108,8 @@ const FormEditProductDetail = (props: Props) => {
       </TableCell>
       <TableCell align="right">
         <Switch
-          checked={row.status === 1 ? true : false}
-          onChange={(data) => {}}
+          checked={row.isActive ? true : false}
+          onChange={changeStatus}
           name={labelId}
           inputProps={{ "aria-label": labelId }}
           color="primary"

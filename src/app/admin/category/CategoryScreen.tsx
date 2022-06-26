@@ -30,12 +30,14 @@ import {
   LIST_CATEGORY,
 } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { CategoryAdmin } from "../../contant/IntefaceContaint";
+import { CategoryAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
+import { requestPutUpdateCategory, UpdateDto } from "./CategoryApi";
 import CategoryChildrenComponent from "./components/CategoryChildrenComponent";
 import FormDialog from "./components/FormDialog";
 import {
+  changeLoading,
   deleteCategory,
   incrementAsyncCategoryAdmin,
   updateCategory,
@@ -135,6 +137,20 @@ export default function CategoryScreen() {
   ) => {
     setAnchorEl(event.currentTarget);
     setAnchorElData({ item: item });
+  };
+  const handleChangeStatus = async (params: { row: CategoryAdmin }) => {
+    const { row } = params;
+    const item: UpdateDto = {
+      id: row.id,
+      categoryName: row.categoryName,
+      isDelete: row.isDeleted,
+      categoryParentId: row.categoryParentId,
+      isActive: !row.isActive,
+    };
+    dispatch(changeLoading(true));
+    const res: ResultApi<CategoryAdmin> = await requestPutUpdateCategory(item);
+    dispatch(updateCategory({ item: res.data }));
+    dispatch(changeLoading(false));
   };
 
   const renderMenu = (
@@ -261,14 +277,8 @@ export default function CategoryScreen() {
                           </TableCell>
                           <TableCell align="right">
                             <Switch
-                              checked={row.isDeleted ? row.isDeleted : false}
-                              onChange={(data) => {
-                                let item = {
-                                  ...row,
-                                  isDeleted: !row.isDeleted,
-                                };
-                                dispatch(updateCategory({ item: item }));
-                              }}
+                              checked={row.isActive ? row.isActive : false}
+                              onChange={() => handleChangeStatus({ row: row })}
                               name={labelId}
                               inputProps={{ "aria-label": labelId }}
                               color="primary"

@@ -6,17 +6,21 @@ import {
 } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
 import { GetProductDto, requestGetProductAll } from "../ProductAdminApi";
+interface ProductState extends DataState<ProductAdmin[]> {
+  count: number;
+}
 
-const initialState: DataState<ProductAdmin[]> = {
+const initialState: ProductState = {
   data: [],
   isError: false,
   isLoading: false,
+  count: 0,
 };
 
 export const incrementAsyncProductAdmin = createAsyncThunk(
   "product/admin",
   async (payload: GetProductDto) => {
-    const res: ResultApi<{ content: ProductAdmin[] }> =
+    const res: ResultApi<{ content: ProductAdmin[]; totalElements: number }> =
       await requestGetProductAll(payload);
     return res;
   }
@@ -36,7 +40,7 @@ export const productAdminSlice = createSlice({
     },
     createProduct: (state, action) => {
       let item: ProductAdmin = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteProduct: (state, action) => {
       let array = state.data;
@@ -67,6 +71,7 @@ export const productAdminSlice = createSlice({
         state.isError = false;
         state.isLoading = false;
         state.data = action.payload.data.content;
+        state.count = action.payload.data.totalElements;
       })
       .addCase(incrementAsyncProductAdmin.rejected, (state) => {
         state.isError = true;

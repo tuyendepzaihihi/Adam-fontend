@@ -129,6 +129,7 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     isDeleted: false,
     url: R.images.img_product,
     categoryParentId: 0,
+    isActive: true,
   },
   {
     id: 2,
@@ -137,6 +138,7 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     isDeleted: false,
     url: R.images.img_product,
     categoryParentId: 0,
+    isActive: true,
   },
   {
     id: 3,
@@ -145,6 +147,7 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     isDeleted: false,
     url: R.images.img_product,
     categoryParentId: 0,
+    isActive: true,
   },
   {
     id: 4,
@@ -153,6 +156,7 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     isDeleted: false,
     url: R.images.img_product,
     categoryParentId: 0,
+    isActive: true,
   },
   {
     id: 5,
@@ -161,6 +165,7 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     isDeleted: true,
     url: R.images.img_product,
     categoryParentId: 0,
+    isActive: true,
   },
   {
     id: 6,
@@ -169,6 +174,7 @@ export const LIST_CATEGORY: CategoryAdmin[] = [
     isDeleted: false,
     url: R.images.img_product,
     categoryParentId: 0,
+    isActive: true,
   },
 ];
 
@@ -401,12 +407,6 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
   },
   { id: "productName", numeric: true, disablePadding: false, label: "Name" },
   {
-    id: "category_id",
-    numeric: true,
-    disablePadding: false,
-    label: "Category id",
-  },
-  {
     id: "createDate",
     numeric: true,
     disablePadding: false,
@@ -458,35 +458,33 @@ export const headCellsProductDetail: HeadCell<DetailProductAdmin>[] = [
     disablePadding: true,
     label: "Id",
   },
-  { id: "color_id", numeric: true, disablePadding: false, label: "Active" },
-  { id: "size_id", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 export const LIST_PRODUCT_DETAIL: DetailProductAdmin[] = [
-  {
-    id: 1,
-    color_id: 1,
-    size_id: 1,
-    price_export: 0,
-    price_import: 0,
-    quantity: 0,
-    product_id: 1,
-    image_product: "",
-    is_delete: 1,
-    status: 1,
-  },
-  {
-    id: 2,
-    color_id: 1,
-    size_id: 1,
-    price_export: 0,
-    price_import: 0,
-    quantity: 0,
-    product_id: 1,
-    image_product: "",
-    is_delete: 1,
-    status: 1,
-  },
+  // {
+  //   id: 1,
+  //   color_id: 1,
+  //   size_id: 1,
+  //   price_export: 0,
+  //   price_import: 0,
+  //   quantity: 0,
+  //   product_id: 1,
+  //   image_product: "",
+  //   is_delete: 1,
+  //   status: 1,
+  // },
+  // {
+  //   id: 2,
+  //   color_id: 1,
+  //   size_id: 1,
+  //   price_export: 0,
+  //   price_import: 0,
+  //   quantity: 0,
+  //   product_id: 1,
+  //   image_product: "",
+  //   is_delete: 1,
+  //   status: 1,
+  // },
 ];
 
 export const LIST_OPTION = [

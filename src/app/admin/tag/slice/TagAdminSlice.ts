@@ -36,7 +36,7 @@ export const tagAdminSlice = createSlice({
     },
     createTag: (state, action) => {
       let item: Tag = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
       createNotification({
         type: "success",
         message: "Thêm mới thành công",

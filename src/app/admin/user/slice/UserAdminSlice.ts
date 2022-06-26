@@ -38,7 +38,7 @@ export const userAdminSlice = createSlice({
     },
     createUser: (state, action) => {
       let item: UserAdminInteface = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteUser: (state, action) => {
       let array = state.data;

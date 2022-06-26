@@ -36,7 +36,7 @@ export const optionColorSlice = createSlice({
     },
     createColor: (state, action) => {
       let item: OptionColor = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteColor: (state, action) => {
       let array = state.data;

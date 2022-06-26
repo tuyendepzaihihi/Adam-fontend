@@ -19,7 +19,7 @@ const useStyles = makeStyles(() =>
       position: "absolute",
       backgroundColor: "rgba(0,0,0,0.5)",
       width: "100%",
-      height: window.innerHeight - 70,
+      height: "100%",
       top: 0,
     },
   })

@@ -12,25 +12,36 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 import { LIST_PRODUCT_DETAIL } from "../../../../contant/ContaintDataAdmin";
+import {
+  DetailProductAdmin,
+  ResultApi,
+} from "../../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../../hooks";
 import { formatPrice, FunctionUtil } from "../../../../utils/function";
+import {
+  requestPutUpdateDetailProductList,
+  UpdateListDetailProductDto,
+} from "../../ProductAdminApi";
+import { changeLoading } from "../../slice/ProductAdminSlice";
 import FormEditProductDetail from "./components/FormEditProductDetail";
 
 interface Props {
   onSubmit: Function;
+  listDetail?: DetailProductAdmin[];
 }
 const ListProductDetail = (props: Props) => {
-  const { onSubmit } = props;
+  const { onSubmit, listDetail } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const [listProductDetail, setListProductDetail] =
-    useState(LIST_PRODUCT_DETAIL);
+  const [listProductDetail, setListProductDetail] = useState(
+    listDetail ? listDetail : LIST_PRODUCT_DETAIL
+  );
   const [priceExportTotal, setPriceExportTotal] = useState(0);
   const [priceImportTotal, setPriceImportTotal] = useState(0);
   const [quantityTotal, setQuantityTotal] = useState(0);
 
   const handleChangePrice = (params: {
-    keyString: "price_import" | "price_export" | "quantity";
+    keyString: "priceImport" | "priceExport" | "quantity";
     value: number;
   }) => {
     const { keyString, value } = params;
@@ -55,8 +66,28 @@ const ListProductDetail = (props: Props) => {
     return value;
   };
 
-  const handleSubmit = () => {
-    onSubmit(listProductDetail);
+  const handleSubmit = async () => {
+    try {
+      dispatch(changeLoading(true));
+      const listPayload = listProductDetail.map((e) => {
+        let res: UpdateListDetailProductDto = {
+          id: e.id,
+          image: e.productImage,
+          isActive: e.isActive ?? false,
+          priceExport: e.priceExport,
+          priceImport: e.priceImport,
+          quantity: e.quantity,
+        };
+        return res;
+      });
+      await requestPutUpdateDetailProductList({
+        newDetailProductDTOList: listPayload,
+      });
+      onSubmit();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (
@@ -80,7 +111,7 @@ const ListProductDetail = (props: Props) => {
             style={{ marginLeft: 5 }}
             onClick={() => {
               handleChangePrice({
-                keyString: "price_import",
+                keyString: "priceImport",
                 value: priceImportTotal,
               });
             }}
@@ -106,7 +137,7 @@ const ListProductDetail = (props: Props) => {
             style={{ marginLeft: 5 }}
             onClick={() => {
               handleChangePrice({
-                keyString: "price_export",
+                keyString: "priceExport",
                 value: priceExportTotal,
               });
             }}
@@ -152,8 +183,7 @@ const ListProductDetail = (props: Props) => {
             <TableRow>
               <TableCell align="right">id</TableCell>
               <TableCell align="right">Tên sản phẩm</TableCell>
-              <TableCell align="right">Color</TableCell>
-              <TableCell align="right">Size</TableCell>
+              <TableCell align="right">Option</TableCell>
               <TableCell align="right">Giá nhập(VNĐ)</TableCell>
               <TableCell align="right">Giá xuất(VNĐ)</TableCell>
               <TableCell align="right">Ảnh phân loại</TableCell>

@@ -31,7 +31,7 @@ export const voucherAdminSlice = createSlice({
     },
     createVoucher: (state, action) => {
       let item: VoucherAdmin = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteVoucher: (state, action) => {
       let array = state.data;

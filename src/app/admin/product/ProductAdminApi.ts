@@ -8,11 +8,19 @@ export interface UpdateDto {
 }
 
 export interface CreateDto {
-  colorList: number[];
-  sizeList: number[];
+  colorIdList: number[];
+  sizeIdList: number[];
   priceExport: number;
   priceImport: number;
   productId: number;
+  quantity: number;
+}
+export interface UpdateListDetailProductDto {
+  id: number;
+  image: string;
+  isActive: boolean;
+  priceExport: number;
+  priceImport: number;
   quantity: number;
 }
 
@@ -34,6 +42,13 @@ export const requestDeleteDetailProduct = (payload: DeleteInterface) =>
 export const requestPostCreateDetailProduct = (payload: CreateDto) =>
   ApiClient.post(
     "/admin/detailProduct/createArrayOptionValueDetailProduct",
+    payload
+  );
+export const requestPutUpdateDetailProductList = (payload: {
+  newDetailProductDTOList: UpdateListDetailProductDto[];
+}) =>
+  ApiClient.put(
+    "/admin/detailProduct/updateListDetailProductAfterCreate",
     payload
   );
 

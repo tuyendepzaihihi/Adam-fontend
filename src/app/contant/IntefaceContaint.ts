@@ -29,6 +29,7 @@ export interface CategoryAdmin {
   url: string;
   categoryParentId: number;
   categoryChildren?: CategoryAdmin[] | null;
+  isActive: boolean;
 }
 
 export interface VoucherAdmin {
@@ -116,14 +117,15 @@ export interface ProductAdmin {
 export interface DetailProductAdmin {
   id: any;
   quantity: number;
-  price_export: number;
-  price_import: number;
-  is_delete: any;
-  image_product: any;
-  product_id: number;
-  color_id: any;
-  size_id: any;
-  status: number;
+  priceExport: number;
+  priceImport: number;
+  isDelete: any;
+  productImage: any;
+  product: ProductAdmin;
+  color: OptionColor;
+  size: OptionSize;
+  isActive: boolean | null;
+  createDate: string;
 }
 
 export interface OrderAdmin {

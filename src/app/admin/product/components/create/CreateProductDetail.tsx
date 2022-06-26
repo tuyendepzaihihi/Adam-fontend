@@ -6,12 +6,18 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 import { LIST_OPTION } from "../../../../contant/ContaintDataAdmin";
-import { ProductAdmin } from "../../../../contant/IntefaceContaint";
+import {
+  DetailProductAdmin,
+  ProductAdmin,
+  ResultApi,
+} from "../../../../contant/IntefaceContaint";
+import { useAppDispatch } from "../../../../hooks";
 import { getDifferenValue } from "../../../../utils/function";
 import {
   CreateDto,
   requestPostCreateDetailProduct,
 } from "../../ProductAdminApi";
+import { changeLoading } from "../../slice/ProductAdminSlice";
 import RenderItemOption from "./components/ItemOptionComponent";
 import ProductInfomation from "./components/ProductInfomationComponent";
 
@@ -21,10 +27,19 @@ interface Props {
   productItem: ProductAdmin | null;
   option: any[];
   setOption: any;
+  setListProductDetail: any;
 }
 
 const CreateProductDetail = (props: Props) => {
-  const { handleBack, handleNext, productItem, option, setOption } = props;
+  const {
+    handleBack,
+    handleNext,
+    productItem,
+    option,
+    setOption,
+    setListProductDetail,
+  } = props;
+  const dispatch = useAppDispatch();
   const classes = useStyles();
   const [optionValues, setOptionValues] = useState({
     colors: [],
@@ -51,19 +66,24 @@ const CreateProductDetail = (props: Props) => {
 
   const handleSubmit = async () => {
     try {
+      dispatch(changeLoading(true));
       const payload: CreateDto = {
-        colorList: optionValues.colors,
+        colorIdList: optionValues.colors,
         priceExport: 0,
         priceImport: 0,
         productId: productItem?.id,
         quantity: 0,
-        sizeList: optionValues.sizes,
+        sizeIdList: optionValues.sizes,
       };
       console.log({ payload });
-      const res = await requestPostCreateDetailProduct(payload);
-      console.log({ res });
-      // handleNext();
-    } catch (e) {}
+      const res: ResultApi<DetailProductAdmin[]> =
+        await requestPostCreateDetailProduct(payload);
+      setListProductDetail(res.data);
+      handleNext();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (

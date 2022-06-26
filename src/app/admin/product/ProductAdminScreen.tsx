@@ -76,18 +76,20 @@ export default function ProductScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data, isLoading } = useAppSelector((state) => state.productAdmin);
+  const { data, isLoading, count } = useAppSelector(
+    (state) => state.productAdmin
+  );
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page, rowsPerPage]);
 
   const getData = async () => {
     const payload: GetProductDto = {
-      size: 20,
-      page: 0,
+      size: rowsPerPage,
+      page: page,
     };
     await dispatch(incrementAsyncProductAdmin(payload));
   };
@@ -214,73 +216,71 @@ export default function ProductScreen() {
                   data,
                   FunctionUtil.getComparator(order, orderBy)
                 )
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(`${row.id}`);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={`${row.id}`}
-                        selected={isItemSelected}
+                .map((row, index) => {
+                  const isItemSelected = isSelected(`${row.id}`);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={`${row.id}`}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                          onClick={(event) => {
+                            setSelected(
+                              FunctionUtil.handleClick(
+                                event,
+                                `${row.id}`,
+                                selected
+                              )
+                            );
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                            onClick={(event) => {
-                              setSelected(
-                                FunctionUtil.handleClick(
-                                  event,
-                                  `${row.id}`,
-                                  selected
-                                )
-                              );
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                        >
-                          {row.id}
-                        </TableCell>
-                        <TableCell align="right">{row.productName}</TableCell>
-                        <TableCell align="right">{row.category_id}</TableCell>
-                        <TableCell align="right">{row.createDate}</TableCell>
+                        {row.id}
+                      </TableCell>
+                      <TableCell align="right">{row.productName}</TableCell>
+                      <TableCell align="right">{row.createDate}</TableCell>
 
-                        <TableCell align="right">
-                          <Switch
-                            checked={row.isActive === 1 ? true : false}
-                            onChange={() => {
-                              let item = {
-                                ...row,
-                                isActive: row.isActive === 1 ? 0 : 1,
-                              };
-                              dispatch(updateProduct({ item: item }));
-                            }}
-                            name={labelId}
-                            inputProps={{ "aria-label": labelId }}
-                            color="primary"
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          <Button
-                            onClick={(event) => {
-                              handleProfileMenuOpen(event, row);
-                            }}
-                          >
-                            ...
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      <TableCell align="right">
+                        <Switch
+                          checked={row.isActive === 1 ? true : false}
+                          onChange={() => {
+                            let item = {
+                              ...row,
+                              isActive: row.isActive === 1 ? 0 : 1,
+                            };
+                            dispatch(updateProduct({ item: item }));
+                          }}
+                          name={labelId}
+                          inputProps={{ "aria-label": labelId }}
+                          color="primary"
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          onClick={(event) => {
+                            handleProfileMenuOpen(event, row);
+                          }}
+                        >
+                          ...
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
@@ -292,7 +292,7 @@ export default function ProductScreen() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={count}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

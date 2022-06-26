@@ -9,11 +9,11 @@ import {
 import { Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
+import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
-import { LIST_CATEGORY } from "../../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { CategoryAdmin, ResultApi } from "../../../contant/IntefaceContaint";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   CreateDto,
   requestPostCreateCategory,
@@ -21,6 +21,7 @@ import {
   UpdateDto,
 } from "../CategoryApi";
 import {
+  changeLoading,
   createCategory,
   createCategoryChilden,
   updateCategory,
@@ -56,52 +57,68 @@ const FormDialog = (props: Props) => {
   const [category, setCategory] = useState<string | null>(
     category_parent_id ? `${category_parent_id}` : null
   );
+  const { data, isLoading } = useAppSelector((state) => state.categoryAdmin);
   const onSubmitUpdate = async (data: { name: string }) => {
     const { name } = data;
-    if (anchorElData) {
-      const item: UpdateDto = {
-        id: anchorElData.item.id,
-        categoryName: name,
-        isDelete: anchorElData.item.isDeleted ?? false,
-      };
-      const res: ResultApi<CategoryAdmin> = await requestPutUpdateCategory(
-        item
-      );
-      if (isParent) dispatch(updateCategory({ item: res.data }));
-      else
-        dispatch(
-          updateCategoryChilden({ item: res.data, id: category_parent_id })
+    try {
+      if (anchorElData) {
+        dispatch(changeLoading(true));
+        const item: UpdateDto = {
+          id: anchorElData.item.id,
+          categoryName: name,
+          isDelete: anchorElData.item.isDeleted ?? false,
+          categoryParentId: isParent ? 0 : Number(category),
+          isActive: anchorElData.item.isActive,
+        };
+        const res: ResultApi<CategoryAdmin> = await requestPutUpdateCategory(
+          item
         );
-      handleClose();
+        if (isParent) dispatch(updateCategory({ item: res.data }));
+        else
+          dispatch(
+            updateCategoryChilden({ item: res.data, id: category_parent_id })
+          );
+        handleClose();
+      }
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
     }
   };
 
   const onSubmitCreate = async (dataCreate: PropsCreateCategory) => {
     const { name } = dataCreate;
 
-    const itemCreate: CreateDto = {
-      categoryName: name,
-      categoryParentId: 0,
-    };
-    const res: ResultApi<CategoryAdmin> = await requestPostCreateCategory(
-      itemCreate
-    );
-    if (isParent) {
-      dispatch(createCategory({ item: res.data }));
-    } else
-      dispatch(
-        createCategoryChilden({ item: res.data, id: category_parent_id })
-      );
-
-    handleClose();
+    try {
+      dispatch(changeLoading(true));
+      if (isParent) {
+        const itemCreate: CreateDto = {
+          categoryName: name,
+          categoryParentId: 0,
+        };
+        const res: ResultApi<CategoryAdmin> = await requestPostCreateCategory(
+          itemCreate
+        );
+        dispatch(createCategory({ item: res.data }));
+      } else {
+        const itemCreate: CreateDto = {
+          categoryName: name,
+          categoryParentId: category_parent_id ?? 0,
+        };
+        const res: ResultApi<CategoryAdmin> = await requestPostCreateCategory(
+          itemCreate
+        );
+        dispatch(
+          createCategoryChilden({ item: res.data, id: category_parent_id })
+        );
+      }
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
-  // const onImageChange = (event: any) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     let img = event.target.files[0];
-  //     setImage(URL.createObjectURL(img));
-  //   }
-  // };
   return (
     <Dialog
       open={open}
@@ -142,15 +159,7 @@ const FormDialog = (props: Props) => {
                 Cập nhật thông tin của Category, vui lòng điền tất cả thông tin
                 cần thiết
               </DialogContentText>
-              {/* <div>
-                <img
-                  src={image ? image : anchorElData?.item.url}
-                  alt=""
-                  style={{ width: 200 }}
-                />
-                <h1>Select Image</h1>
-                <input type="file" name="myImage" onChange={onImageChange} />
-              </div> */}
+
               <TextInputComponent
                 error={errors.name}
                 touched={touched.name}
@@ -173,8 +182,8 @@ const FormDialog = (props: Props) => {
                       <option key={0} value={0}>
                         Chưa chọn
                       </option>
-                      {LIST_CATEGORY.map((option) => (
-                        <option key={option.id} value={option.id}>
+                      {data.map((option, index) => (
+                        <option key={index} value={option.id}>
                           {option.categoryName}
                         </option>
                       ))}
@@ -194,6 +203,7 @@ const FormDialog = (props: Props) => {
           </>
         )}
       </Formik>
+      {isLoading && <LoadingProgress />}
     </Dialog>
   );
 };

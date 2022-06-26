@@ -30,13 +30,17 @@ export const categoryAdminSlice = createSlice({
       let oldArray = state.data;
       let item: CategoryAdmin = action.payload?.item;
       state.data = oldArray?.map((e) => {
-        if (e.id === item.id) return item;
+        if (e.id === item.id)
+          return {
+            ...item,
+            categoryChildren: e.categoryChildren,
+          };
         else return e;
       });
     },
     createCategory: (state, action) => {
       let item: CategoryAdmin = action.payload?.item;
-      state.data = state.data?.concat([item]);
+      state.data = [item].concat(state.data);
     },
     deleteCategory: (state, action) => {
       let array = state.data;
@@ -55,7 +59,24 @@ export const categoryAdminSlice = createSlice({
       let item: CategoryAdmin = action.payload.item;
       let idParent: number = action.payload.id;
       let itemChange = oldArray.find((e) => e.id === idParent);
-      if (itemChange) {
+      if (itemChange && idParent !== item.categoryParentId) {
+        const newArray = state.data.map((e) => {
+          if (e.id === idParent) {
+            return {
+              ...e,
+              categoryChildren: e.categoryChildren?.filter(
+                (e) => e.categoryParentId !== idParent
+              ),
+            };
+          } else if (e.id === item.categoryParentId) {
+            return {
+              ...e,
+              categoryChildren: e.categoryChildren?.concat([item]),
+            };
+          } else return e;
+        });
+        state.data = newArray;
+      } else if (itemChange) {
         let childenArray = itemChange?.categoryChildren?.map((e) => {
           if (e.id === item.id) return item;
           else return e;
@@ -126,6 +147,12 @@ export const categoryAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -136,11 +163,7 @@ export const categoryAdminSlice = createSlice({
       .addCase(incrementAsyncCategoryAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = action.payload?.data
-          ? action.payload.data.map((e) => {
-              return { ...e, categoryChildren: action.payload.data };
-            })
-          : [];
+        state.data = action.payload?.data;
       })
       .addCase(incrementAsyncCategoryAdmin.rejected, (state) => {
         state.isError = true;
@@ -155,5 +178,7 @@ export const {
   createCategoryChilden,
   deleteCategoryChilden,
   updateCategoryChilden,
+  changeError,
+  changeLoading,
 } = categoryAdminSlice.actions;
 export default categoryAdminSlice.reducer;

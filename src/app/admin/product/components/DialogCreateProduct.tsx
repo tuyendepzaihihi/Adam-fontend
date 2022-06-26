@@ -69,6 +69,9 @@ const FormDialogProductCreate = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
   const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(null);
+  const [listProductDetail, setListProductDetail] = useState<
+    DetailProductAdmin[]
+  >([]);
   const [option, setOption] = useState<any[]>([]);
 
   useEffect(() => {
@@ -141,11 +144,17 @@ const FormDialogProductCreate = (props: Props) => {
             productItem={dataProduct}
             option={option}
             setOption={setOption}
+            setListProductDetail={setListProductDetail}
           />
         );
       case 2:
         return (
-          <ListProductDetail onSubmit={(list: DetailProductAdmin[]) => {}} />
+          <ListProductDetail
+            onSubmit={() => {
+              onClose();
+            }}
+            listDetail={listProductDetail}
+          />
         );
       default:
         return "Unknown stepIndex";
