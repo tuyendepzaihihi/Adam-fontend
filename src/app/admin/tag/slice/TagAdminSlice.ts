@@ -54,10 +54,10 @@ export const tagAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
-    chaneLoading: (state, action) => {
+    changeLoading: (state, action) => {
       state.isLoading = action.payload.statusLoading;
     },
-    chaneError: (state, action) => {
+    changeError: (state, action) => {
       state.isError = action.payload.statusError;
     },
   },
@@ -78,6 +78,6 @@ export const tagAdminSlice = createSlice({
       });
   },
 });
-export const { createTag, updateTag, deleteTag, chaneError, chaneLoading } =
+export const { createTag, updateTag, deleteTag, changeError, changeLoading } =
   tagAdminSlice.actions;
 export default tagAdminSlice.reducer;

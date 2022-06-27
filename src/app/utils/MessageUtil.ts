@@ -8,7 +8,7 @@ const createNotification = (params: {
   const { message, title, type } = params;
   Store.addNotification({
     title: title ?? "Thông báo",
-    message: message ?? "Đây là thông báo",
+    message: message ?? "Thành công",
     type: type ?? "success",
     insert: "top",
     container: "top-left",
@@ -16,7 +16,6 @@ const createNotification = (params: {
     animationOut: ["animate__animated", "animate__fadeOut"],
     dismiss: {
       duration: 3000,
-      // onScreen: true,
     },
   });
 };

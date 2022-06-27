@@ -81,12 +81,14 @@ export interface Branch {
 export interface OptionColor {
   id: any;
   colorName: string;
-  status: number;
+  isActive: boolean;
+  isDelete: boolean;
 }
 export interface OptionSize {
   id: any;
   sizeName: string;
-  status: number;
+  isActive: boolean;
+  isDelete: boolean;
 }
 
 export interface DataStateOption {

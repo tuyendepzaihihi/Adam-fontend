@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { OptionSize, ResultApi } from "../../../contant/IntefaceContaint";
@@ -29,6 +30,7 @@ interface Props {
   anchorElData: any;
   type: number;
   data: OptionSize[];
+  loading?: boolean;
 }
 const validateOptionSize = Yup.object({
   Size_name: Yup.string().required("Vui lòng nhập").trim(),
@@ -42,13 +44,13 @@ const initialValues: PropsCreateSize = {
 };
 const FormDialogSize = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type } = props;
+  const { handleClose, open, anchorElData, type, loading } = props;
 
   const onSubmit = async (data: PropsCreateSize) => {
     const { Size_name } = data;
     try {
       dispatch(changeLoading(true));
-      const payload: UpdateSizeDto = {
+      const payload: OptionSize = {
         ...anchorElData,
         sizeName: Size_name,
       };
@@ -139,6 +141,7 @@ const FormDialogSize = (props: Props) => {
           </>
         )}
       </Formik>
+      {loading && <LoadingProgress />}
     </Dialog>
   );
 };

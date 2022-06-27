@@ -12,7 +12,7 @@ import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { ResultApi, Tag } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { chaneLoading, createTag, updateTag } from "../slice/TagAdminSlice";
+import { changeLoading, createTag, updateTag } from "../slice/TagAdminSlice";
 import {
   CreateDto,
   requestPostCreateTag,
@@ -50,13 +50,13 @@ const FormDialog = (props: Props) => {
       tagName: tag_name,
     };
     try {
-      dispatch(chaneLoading({ statusLoading: true }));
+      dispatch(changeLoading({ statusLoading: true }));
       const res: ResultApi<Tag> = await requestPutUpdateTag(item);
       dispatch(updateTag({ item: res.data }));
       handleClose();
-      dispatch(chaneLoading({ statusLoading: false }));
+      dispatch(changeLoading({ statusLoading: false }));
     } catch (e) {
-      dispatch(chaneLoading({ statusLoading: false }));
+      dispatch(changeLoading({ statusLoading: false }));
     }
   };
 
@@ -66,13 +66,13 @@ const FormDialog = (props: Props) => {
       tagName: tag_name,
     };
     try {
-      dispatch(chaneLoading({ statusLoading: true }));
+      dispatch(changeLoading({ statusLoading: true }));
       const res: ResultApi<Tag> = await requestPostCreateTag(itemCreate);
       dispatch(createTag({ item: res.data }));
       handleClose();
-      dispatch(chaneLoading({ statusLoading: false }));
+      dispatch(changeLoading({ statusLoading: false }));
     } catch (e) {
-      dispatch(chaneLoading({ statusLoading: false }));
+      dispatch(changeLoading({ statusLoading: false }));
     }
   };
 

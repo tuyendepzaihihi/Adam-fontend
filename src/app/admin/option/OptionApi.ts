@@ -1,10 +1,11 @@
+import { OptionSize } from "./../../contant/IntefaceContaint";
 import { ApiClient } from "../../service/ApiService";
 // interface color
 export interface UpdateColorDto {
   id: number;
   isDelete: boolean;
   colorName: string;
-  status: boolean;
+  isActive: boolean;
 }
 
 export interface CreateColorDto {
@@ -40,7 +41,7 @@ export interface CreateSizeDto {
 export const requestGetSizeAll = (payload?: any) =>
   ApiClient.get("/admin/size/findAll", payload);
 
-export const requestPutUpdateSize = (payload: UpdateSizeDto) =>
+export const requestPutUpdateSize = (payload: OptionSize) =>
   ApiClient.put("/admin/size/update", payload);
 
 export const requestDeleteSize = (payload: { size_id: number }) =>

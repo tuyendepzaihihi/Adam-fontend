@@ -28,12 +28,12 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
 import {
-  chaneLoading,
+  changeLoading,
   deleteTag,
   incrementAsyncTagAdmin,
   updateTag,
 } from "./slice/TagAdminSlice";
-import { requestPutUpdateTag, UpdateDto } from "./TagApi";
+import { requestDeleteTag, requestPutUpdateTag, UpdateDto } from "./TagApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -130,6 +130,36 @@ export default function TagScreen() {
     setAnchorElData({ item: item });
   };
 
+  const handleDelete = async (params: { array: string[] }) => {
+    const { array } = params;
+    try {
+      dispatch(changeLoading({ statusLoading: true }));
+      array.map(async (e) => {
+        await requestDeleteTag({ tag_id: +e });
+      });
+      dispatch(deleteTag({ array }));
+      setSelected([]);
+      dispatch(changeLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(changeLoading({ statusLoading: false }));
+    }
+  };
+
+  const handleUpdate = async (row: any) => {
+    const payload: UpdateDto = {
+      ...row,
+      isDelete: !row.isDelete,
+    };
+    try {
+      dispatch(changeLoading({ statusLoading: true }));
+      const res: ResultApi<Tag> = await requestPutUpdateTag(payload);
+      dispatch(updateTag({ item: res.data }));
+      dispatch(changeLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(changeLoading({ statusLoading: false }));
+    }
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -141,9 +171,7 @@ export default function TagScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          console.log({ anchorElData });
-        }}
+        onClick={() => handleDelete({ array: [`${anchorElData?.item.id}`] })}
         button
       >
         <Tooltip title="Delete">
@@ -169,21 +197,6 @@ export default function TagScreen() {
     </Menu>
   );
 
-  const handleUpdate = async (row: any) => {
-    const payload: UpdateDto = {
-      ...row,
-      isDelete: !row.isDelete,
-    };
-    try {
-      dispatch(chaneLoading({ statusLoading: true }));
-      const res: ResultApi<Tag> = await requestPutUpdateTag(payload);
-      dispatch(updateTag({ item: res.data }));
-      dispatch(chaneLoading({ statusLoading: false }));
-    } catch (e) {
-      dispatch(chaneLoading({ statusLoading: false }));
-    }
-  };
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -193,10 +206,7 @@ export default function TagScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteTag({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete({ array: selected })}
           label={"Quản lý Tag"}
           isNonSearchTime={true}
         />

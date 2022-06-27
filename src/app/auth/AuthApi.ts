@@ -6,6 +6,14 @@ export interface LoginRequest {
   username: string;
 }
 
+export interface ResultLogin {
+  email: string;
+  id: number;
+  roles: string;
+  token: string;
+  username: string;
+}
+
 // function
 export const requestLoginApp = (payload: LoginRequest) =>
-  ApiClient.post("/authenticate", payload);
+  ApiClient.post("/auth/authenticate", payload);

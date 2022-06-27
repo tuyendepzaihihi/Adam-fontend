@@ -63,5 +63,5 @@ export const ApiClient = {
   path: (url: string, payload: any) =>
     handleResult(axiosClient.patch(url, payload)),
   delete: (url: string, payload: any) =>
-    handleResult(axiosClient.delete(url, { data: payload })),
+    handleResult(axiosClient.delete(url, payload)),
 };

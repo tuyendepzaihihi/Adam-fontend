@@ -29,18 +29,36 @@ import {
   headCellsOptionSize,
 } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { OptionColor, OptionSize } from "../../contant/IntefaceContaint";
+import {
+  OptionColor,
+  OptionSize,
+  ResultApi,
+} from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { colors } from "../../utils/color";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialogColor from "./components/FormDialogColor";
 import FormDialogSize from "./components/FormDialogSize";
-import { incrementAsyncOptionSize, updateSize } from "./slice/OptionSizeSlice";
 import {
+  changeLoading,
+  deleteSize,
+  incrementAsyncOptionSize,
+  updateSize,
+} from "./slice/OptionSizeSlice";
+import {
+  deleteColor,
   incrementAsyncOptionColor,
   updateColor,
 } from "./slice/OptionColorSlice";
 import LoadingProgress from "../../component/LoadingProccess";
+import {
+  requestDeleteColor,
+  requestDeleteSize,
+  requestPutUpdateColor,
+  requestPutUpdateSize,
+  UpdateColorDto,
+  UpdateSizeDto,
+} from "./OptionApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -153,6 +171,21 @@ export default function OptionScreen() {
     setAnchorElDataSize({ item: item });
   };
 
+  const handleDeleteSize = async (params: { array: string[] }) => {
+    const { array } = params;
+    try {
+      dispatch(changeLoading({ statusLoading: true }));
+      array.map(async (e) => {
+        await requestDeleteSize({ size_id: +e });
+      });
+      dispatch(deleteSize({ array }));
+      setSelectedSize([]);
+      dispatch(changeLoading({ statusLoading: false }));
+    } catch (e) {
+      dispatch(changeLoading({ statusLoading: false }));
+    }
+  };
+
   // Color
   const [orderColor, setOrderColor] = React.useState<Order>("asc");
   const [orderByColor, setOrderByColor] =
@@ -212,6 +245,41 @@ export default function OptionScreen() {
     setAnchorElDataColor({ item: item });
   };
 
+  const handleDeleteColor = async (params: { array: string[] }) => {
+    const { array } = params;
+    try {
+      array.map(async (e) => {
+        await requestDeleteColor({ color_id: +e });
+      });
+      dispatch(deleteColor({ array }));
+      setSelectedColor([]);
+    } catch (e) {}
+  };
+
+  const handleUpdateColor = async (params: { row: OptionColor }) => {
+    const { row } = params;
+    try {
+      const payload: UpdateColorDto = {
+        ...row,
+        isActive: !row.isActive,
+      };
+      const res: ResultApi<OptionColor> = await requestPutUpdateColor(payload);
+      dispatch(updateColor({ item: res.data }));
+    } catch (e) {}
+  };
+
+  const handleUpdateSize = async (params: { row: OptionSize }) => {
+    const { row } = params;
+    try {
+      const payload: OptionSize = {
+        ...row,
+        isActive: !row.isActive,
+      };
+      const res: ResultApi<OptionSize> = await requestPutUpdateSize(payload);
+      dispatch(updateSize({ item: res.data }));
+    } catch (e) {}
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorElSize}
@@ -223,9 +291,9 @@ export default function OptionScreen() {
       onClose={handleMenuCloseSize}
     >
       <MenuItem
-        onClick={() => {
-          console.log({ anchorElDataSize });
-        }}
+        onClick={() =>
+          handleDeleteSize({ array: [`${anchorElDataSize?.item.id}`] })
+        }
         button
       >
         <Tooltip title="Delete">
@@ -262,9 +330,9 @@ export default function OptionScreen() {
       onClose={handleMenuCloseColor}
     >
       <MenuItem
-        onClick={() => {
-          console.log({ anchorElDataColor });
-        }}
+        onClick={() =>
+          handleDeleteColor({ array: [`${anchorElDataColor?.item.id}`] })
+        }
         button
       >
         <Tooltip title="Delete">
@@ -411,14 +479,8 @@ export default function OptionScreen() {
 
                                 <TableCell align="right">
                                   <Switch
-                                    checked={row.status === 1 ? true : false}
-                                    onChange={(data) => {
-                                      let item = {
-                                        ...row,
-                                        status: row.status === 1 ? 0 : 1,
-                                      };
-                                      dispatch(updateColor({ item: item }));
-                                    }}
+                                    checked={row.isActive}
+                                    onChange={() => handleUpdateColor({ row })}
                                     name={labelId}
                                     inputProps={{ "aria-label": labelId }}
                                     color="primary"
@@ -578,14 +640,8 @@ export default function OptionScreen() {
 
                                 <TableCell align="right">
                                   <Switch
-                                    checked={row.status === 1 ? true : false}
-                                    onChange={(data) => {
-                                      let item = {
-                                        ...row,
-                                        status: row.status === 1 ? 0 : 1,
-                                      };
-                                      dispatch(updateSize({ item: item }));
-                                    }}
+                                    checked={row.isActive}
+                                    onChange={() => handleUpdateSize({ row })}
                                     name={labelId}
                                     inputProps={{ "aria-label": labelId }}
                                     color="primary"
@@ -633,6 +689,7 @@ export default function OptionScreen() {
         anchorElData={anchorElDataColor}
         type={typeDialogColor}
         data={dataColor}
+        loading={isLoading || loadingColor}
       />
       <FormDialogSize
         open={openSize}
@@ -640,6 +697,7 @@ export default function OptionScreen() {
         anchorElData={anchorElDataSize}
         type={typeDialogSize}
         data={data}
+        loading={isLoading || loadingColor}
       />
       {(isLoading || loadingColor) && <LoadingProgress />}
     </div>

@@ -337,16 +337,16 @@ export const headCellsTag: HeadCell<Tag>[] = [
 
 export const OPTIONS_DATA: DataStateOption = {
   colors: [
-    { id: 1, colorName: "Xanh", status: 1 },
-    { id: 2, colorName: "Đỏ", status: 1 },
-    { id: 3, colorName: "Vàng", status: 1 },
+    { id: 1, colorName: "Xanh", isActive: false, isDelete: false },
+    { id: 2, colorName: "Đỏ", isActive: false, isDelete: false },
+    { id: 3, colorName: "Vàng", isActive: false, isDelete: false },
   ],
   sizes: [
-    { id: 1, sizeName: "S", status: 1 },
-    { id: 2, sizeName: "M", status: 1 },
-    { id: 3, sizeName: "L", status: 1 },
-    { id: 4, sizeName: "XL", status: 1 },
-    { id: 5, sizeName: "XXL", status: 1 },
+    { id: false, sizeName: "S", isActive: false, isDelete: false },
+    { id: 2, sizeName: "M", isActive: false, isDelete: false },
+    { id: 3, sizeName: "L", isActive: false, isDelete: false },
+    { id: 4, sizeName: "XL", isActive: false, isDelete: false },
+    { id: 5, sizeName: "XXL", isActive: false, isDelete: false },
   ],
 };
 
@@ -378,7 +378,7 @@ export const headCellsOptionColor: HeadCell<OptionColor>[] = [
     disablePadding: false,
     label: "Color name",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 export const headCellsOptionSize: HeadCell<OptionSize>[] = [
@@ -394,7 +394,7 @@ export const headCellsOptionSize: HeadCell<OptionSize>[] = [
     disablePadding: false,
     label: "Size name",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 // Product

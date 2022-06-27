@@ -102,20 +102,20 @@ const LoginScreen = () => {
 
   const handleSubmit = async (data: LoginInterface) => {
     try {
-      const result = await requestLoginApp({
-        password: data.password,
-        username: data.user_name,
-      });
-      console.log({ result });
-      // setToken("dangthunghiem");
-      // if (Number(value) === 1) {
-      //   dispatch(updateSwitchRole(true));
-      //   setAdmin("1");
-      //   navigate(ROUTE_ADMIN.DASHBOARD);
-      // } else {
-      //   dispatch(updateSwitchRole(false));
-      //   navigate(ROUTE.HOME);
-      // }
+      // const result = await requestLoginApp({
+      //   password: data.password,
+      //   username: data.user_name,
+      // });
+      // console.log({ result });
+      setToken("dangthunghiem");
+      if (Number(value) === 1) {
+        dispatch(updateSwitchRole(true));
+        setAdmin("1");
+        navigate(ROUTE_ADMIN.DASHBOARD);
+      } else {
+        dispatch(updateSwitchRole(false));
+        navigate(ROUTE.HOME);
+      }
     } catch (e) {}
   };
 

@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { OptionColor, ResultApi } from "../../../contant/IntefaceContaint";
@@ -29,6 +30,7 @@ interface Props {
   anchorElData: any;
   type: number;
   data: OptionColor[];
+  loading?: boolean;
 }
 const validateOptionColor = Yup.object({
   color_name: Yup.string().required("Vui lòng nhập").trim(),
@@ -42,7 +44,7 @@ const initialValues: PropsCreateColor = {
 };
 const FormDialogColor = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type } = props;
+  const { handleClose, open, anchorElData, type, loading } = props;
 
   const onSubmit = async (data: PropsCreateColor) => {
     const { color_name } = data;
@@ -137,6 +139,7 @@ const FormDialogColor = (props: Props) => {
           </>
         )}
       </Formik>
+      {loading && <LoadingProgress />}
     </Dialog>
   );
 };

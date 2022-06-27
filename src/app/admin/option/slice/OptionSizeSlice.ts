@@ -32,10 +32,12 @@ export const optionSizeSlice = createSlice({
         if (e.id === item.id) return item;
         else return e;
       });
+      createNotification({ type: "success" });
     },
     createSize: (state, action) => {
       let item: OptionSize = action.payload?.item;
       state.data = state.data.concat([item]);
+      createNotification({ type: "success" });
     },
     deleteSize: (state, action) => {
       let array = state.data;

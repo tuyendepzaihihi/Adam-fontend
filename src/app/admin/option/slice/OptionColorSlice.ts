@@ -33,10 +33,12 @@ export const optionColorSlice = createSlice({
         if (e.id === item.id) return item;
         else return e;
       });
+      createNotification({ type: "success" });
     },
     createColor: (state, action) => {
       let item: OptionColor = action.payload?.item;
       state.data = [item].concat(state.data);
+      createNotification({ type: "success" });
     },
     deleteColor: (state, action) => {
       let array = state.data;

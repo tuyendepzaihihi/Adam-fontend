@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import LoadingProgress from "../../component/LoadingProccess";
-import { headCells, headCellsMaterial } from "../../contant/ContaintDataAdmin";
+import { headCellsMaterial } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
 import { Material, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -145,6 +145,11 @@ export default function MaterialScreen() {
     }
   };
 
+  const handleDelete = (params: { array: any[] }) => {
+    const { array } = params;
+    dispatch(deleteMaterial({ array: array }));
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -156,9 +161,7 @@ export default function MaterialScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          console.log({ anchorElData });
-        }}
+        onClick={() => handleDelete({ array: [`${anchorElData?.item.id}`] })}
         button
       >
         <Tooltip title="Delete">
