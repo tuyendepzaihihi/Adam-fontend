@@ -5,7 +5,9 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import R from "../../assets/R";
+import LoadingProgress from "../../component/LoadingProccess";
 import { ItemProduct } from "../../component/product_item/ProductItemComponent";
+import ReactLoading from "react-loading";
 import {
   dataFilter,
   data_detail,
@@ -17,6 +19,7 @@ import {
   OptionColor,
   OptionSize,
   ProductAdmin,
+  ResultApi,
 } from "../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../hooks";
 import { getToken } from "../../service/StorageService";
@@ -24,6 +27,10 @@ import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
 import { createNotification } from "../../utils/MessageUtil";
 import { addProductToCart } from "../cart/slice/CartSlice";
+import {
+  requestGetProductCustomerById,
+  requestGetProductDetailByIdProduct,
+} from "./ProductCustomerApi";
 
 export const sortPriceToMax = (array: DetailProductAdmin[]) => {
   for (let i = 0; i < array.length - 1; i++) {
@@ -98,15 +105,38 @@ const ProductDetailScreen = () => {
   const [count, setCount] = useState(1);
   const [selection, setSelection] = useState<Selection[]>([]);
   const [dataF, setDataF] = useState<DataFilter | null>(null);
+  const [listDataFilter, setListDataFilter] = useState<DetailProductAdmin[]>(
+    []
+  );
+  const [dataDetail, setDataDetail] = useState<ProductById | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    getDataFilterPrice();
+  }, [state]);
 
   useEffect(() => {
     filterPrice();
   }, [selection]);
 
-  const filterPrice = () => {
-    console.log(selection.length, DataExample.options.length);
+  const getDataFilterPrice = async () => {
+    try {
+      const resultProductById: ResultApi<ProductById> =
+        await requestGetProductCustomerById({ id: 7 });
+      const res: ResultApi<DetailProductAdmin[]> =
+        await requestGetProductDetailByIdProduct({
+          product_id: 7,
+        });
+      setDataDetail(resultProductById.data);
+      setListDataFilter(res.data);
+    } catch (e) {}
+  };
 
-    if (selection.length === DataExample.options.length) {
+  const filterPrice = () => {
+    console.log(selection.length, dataDetail?.options.length);
+
+    if (selection.length === dataDetail?.options.length) {
       for (let index = 0; index < dataFilter.length; index++) {
         let count = 0;
         for (let i = 0; i < selection.length; i++) {
@@ -129,7 +159,6 @@ const ProductDetailScreen = () => {
       setDataF(null);
     }
   };
-  console.log({ dataF });
 
   const handleOption = (params: Selection) => {
     const { optionId, optionValueId, value } = params;
@@ -199,87 +228,89 @@ const ProductDetailScreen = () => {
 
   return (
     <div className={className.container}>
-      <div className={className.containerImage}>
-        <img alt="" src={R.images.img_product} />
-      </div>
-
-      <div className={className.containerInfo}>
-        <p className={className.title}>
-          {`${DataExample.productName}`.toUpperCase()}
-        </p>
-
-        <p className={className.price}>
-          {dataF
-            ? formatPrice(dataF.price)
-            : `${formatPrice(DataExample.minPrice)} - ${formatPrice(
-                DataExample.maxPrice
-              )}`}
-          đ
-        </p>
-
-        {DataExample.options.map((option, index) => {
-          return (
-            <div key={index}>
-              <p className={className.containerUpdateQuantity}>
-                {option.optionName}
-              </p>
-              <div className={className.containerUpdateQuantity}>
-                {option.values_options.map((optionValue, idx) => {
-                  return (
-                    <button
-                      className={clsx(className.buttonInActive, {
-                        [className.buttonActive]: handleCheck({
-                          optionId: option.optionName,
-                          optionValueId: optionValue.id,
-                          value: optionValue.name,
-                        }),
-                        [className.marginLeft]: idx > 0,
-                      })}
-                      onClick={() =>
-                        handleOption({
-                          optionId: option.optionName,
-                          optionValueId: optionValue.id,
-                          value: optionValue.name,
-                        })
-                      }
-                      key={idx}
-                    >
-                      {optionValue.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-
-        {selection.length === data_detail.options.length && (
-          <div className={className.containerDescription}>
-            <p className={className.price}>Số lượng</p>
-            <div className={className.containerUpdateQuantity}>
-              <button
-                className={className.buttonUpdate}
-                onClick={() => {
-                  if (count > 1) setCount(count - 1);
-                }}
-              >
-                -
-              </button>
-              <p className={className.textCount}>{count}</p>
-              <button
-                className={className.buttonUpdate}
-                onClick={() => {
-                  setCount(count + 1);
-                }}
-                style={{ marginLeft: 15 }}
-              >
-                +
-              </button>
-            </div>
+      {dataDetail ? (
+        <>
+          <div className={className.containerImage}>
+            <img alt="" src={R.images.img_product} />
           </div>
-        )}
 
-        {/* {selection.length === data_detail.options.length && (
+          <div className={className.containerInfo}>
+            <p className={className.title}>
+              {`${dataDetail?.productName}`.toUpperCase()}
+            </p>
+
+            <p className={className.price}>
+              {dataF
+                ? formatPrice(dataF.price)
+                : `${formatPrice(dataDetail?.minPrice ?? 0)} - ${formatPrice(
+                    dataDetail?.maxPrice ?? 0
+                  )}`}
+              đ
+            </p>
+
+            {dataDetail?.options.map((option, index) => {
+              return (
+                <div key={index}>
+                  <p className={className.containerUpdateQuantity}>
+                    {option.optionName}
+                  </p>
+                  <div className={className.containerUpdateQuantity}>
+                    {option.values_options.map((optionValue, idx) => {
+                      return (
+                        <button
+                          className={clsx(className.buttonInActive, {
+                            [className.buttonActive]: handleCheck({
+                              optionId: option.optionName,
+                              optionValueId: optionValue.id,
+                              value: optionValue.name,
+                            }),
+                            [className.marginLeft]: idx > 0,
+                          })}
+                          onClick={() =>
+                            handleOption({
+                              optionId: option.optionName,
+                              optionValueId: optionValue.id,
+                              value: optionValue.name,
+                            })
+                          }
+                          key={idx}
+                        >
+                          {optionValue.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+
+            {selection.length === data_detail.options.length && (
+              <div className={className.containerDescription}>
+                <p className={className.price}>Số lượng</p>
+                <div className={className.containerUpdateQuantity}>
+                  <button
+                    className={className.buttonUpdate}
+                    onClick={() => {
+                      if (count > 1) setCount(count - 1);
+                    }}
+                  >
+                    -
+                  </button>
+                  <p className={className.textCount}>{count}</p>
+                  <button
+                    className={className.buttonUpdate}
+                    onClick={() => {
+                      setCount(count + 1);
+                    }}
+                    style={{ marginLeft: 15 }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* {selection.length === data_detail.options.length && (
           <p
             className={clsx(
               className.containerUpdateQuantity,
@@ -294,30 +325,52 @@ const ProductDetailScreen = () => {
           </p>
         )} */}
 
-        {selection.length === data_detail.options.length && (
-          <Button
-            variant="outlined"
-            className={className.buttonBuy}
-            onClick={handleBuyProduct}
-          >
-            Mua hàng
-          </Button>
-        )}
+            {selection.length === data_detail.options.length && (
+              <Button
+                variant="outlined"
+                className={className.buttonBuy}
+                onClick={handleBuyProduct}
+              >
+                Mua hàng
+              </Button>
+            )}
 
-        <div className={className.containerDescription}>
-          <p
-            className={className.price}
-            style={{ borderBottomWidth: 1.5, borderBottomColor: colors.gray59 }}
-          >
-            Mô tả
-          </p>
-          <p className={className.description}>
-            Áo sơ mi ngắn tay, form Body Fit dễ mặc, hợp form dáng. Màu sắc và
-            kiểu dáng trẻ trung, hiện đại, dễ phối đồ. Chất liệu bạc hà kháng
-            khuẩn tự nhiên, mát lạnh, mềm mượt, thân thiện với làn da.
-          </p>
+            <div className={className.containerDescription}>
+              <p
+                className={className.price}
+                style={{
+                  borderBottomWidth: 1.5,
+                  borderBottomColor: colors.gray59,
+                }}
+              >
+                Mô tả
+              </p>
+              <p className={className.description}>
+                Áo sơ mi ngắn tay, form Body Fit dễ mặc, hợp form dáng. Màu sắc
+                và kiểu dáng trẻ trung, hiện đại, dễ phối đồ. Chất liệu bạc hà
+                kháng khuẩn tự nhiên, mát lạnh, mềm mượt, thân thiện với làn da.
+              </p>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div
+          style={{
+            height: 250,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <ReactLoading
+            type="spinningBubbles"
+            color={colors.black}
+            width={40}
+            height={40}
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -1,14 +1,15 @@
 import { createStyles, LinearProgress, makeStyles } from "@material-ui/core";
-
+import ReactLoading from "react-loading";
+import { colors } from "../utils/color";
 const LoadingProgress = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <LinearProgress
-        classes={{
-          colorPrimary: "#e8eaf6",
-          barColorPrimary: "#03a9f4",
-        }}
+      <ReactLoading
+        type="spinningBubbles"
+        color={colors.white}
+        width={40}
+        height={40}
       />
     </div>
   );
@@ -21,6 +22,9 @@ const useStyles = makeStyles(() =>
       width: "100%",
       height: "100%",
       top: 0,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
   })
 );
