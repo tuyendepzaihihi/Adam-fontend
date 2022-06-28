@@ -12,6 +12,8 @@ import {
 } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
+import { DetailProductAdmin } from "./IntefaceContaint";
+import { LIST_PRODUCT_DETAIL } from "./ContaintDataAdmin";
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -300,102 +302,7 @@ export const data_detail = {
     },
   ],
 };
-export const dataFilter = {
-  data: [
-    {
-      id: 1,
-      url: R.images.img_product,
-      price: 450000,
-      option: [
-        {
-          id: 1,
-          name: "Color",
-          option_values: {
-            id: 1,
-            name: "red",
-          },
-        },
-        {
-          id: 2,
-          name: "Size",
-          option_values: {
-            id: 1,
-            name: "X",
-          },
-        },
-      ],
-    },
-    {
-      id: 2,
-      url: R.images.img_product,
-      price: 6500000,
-      option: [
-        {
-          id: 1,
-          name: "Color",
-          option_values: {
-            id: 1,
-            name: "red",
-          },
-        },
-        {
-          id: 2,
-          name: "Size",
-          option_values: {
-            id: 2,
-            name: "L",
-          },
-        },
-      ],
-    },
-    {
-      id: 3,
-      url: R.images.img_product,
-      price: 500000,
-      option: [
-        {
-          id: 1,
-          name: "Color",
-          option_values: {
-            id: 2,
-            name: "blue",
-          },
-        },
-        {
-          id: 2,
-          name: "Size",
-          option_values: {
-            id: 1,
-            name: "X",
-          },
-        },
-      ],
-    },
-    {
-      id: 4,
-      url: R.images.img_product,
-      price: 500000,
-      option: [
-        {
-          id: 1,
-          name: "Color",
-          option_values: {
-            id: 2,
-            name: "blue",
-          },
-        },
-        {
-          id: 2,
-          name: "Size",
-          option_values: {
-            id: 2,
-            name: "L",
-          },
-        },
-      ],
-    },
-  ],
-};
+export const dataFilter: DetailProductAdmin[] = LIST_PRODUCT_DETAIL;
 
 export const LIST_ADDRESS: DataAddress[] = [
   {

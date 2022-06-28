@@ -12,6 +12,12 @@ import {
   ItemCart,
   LIST_CART,
 } from "../../contant/Contant";
+import {
+  DetailProductAdmin,
+  OptionColor,
+  OptionSize,
+  ProductAdmin,
+} from "../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../hooks";
 import { getToken } from "../../service/StorageService";
 import { colors } from "../../utils/color";
@@ -19,19 +25,18 @@ import { formatPrice } from "../../utils/function";
 import { createNotification } from "../../utils/MessageUtil";
 import { addProductToCart } from "../cart/slice/CartSlice";
 
-export const sortPriceToMax = () => {
-  let array = dataFilter.data;
+export const sortPriceToMax = (array: DetailProductAdmin[]) => {
   for (let i = 0; i < array.length - 1; i++) {
     for (let j = i + 1; j < array.length; j++) {
-      if (array[i].price > array[j].price) {
-        let a = array[i].price;
-        array[i].price = array[j].price;
-        array[j].price = a;
+      if (array[i].priceExport > array[j].priceExport) {
+        let a = array[i].priceExport;
+        array[i].priceExport = array[j].priceExport;
+        array[j].priceExport = a;
       }
     }
   }
-  return `${formatPrice(array[0].price)} - ${formatPrice(
-    array[array.length - 1].price
+  return `${formatPrice(array[0].priceExport)} - ${formatPrice(
+    array[array.length - 1].priceExport
   )}`;
 };
 
@@ -40,10 +45,52 @@ interface DataFilter {
   price: number;
 }
 interface Selection {
-  optionId: number;
+  optionId: string;
   optionValueId: number;
   value: string;
 }
+
+interface ProductById {
+  id: number;
+  productName: string;
+  description: string;
+  isActive: boolean;
+  maxPrice: number;
+  minPrice: number;
+  options: {
+    optionName: string;
+    values_options: {
+      id: number;
+      name: string;
+    }[];
+  }[];
+}
+
+const DataExample: ProductById = {
+  id: 1,
+  description: "Daay la san oham mau",
+  isActive: true,
+  maxPrice: 1500000,
+  minPrice: 1200000,
+  productName: "San pham 01",
+  options: [
+    {
+      optionName: "Size",
+      values_options: [
+        { id: 1, name: "S" },
+        { id: 2, name: "M" },
+      ],
+    },
+    {
+      optionName: "Color",
+      values_options: [
+        { id: 1, name: "Xanh" },
+        { id: 2, name: "Vang" },
+      ],
+    },
+  ],
+};
+
 const ProductDetailScreen = () => {
   const className = useStyles();
   const dispatch = useAppDispatch();
@@ -57,31 +104,35 @@ const ProductDetailScreen = () => {
   }, [selection]);
 
   const filterPrice = () => {
-    if (selection.length === data_detail.options.length) {
-      dataFilter.data.map((data) => {
+    console.log(selection.length, DataExample.options.length);
+
+    if (selection.length === DataExample.options.length) {
+      for (let index = 0; index < dataFilter.length; index++) {
         let count = 0;
-        data.option.map((option) => {
-          selection.map((selection) => {
-            if (
-              option.id === selection.optionId &&
-              option.option_values.id === selection.optionValueId
-            ) {
-              count = count + 1;
-            }
-          });
-        });
-        if (count === selection.length) {
-          setDataF({ price: data.price, url: data.url });
+        for (let i = 0; i < selection.length; i++) {
+          if (
+            dataFilter[index].size.id === selection[i].optionValueId &&
+            selection[i].optionId === "Size"
+          )
+            count = count + 1;
+          else if (
+            dataFilter[index].color.id === selection[i].optionValueId &&
+            selection[i].optionId === "Color"
+          )
+            count = count + 1;
         }
-      });
+        if (count === selection.length) {
+          setDataF({ price: dataFilter[index].priceExport, url: "" });
+        }
+      }
     } else {
       setDataF(null);
     }
   };
+  console.log({ dataF });
 
   const handleOption = (params: Selection) => {
     const { optionId, optionValueId, value } = params;
-
     const dataExist = selection.find(
       (e) => e.optionId === optionId && e.optionValueId === optionValueId
     );
@@ -130,18 +181,17 @@ const ProductDetailScreen = () => {
       });
       return;
     }
-    const itemProduct: ItemProduct = state?.item;
-    console.log({ id: itemProduct.id });
+    const itemProduct: ProductAdmin = state?.item;
 
     const item: ItemCart = {
       id: LIST_CART.length + Math.random() + 1000,
       count: count,
-      name: itemProduct?.name,
-      price: dataF ? dataF?.price : itemProduct.price,
-      totalPrice: count * (dataF ? dataF?.price : itemProduct.price),
-      url_image: dataF ? dataF?.url : itemProduct.url_image,
-      descriptionDiscount: itemProduct.descriptionDiscount,
-      discountPersent: itemProduct.discountPersent,
+      name: itemProduct?.productName,
+      price: dataF ? dataF?.price : 0,
+      totalPrice: count * (dataF ? dataF?.price : 1),
+      url_image: dataF ? dataF?.url : itemProduct.image,
+      descriptionDiscount: itemProduct.description,
+      discountPersent: 10,
       product_id: itemProduct.id,
     };
     dispatch(addProductToCart({ item: item }));
@@ -150,38 +200,36 @@ const ProductDetailScreen = () => {
   return (
     <div className={className.container}>
       <div className={className.containerImage}>
-        <img alt="" src={dataF ? dataF.url : R.images.img_product} />
+        <img alt="" src={R.images.img_product} />
       </div>
 
       <div className={className.containerInfo}>
         <p className={className.title}>
-          {`${state?.item?.name}`.toUpperCase()}
+          {`${DataExample.productName}`.toUpperCase()}
         </p>
 
         <p className={className.price}>
-          {dataF ? formatPrice(dataF.price) : sortPriceToMax()} đ
+          {dataF
+            ? formatPrice(dataF.price)
+            : `${formatPrice(DataExample.minPrice)} - ${formatPrice(
+                DataExample.maxPrice
+              )}`}
+          đ
         </p>
 
-        {data_detail.options.map((option, index) => {
+        {DataExample.options.map((option, index) => {
           return (
             <div key={index}>
               <p className={className.containerUpdateQuantity}>
-                {option.name}
-                <p className={className.price}>
-                  {selection.find((e) => e.optionId === option.id)
-                    ? `: ${
-                        selection.find((e) => e.optionId === option.id)?.value
-                      }`
-                    : ""}
-                </p>
+                {option.optionName}
               </p>
               <div className={className.containerUpdateQuantity}>
-                {option.option_values.map((optionValue, idx) => {
+                {option.values_options.map((optionValue, idx) => {
                   return (
                     <button
                       className={clsx(className.buttonInActive, {
                         [className.buttonActive]: handleCheck({
-                          optionId: option.id,
+                          optionId: option.optionName,
                           optionValueId: optionValue.id,
                           value: optionValue.name,
                         }),
@@ -189,7 +237,7 @@ const ProductDetailScreen = () => {
                       })}
                       onClick={() =>
                         handleOption({
-                          optionId: option.id,
+                          optionId: option.optionName,
                           optionValueId: optionValue.id,
                           value: optionValue.name,
                         })
@@ -231,7 +279,7 @@ const ProductDetailScreen = () => {
           </div>
         )}
 
-        {selection.length === data_detail.options.length && (
+        {/* {selection.length === data_detail.options.length && (
           <p
             className={clsx(
               className.containerUpdateQuantity,
@@ -244,7 +292,7 @@ const ProductDetailScreen = () => {
               {formatPrice((dataF ? dataF.price : state?.item?.price) * count)}đ
             </p>
           </p>
-        )}
+        )} */}
 
         {selection.length === data_detail.options.length && (
           <Button
