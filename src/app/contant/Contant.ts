@@ -9,11 +9,16 @@ import {
   BrandingWatermark,
   TagFaces,
   ColorLens,
+  LocationCity,
+  AccountBalance,
+  SettingsApplications,
 } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
 import { DetailProductAdmin } from "./IntefaceContaint";
 import { LIST_PRODUCT_DETAIL } from "./ContaintDataAdmin";
+import AddressUser from "../screen/setting/address/AddressUser";
+import OrderScreen from "../admin/branch/OrderScreen";
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -59,6 +64,7 @@ export const ROUTE = {
   CART: "/cart",
   ADDRESS: "/address",
   ORDER: "/order",
+  ACCOUNT: "/account",
 };
 
 export const ROUTE_ADMIN = {
@@ -319,3 +325,33 @@ export const LIST_ADDRESS: DataAddress[] = [
     wardName: "Mỹ Đình",
   },
 ];
+
+export const TYPE_ACCOUNT = {
+  PROFILE: "PROFILE",
+  ADDRESS: "ADDRESS",
+  ORDER: "ORDER",
+  SETTING: "SETTING",
+};
+
+export const DEFINE_TYPE_ACCOUNT = {
+  [TYPE_ACCOUNT.PROFILE]: {
+    name: "Thông tin cá nhân",
+    icon: AccountBalance,
+  },
+  [TYPE_ACCOUNT.ADDRESS]: {
+    name: "Địa chỉ nhận hàng",
+    icon: LocationCity,
+    // screen: AddressUser,
+  },
+
+  [TYPE_ACCOUNT.ORDER]: {
+    name: "Thông tin đơn hàng",
+    icon: AccountBalance,
+    // screen: OrderScreen,
+  },
+  [TYPE_ACCOUNT.SETTING]: {
+    name: "Cài đặt",
+    icon: SettingsApplications,
+    // screen: OrderScreen,
+  },
+};

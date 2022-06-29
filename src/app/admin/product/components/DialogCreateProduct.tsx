@@ -28,7 +28,7 @@ import ListProductDetail from "./create/ListProductDeail";
 interface Props {
   open: any;
   handleClose: any;
-  anchorElData: any;
+  anchorElData: { item: ProductAdmin | null };
   type: number;
   data: ProductAdmin[];
 }
@@ -67,12 +67,19 @@ function getSteps() {
 
 const FormDialogProductCreate = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
-  const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(null);
+  const { handleClose, open, anchorElData, type } = props;
+
+  const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(
+    anchorElData.item
+  );
   const [listProductDetail, setListProductDetail] = useState<
     DetailProductAdmin[]
   >([]);
+
   const [option, setOption] = useState<any[]>([]);
+  useEffect(() => {
+    setDataProduct(anchorElData.item);
+  }, [anchorElData]);
 
   useEffect(() => {
     getData();

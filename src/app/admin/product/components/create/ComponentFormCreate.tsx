@@ -12,12 +12,15 @@ import {
   MenuItem,
   Select,
   Theme,
-  useTheme,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextInputComponent from "../../../../component/TextInputComponent";
-import { ProductAdmin, ResultApi } from "../../../../contant/IntefaceContaint";
+import {
+  CategoryAdmin,
+  ProductAdmin,
+  ResultApi,
+} from "../../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { colors } from "../../../../utils/color";
 import {
@@ -27,7 +30,7 @@ import {
 import { changeLoading } from "../../slice/ProductAdminSlice";
 import { PropsCreateProduct } from "../DialogCreateProduct";
 
-const ITEM_HEIGHT = 48;
+const ITEM_HEIGHT = 50;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
@@ -47,28 +50,39 @@ interface Props {
   dataProduct: ProductAdmin | null;
 }
 
-function getStyles(name: string, personName: string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightMedium
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 const ComponentFormCreate = (props: Props) => {
   const { initialValues, onSubmit, validateProduct, handleClose, dataProduct } =
     props;
+
   const dispatch = useAppDispatch();
   const classes = useStyles();
-  const theme = useTheme();
 
   const tags = useAppSelector((state) => state.tagAdmin).data;
   const materials = useAppSelector((state) => state.materialAdmin).data;
   const categories = useAppSelector((state) => state.categoryAdmin).data;
+  const [categoriesChil, setCategoriesChil] = useState<CategoryAdmin[]>([]);
 
   const [personTag, setPersonTag] = useState<string[]>([]);
   const [personMaterial, setPersonMaterial] = useState<string[]>([]);
+
+  const [category, setCategory] = useState<string | null>(
+    dataProduct ? `${dataProduct.category.id}` : null
+  );
+  const [categoryChildren, setCategoryChilren] = useState<string | null>(
+    dataProduct ? `${dataProduct.category.id}` : null
+  );
+
+  useEffect(() => {
+    getDataCategoryChil();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
+
+  const getDataCategoryChil = async () => {
+    if (category) {
+      const item = categories.find((e) => e.id === +category);
+      setCategoriesChil(item?.categoryChildren ?? []);
+    } else return setCategoriesChil([]);
+  };
 
   const handleChangeTag = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPersonTag(event.target.value as string[]);
@@ -79,27 +93,24 @@ const ComponentFormCreate = (props: Props) => {
     setPersonMaterial(event.target.value as string[]);
   };
 
-  const [category, setCategory] = useState<string | null>(
-    dataProduct ? `${dataProduct.category_id}` : null
-  );
   const handleSubmitCreate = async (data: PropsCreateProduct) => {
     const { description, product_name } = data;
     let materialList: number[] = [];
     try {
       dispatch(changeLoading(true));
-      materials.map((e) => {
+      materials.forEach((e) => {
         let res = personMaterial.find((m) => m.includes(`${e.materialName}`));
         if (res !== undefined) materialList = materialList.concat([e.id]);
       });
 
       let tagsList: number[] = [];
-      tags.map((e) => {
+      tags.forEach((e) => {
         let res = personTag.find((m) => m.includes(`${e.tagName}`));
         if (res !== undefined) tagsList = tagsList.concat([e.id]);
       });
 
       const itemCreate: CreateProductDto = {
-        categoryId: Number(category) ?? 0,
+        categoryId: Number(categoryChildren) ?? 0,
         description: description,
         productName: product_name,
         tagProductIdList: tagsList,
@@ -182,6 +193,29 @@ const ComponentFormCreate = (props: Props) => {
                 </>
               }
             />
+            {categoriesChil.length > 0 && (
+              <TextInputComponent
+                label="Category chil"
+                value={categoryChildren}
+                onChange={(event: any) => {
+                  const value = event.target.value;
+                  setCategoryChilren(value);
+                }}
+                isSelected={true}
+                childrentSeleted={
+                  <>
+                    <option key={0} value={0}>
+                      Chưa chọn
+                    </option>
+                    {categoriesChil.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.categoryName}
+                      </option>
+                    ))}
+                  </>
+                }
+              />
+            )}
             <div>
               <FormControl className={classes.formControl} variant="outlined">
                 <InputLabel id="demo-mutiple-chip-label">Tag</InputLabel>
@@ -209,10 +243,16 @@ const ComponentFormCreate = (props: Props) => {
                     <MenuItem
                       key={index}
                       value={tag.tagName}
-                      style={
-                        (getStyles(tag.tagName, personTag, theme),
-                        { marginTop: 5, marginRight: 5, marginLeft: 5 })
-                      }
+                      style={{
+                        marginTop: 5,
+                        marginRight: 5,
+                        marginLeft: 5,
+                        backgroundColor: personTag.find(
+                          (e) => e === `${tag.tagName}`
+                        )
+                          ? colors.orange
+                          : colors.white,
+                      }}
                     >
                       {tag.tagName}
                     </MenuItem>
@@ -248,18 +288,16 @@ const ComponentFormCreate = (props: Props) => {
                     <MenuItem
                       key={index}
                       value={material.materialName}
-                      style={
-                        (getStyles(
-                          material.materialName,
-                          personMaterial,
-                          theme
-                        ),
-                        {
-                          marginTop: 5,
-                          marginRight: 5,
-                          marginLeft: 5,
-                        })
-                      }
+                      style={{
+                        marginTop: 5,
+                        marginRight: 5,
+                        marginLeft: 5,
+                        backgroundColor: personMaterial.find(
+                          (e) => e === `${material.materialName}`
+                        )
+                          ? colors.orange
+                          : colors.white,
+                      }}
                     >
                       {material.materialName}
                     </MenuItem>

@@ -1,5 +1,5 @@
 import { Button, IconButton, makeStyles } from "@material-ui/core";
-import { LocalActivity, LocationOn } from "@material-ui/icons";
+import { EditLocation, LocationOn } from "@material-ui/icons";
 import { useEffect, useState } from "react";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -47,7 +47,7 @@ const AddressUser = () => {
       <div className={className.root}>
         <div style={{ display: "flex", flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <LocationOn color="secondary" />
+            <LocationOn color={item.isDefault ? "secondary" : "inherit"} />
           </div>
           <div style={{ marginLeft: 10 }}>
             <p style={{ color: colors.black, fontWeight: "bold" }}>
@@ -66,7 +66,7 @@ const AddressUser = () => {
               setOpen(!open);
             }}
           >
-            <LocalActivity color={item.isDefault ? "secondary" : "inherit"} />
+            <EditLocation color="secondary" />
           </IconButton>
         </div>
       </div>
@@ -91,7 +91,7 @@ const AddressUser = () => {
             setOpen(!open);
           }}
         >
-          Them dia chi
+          Thêm địa chỉ
         </Button>
       </div>
       {data?.map((e, index) => {

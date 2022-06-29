@@ -396,7 +396,6 @@ export const headCellsOptionSize: HeadCell<OptionSize>[] = [
   },
   { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
 ];
-
 // Product
 export const headCellsProduct: HeadCell<ProductAdmin>[] = [
   {
@@ -413,6 +412,7 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
     label: "Create date",
   },
   { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isComplete", numeric: true, disablePadding: false, label: "Complete" },
 ];
 
 export const LIST_PRODUCT: ProductAdmin[] = [

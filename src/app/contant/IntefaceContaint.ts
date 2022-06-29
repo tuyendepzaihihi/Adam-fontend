@@ -114,6 +114,7 @@ export interface ProductAdmin {
   tag_id: any;
   voteAverage: number;
   category: CategoryAdmin;
+  isComplete: boolean;
 }
 
 export interface DetailProductAdmin {

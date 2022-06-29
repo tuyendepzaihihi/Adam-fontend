@@ -6,7 +6,6 @@ import {
   Collapse,
   createStyles,
   FormControlLabel,
-  LinearProgress,
   List,
   ListItem,
   ListItemText,
@@ -17,24 +16,13 @@ import {
 } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import { useEffect, useState } from "react";
+import LoadingProgress from "../../component/LoadingProccess";
 import ProductItemComponent from "../../component/product_item/ProductItemComponent";
-import {
-  LIST_MATERIAL,
-  LIST_TAG,
-  OPTIONS_DATA,
-} from "../../contant/ContaintDataAdmin";
-import {
-  CategoryAdmin,
-  ProductAdmin,
-  ResultApi,
-} from "../../contant/IntefaceContaint";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
-import {
-  GetProductDto,
-  requestGetCategorylAll,
-  requestGetProductCustomer,
-} from "./ProductCustomerApi";
+import { GetProductDto } from "./ProductCustomerApi";
+import { incrementAsyncProduct } from "./slice/ProductCustomerSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
     categoryContainer: {
       width: "20%",
       paddingTop: 30,
+      position: "relative",
     },
     buttonCategory: {
       paddingTop: 5,
@@ -122,33 +111,30 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ProductScreen = () => {
   const className = useStyles();
+  const dispatch = useAppDispatch();
   const [value, setValue] = useState([0, 1500]);
-  const [listProduct, setListProduct] = useState<ProductAdmin[]>([]);
-  const [listCategory, setListCategory] = useState<CategoryAdmin[]>([]);
-  const [loading, setLoading] = useState(false);
+  const loadingProduct = useAppSelector(
+    (state) => state.productCustomer
+  ).isLoading;
+  const dataProduct = useAppSelector((state) => state.productCustomer).data;
+  const countProduct = useAppSelector((state) => state.productCustomer).count;
+  const loadingFilter = useAppSelector(
+    (state) => state.filterCustomer
+  ).isLoading;
+  const dataFilter = useAppSelector((state) => state.filterCustomer).data;
   const [selectedParent, setSeletedParent] = useState<Number[]>([]);
   const [payload, setPayLoad] = useState<GetProductDto>({
     page: 0,
     size: 10,
   });
+
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payload]);
 
   const getData = async () => {
-    try {
-      setLoading(true);
-      const res: ResultApi<{ content: ProductAdmin[] }> =
-        await requestGetProductCustomer(payload);
-      const resCate: ResultApi<CategoryAdmin[]> =
-        await requestGetCategorylAll();
-      setListProduct(res.data.content);
-      setListCategory(resCate.data);
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-    }
+    dispatch(incrementAsyncProduct(payload));
   };
 
   const rangeSelector = (event: any, newValue: any) => {
@@ -177,7 +163,7 @@ const ProductScreen = () => {
   return (
     <div className={className.container}>
       <div className={className.categoryContainer}>
-        <Accordion defaultExpanded={true}>
+        <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1a-content"
@@ -187,42 +173,44 @@ const ProductScreen = () => {
           </AccordionSummary>
 
           <AccordionDetails className={className.rootAccordionDetails}>
-            {listCategory.map((value, idx) => {
-              const isSelectParent =
-                selectedParent.find((e) => e === value.id) !== undefined;
-              return (
-                <p key={idx}>
-                  <ListItem
-                    button
-                    onClick={() => onSeledtedCategoryParent(value.id)}
-                    className={className.buttonCategory}
-                    style={{
-                      color: isSelectParent ? colors.black : colors.gray59,
-                      fontWeight: isSelectParent ? "bold" : "normal",
-                    }}
-                  >
-                    <ListItemText primary={`${value.categoryName}`} />
-                    {isSelectParent ? <ExpandLess /> : <ExpandMore />}
-                  </ListItem>
-                  <Collapse in={isSelectParent} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      {listCategory.map((val, index) => {
-                        return (
-                          <ListItem
-                            button
-                            className={className.buttonCategory}
-                            style={{ marginLeft: 10 }}
-                            key={index}
-                          >
-                            <ListItemText primary={`${val.categoryName}`} />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Collapse>
-                </p>
-              );
-            })}
+            {dataFilter?.categories &&
+              dataFilter?.categories.map((value, idx) => {
+                const isSelectParent =
+                  selectedParent.find((e) => e === value.id) !== undefined;
+                return (
+                  <p key={idx}>
+                    <ListItem
+                      button
+                      onClick={() => onSeledtedCategoryParent(value.id)}
+                      className={className.buttonCategory}
+                      style={{
+                        color: isSelectParent ? colors.black : colors.gray59,
+                        fontWeight: isSelectParent ? "bold" : "normal",
+                      }}
+                    >
+                      <ListItemText primary={`${value.categoryName}`} />
+                      {isSelectParent ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={isSelectParent} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {dataFilter?.categories &&
+                          dataFilter?.categories.map((val, index) => {
+                            return (
+                              <ListItem
+                                button
+                                className={className.buttonCategory}
+                                style={{ marginLeft: 10 }}
+                                key={index}
+                              >
+                                <ListItemText primary={`${val.categoryName}`} />
+                              </ListItem>
+                            );
+                          })}
+                      </List>
+                    </Collapse>
+                  </p>
+                );
+              })}
           </AccordionDetails>
         </Accordion>
         <Accordion
@@ -257,10 +245,7 @@ const ProductScreen = () => {
             </p>
           </AccordionDetails>
         </Accordion>
-        <Accordion
-          className={className.containerFilterValue}
-          defaultExpanded={true}
-        >
+        <Accordion className={className.containerFilterValue}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1a-content"
@@ -271,23 +256,21 @@ const ProductScreen = () => {
           </AccordionSummary>
 
           <AccordionDetails className={className.rootAccordionDetails}>
-            {OPTIONS_DATA.colors.map((e, index) => {
-              return (
-                <FormControlLabel
-                  aria-label="Acknowledge"
-                  control={<Checkbox />}
-                  label={`${e.colorName}`}
-                  key={index}
-                />
-              );
-            })}
+            {dataFilter?.colors &&
+              dataFilter?.colors.map((e, index) => {
+                return (
+                  <FormControlLabel
+                    aria-label="Acknowledge"
+                    control={<Checkbox />}
+                    label={`${e.colorName}`}
+                    key={index}
+                  />
+                );
+              })}
           </AccordionDetails>
         </Accordion>
 
-        <Accordion
-          className={className.containerFilterValue}
-          // defaultExpanded={true}
-        >
+        <Accordion className={className.containerFilterValue}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1a-content"
@@ -298,25 +281,23 @@ const ProductScreen = () => {
           </AccordionSummary>
 
           <AccordionDetails className={className.rootAccordionDetails}>
-            {OPTIONS_DATA.sizes.map((e, index) => {
-              return (
-                <FormControlLabel
-                  aria-label="Acknowledge"
-                  onClick={(event) => event.stopPropagation()}
-                  onFocus={(event) => event.stopPropagation()}
-                  control={<Checkbox />}
-                  label={`${e.sizeName}`}
-                  key={index}
-                />
-              );
-            })}
+            {dataFilter?.sizes &&
+              dataFilter?.sizes.map((e, index) => {
+                return (
+                  <FormControlLabel
+                    aria-label="Acknowledge"
+                    onClick={(event) => event.stopPropagation()}
+                    onFocus={(event) => event.stopPropagation()}
+                    control={<Checkbox />}
+                    label={`${e.sizeName}`}
+                    key={index}
+                  />
+                );
+              })}
           </AccordionDetails>
         </Accordion>
 
-        <Accordion
-          className={className.containerFilterValue}
-          defaultExpanded={true}
-        >
+        <Accordion className={className.containerFilterValue}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1a-content"
@@ -327,25 +308,23 @@ const ProductScreen = () => {
           </AccordionSummary>
 
           <AccordionDetails className={className.rootAccordionDetails}>
-            {LIST_MATERIAL.map((e, index) => {
-              return (
-                <FormControlLabel
-                  aria-label="Acknowledge"
-                  onClick={(event) => event.stopPropagation()}
-                  onFocus={(event) => event.stopPropagation()}
-                  control={<Checkbox />}
-                  label={`${e.materialName}`}
-                  key={index}
-                />
-              );
-            })}
+            {dataFilter?.materials &&
+              dataFilter?.materials.map((e, index) => {
+                return (
+                  <FormControlLabel
+                    aria-label="Acknowledge"
+                    onClick={(event) => event.stopPropagation()}
+                    onFocus={(event) => event.stopPropagation()}
+                    control={<Checkbox />}
+                    label={`${e.materialName}`}
+                    key={index}
+                  />
+                );
+              })}
           </AccordionDetails>
         </Accordion>
 
-        <Accordion
-          className={className.containerFilterValue}
-          // defaultExpanded={true}
-        >
+        <Accordion className={className.containerFilterValue}>
           <AccordionSummary
             expandIcon={<ExpandMore />}
             aria-controls="panel1a-content"
@@ -356,20 +335,22 @@ const ProductScreen = () => {
           </AccordionSummary>
 
           <AccordionDetails className={className.rootAccordionDetails}>
-            {LIST_TAG.map((e, index) => {
-              return (
-                <FormControlLabel
-                  aria-label="Acknowledge"
-                  onClick={(event) => event.stopPropagation()}
-                  onFocus={(event) => event.stopPropagation()}
-                  control={<Checkbox />}
-                  label={`${e.tagName}`}
-                  key={index}
-                />
-              );
-            })}
+            {dataFilter?.tags &&
+              dataFilter?.tags.map((e, index) => {
+                return (
+                  <FormControlLabel
+                    aria-label="Acknowledge"
+                    onClick={(event) => event.stopPropagation()}
+                    onFocus={(event) => event.stopPropagation()}
+                    control={<Checkbox />}
+                    label={`${e.tagName}`}
+                    key={index}
+                  />
+                );
+              })}
           </AccordionDetails>
         </Accordion>
+        {loadingFilter && <LoadingProgress />}
       </div>
 
       <div className={className.image_banner}>
@@ -377,7 +358,7 @@ const ProductScreen = () => {
           <p className={className.textTitle}>Sản phẩm mới</p>
         </div>
         <div className={className.listImage}>
-          {listProduct.map((value, idx) => {
+          {dataProduct.map((value, idx) => {
             return (
               <ProductItemComponent item={value} key={idx} width={"22%"} />
             );
@@ -387,23 +368,14 @@ const ProductScreen = () => {
           <TablePagination
             rowsPerPageOptions={[10, 20, 50]}
             component="div"
-            count={100}
+            count={countProduct ?? 100}
             rowsPerPage={payload.size}
             page={payload.page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </div>
-        {loading && (
-          <div className={className.root}>
-            <LinearProgress
-              classes={{
-                colorPrimary: "#e8eaf6",
-                barColorPrimary: "#03a9f4",
-              }}
-            />
-          </div>
-        )}
+        {loadingProduct && <LoadingProgress />}
       </div>
     </div>
   );

@@ -1,22 +1,23 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
+import LoadingProgress from "../../component/LoadingProccess";
 import ProductItemComponent from "../../component/product_item/ProductItemComponent";
 import {
   LIST_IMAGE_BANNER,
   LIST_IMAGE_BANNER_SECOND,
-  LIST_PRODUCT,
 } from "../../contant/Contant";
-import { ProductAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { requestGetBestSale, requestGetNewProduct } from "./HomeApi";
+import { colors } from "../../utils/color";
 import { incrementAsyncHome } from "./slice/HomeSlice";
-
+import ReactLoading from "react-loading";
+import { incrementAsyncFilter } from "../product/slice/FilterValueSlice";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       width: "100%",
       scrollBehavior: "auto",
+      position: "relative",
     },
     image_banner: {
       width: "100%",
@@ -32,34 +33,36 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 20,
       textAlign: "center",
     },
+    root: {
+      position: "absolute",
+      backgroundColor: "rgba(0,0,0,0.5)",
+      width: "100%",
+      height: "100%",
+      top: 0,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
   })
 );
 
 const HomeScreen = () => {
   const className = useStyles();
   const dispatch = useAppDispatch();
-  const [data, setData] = useState<{
-    newProducts: ProductAdmin[];
-    bestSales: ProductAdmin[];
-  }>({
-    newProducts: [],
-    bestSales: [],
-  });
+  const { isLoading, data } = useAppSelector((state) => state.home);
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    dispatch(incrementAsyncFilter());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getData = async () => {
     try {
-      const resNewProducts: ResultApi<ProductAdmin[]> =
-        await requestGetNewProduct();
-      const resBestSales: ResultApi<ProductAdmin[]> =
-        await requestGetBestSale();
-      setData({
-        bestSales: resBestSales.data,
-        newProducts: resNewProducts.data,
-      });
+      dispatch(incrementAsyncHome());
     } catch (e) {}
   };
   return (
@@ -78,7 +81,7 @@ const HomeScreen = () => {
           })}
         </Carousel>
       </div>
-      {data.bestSales.length > 0 && (
+      {data?.listBestSale && data?.listBestSale.length > 0 && (
         <div style={{ width: "100%", height: 500 }}>
           <p className={className.textTitle}>Sản phẩm bán chạy</p>
           <Carousel
@@ -93,8 +96,8 @@ const HomeScreen = () => {
             {[1, 2].map((e) => {
               const list =
                 e === 1
-                  ? data.bestSales.slice(0, 5)
-                  : data.bestSales.slice(5, data.bestSales.length);
+                  ? data?.listBestSale.slice(0, 5)
+                  : data?.listBestSale.slice(5, data?.listBestSale.length);
               return (
                 <div className={className.listImage}>
                   {list.map((value, idx) => {
@@ -141,8 +144,8 @@ const HomeScreen = () => {
           {[1, 2].map((e) => {
             const list =
               e === 1
-                ? data.newProducts.slice(0, 5)
-                : data.newProducts.slice(5, data.newProducts.length);
+                ? data?.listNewProduct.slice(0, 5)
+                : data?.listNewProduct.slice(5, data?.listNewProduct.length);
             return (
               <div className={className.listImage}>
                 {list.map((value, idx) => {
@@ -153,6 +156,7 @@ const HomeScreen = () => {
           })}
         </Carousel>
       </div>
+      {isLoading && <LoadingProgress />}
     </div>
   );
 };

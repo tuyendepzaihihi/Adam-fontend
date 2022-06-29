@@ -29,10 +29,7 @@ import { FunctionUtil, Order } from "../../utils/function";
 import { deleteTag } from "../tag/slice/TagAdminSlice";
 import FormDialogProductCreate from "./components/DialogCreateProduct";
 import { GetProductDto } from "./ProductAdminApi";
-import {
-  incrementAsyncProductAdmin,
-  updateProduct,
-} from "./slice/ProductAdminSlice";
+import { incrementAsyncProductAdmin } from "./slice/ProductAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -122,9 +119,6 @@ export default function ProductScreen() {
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     setAnchorElData(null);
@@ -171,7 +165,7 @@ export default function ProductScreen() {
             <UpdateIcon color="primary" />
           </IconButton>
         </Tooltip>
-        <p>Cập nhật</p>
+        <p>Cập nhật sản phẩm</p>
       </MenuItem>
     </Menu>
   );
@@ -215,8 +209,7 @@ export default function ProductScreen() {
                 FunctionUtil.stableSort(
                   data,
                   FunctionUtil.getComparator(order, orderBy)
-                )
-                .map((row, index) => {
+                ).map((row, index) => {
                   const isItemSelected = isSelected(`${row.id}`);
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
@@ -256,14 +249,16 @@ export default function ProductScreen() {
 
                       <TableCell align="right">
                         <Switch
-                          checked={row.isActive === 1 ? true : false}
-                          onChange={() => {
-                            let item = {
-                              ...row,
-                              isActive: row.isActive === 1 ? 0 : 1,
-                            };
-                            dispatch(updateProduct({ item: item }));
-                          }}
+                          checked={row.isActive ?? false}
+                          onChange={() => {}}
+                          name={labelId}
+                          inputProps={{ "aria-label": labelId }}
+                          color="primary"
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <Switch
+                          checked={row.isComplete}
                           name={labelId}
                           inputProps={{ "aria-label": labelId }}
                           color="primary"
@@ -281,11 +276,6 @@ export default function ProductScreen() {
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -303,7 +293,7 @@ export default function ProductScreen() {
       <FormDialogProductCreate
         open={open}
         handleClose={handleClose}
-        anchorElData={anchorElData}
+        anchorElData={{ item: anchorElData?.item ?? null }}
         type={typeDialog}
         data={data}
       />

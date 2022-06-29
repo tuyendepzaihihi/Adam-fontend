@@ -1,4 +1,10 @@
-import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
+import {
+  Button,
+  createStyles,
+  makeStyles,
+  Paper,
+  Theme,
+} from "@material-ui/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import R from "../../assets/R";
@@ -29,41 +35,46 @@ const ProductItemComponent = (props: Props) => {
   const [show, setShow] = useState(false);
 
   return (
-    <div
+    <Paper
+      elevation={3}
       className={className.container}
-      onMouseEnter={() => {
-        setShow(true);
-      }}
-      onMouseLeave={() => {
-        setShow(false);
-      }}
       style={{ width: width }}
     >
-      <img
-        src={R.images.img_product}
-        alt=""
-        className={className.image_banner}
-      />
-      <div className={className.containerInfo}>
-        <p className={className.textDiscount}>{item.description}</p>
-        <p className={className.textName}>{item.productName}</p>
-        <p className={className.textPrice}>{formatPrice(2500000)} đ</p>
-      </div>
-      {show && (
-        <div className={className.positionContainer}>
-          <Button
-            color="primary"
-            className={className.button}
-            onClick={() => {
-              navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
-              // navigate(ROUTE.PRODUCT);
-            }}
-          >
-            Mua ngay
-          </Button>
+      <div
+        onMouseEnter={() => {
+          setShow(true);
+        }}
+        onMouseLeave={() => {
+          setShow(false);
+        }}
+        style={{ width: "100%" }}
+      >
+        <img
+          src={R.images.img_product}
+          alt=""
+          className={className.image_banner}
+        />
+        <div className={className.containerInfo}>
+          <p className={className.textDiscount}>{item.description}</p>
+          <p className={className.textName}>{item.productName}</p>
+          <p className={className.textPrice}>{formatPrice(2500000)} đ</p>
         </div>
-      )}
-    </div>
+        {show && (
+          <div className={className.positionContainer}>
+            <Button
+              color="primary"
+              className={className.button}
+              onClick={() => {
+                navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
+                // navigate(ROUTE.PRODUCT);
+              }}
+            >
+              Mua ngay
+            </Button>
+          </div>
+        )}
+      </div>
+    </Paper>
   );
 };
 export default ProductItemComponent;
@@ -71,8 +82,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       width: "20%",
-      position: "relative",
       marginRight: `${(100 - 32 * 3) / 3}%`,
+      marginTop: 15,
+      position: "relative",
     },
     image_banner: {
       width: "100%",
@@ -99,7 +111,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       backgroundColor: "rgba(0,0,0,0.5)",
       width: "100%",
-      height: 400,
+      height: "100%",
       top: 0,
       display: "flex",
       justifyContent: "center",

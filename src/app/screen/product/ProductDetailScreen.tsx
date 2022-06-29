@@ -6,18 +6,9 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import R from "../../assets/R";
 import LoadingProgress from "../../component/LoadingProccess";
-import { ItemProduct } from "../../component/product_item/ProductItemComponent";
-import ReactLoading from "react-loading";
-import {
-  dataFilter,
-  data_detail,
-  ItemCart,
-  LIST_CART,
-} from "../../contant/Contant";
+import { data_detail, ItemCart, LIST_CART } from "../../contant/Contant";
 import {
   DetailProductAdmin,
-  OptionColor,
-  OptionSize,
   ProductAdmin,
   ResultApi,
 } from "../../contant/IntefaceContaint";
@@ -73,31 +64,6 @@ interface ProductById {
   }[];
 }
 
-const DataExample: ProductById = {
-  id: 1,
-  description: "Daay la san oham mau",
-  isActive: true,
-  maxPrice: 1500000,
-  minPrice: 1200000,
-  productName: "San pham 01",
-  options: [
-    {
-      optionName: "Size",
-      values_options: [
-        { id: 1, name: "S" },
-        { id: 2, name: "M" },
-      ],
-    },
-    {
-      optionName: "Color",
-      values_options: [
-        { id: 1, name: "Xanh" },
-        { id: 2, name: "Vang" },
-      ],
-    },
-  ],
-};
-
 const ProductDetailScreen = () => {
   const className = useStyles();
   const dispatch = useAppDispatch();
@@ -112,6 +78,8 @@ const ProductDetailScreen = () => {
     undefined
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     getDataFilterPrice();
   }, [state]);
@@ -121,6 +89,7 @@ const ProductDetailScreen = () => {
   }, [selection]);
 
   const getDataFilterPrice = async () => {
+    setIsLoading(true);
     try {
       const resultProductById: ResultApi<ProductById> =
         await requestGetProductCustomerById({ id: 7 });
@@ -130,29 +99,30 @@ const ProductDetailScreen = () => {
         });
       setDataDetail(resultProductById.data);
       setListDataFilter(res.data);
-    } catch (e) {}
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+    }
   };
 
   const filterPrice = () => {
-    console.log(selection.length, dataDetail?.options.length);
-
     if (selection.length === dataDetail?.options.length) {
-      for (let index = 0; index < dataFilter.length; index++) {
+      for (let index = 0; index < listDataFilter.length; index++) {
         let count = 0;
         for (let i = 0; i < selection.length; i++) {
           if (
-            dataFilter[index].size.id === selection[i].optionValueId &&
+            listDataFilter[index].size.id === selection[i].optionValueId &&
             selection[i].optionId === "Size"
           )
             count = count + 1;
           else if (
-            dataFilter[index].color.id === selection[i].optionValueId &&
+            listDataFilter[index].color.id === selection[i].optionValueId &&
             selection[i].optionId === "Color"
           )
             count = count + 1;
         }
         if (count === selection.length) {
-          setDataF({ price: dataFilter[index].priceExport, url: "" });
+          setDataF({ price: listDataFilter[index].priceExport, url: "" });
         }
       }
     } else {
@@ -228,149 +198,116 @@ const ProductDetailScreen = () => {
 
   return (
     <div className={className.container}>
-      {dataDetail ? (
-        <>
-          <div className={className.containerImage}>
-            <img alt="" src={R.images.img_product} />
-          </div>
+      <>
+        <div className={className.containerImage}>
+          <img alt="" src={R.images.img_product} />
+        </div>
 
-          <div className={className.containerInfo}>
-            <p className={className.title}>
-              {`${dataDetail?.productName}`.toUpperCase()}
-            </p>
+        <div className={className.containerInfo}>
+          <p className={className.title}>
+            {`${
+              dataDetail?.productName ?? "Dang loading du lieu"
+            }`.toUpperCase()}
+          </p>
 
-            <p className={className.price}>
-              {dataF
-                ? formatPrice(dataF.price)
-                : `${formatPrice(dataDetail?.minPrice ?? 0)} - ${formatPrice(
-                    dataDetail?.maxPrice ?? 0
-                  )}`}
-              đ
-            </p>
+          <p className={className.price}>
+            {dataF
+              ? formatPrice(dataF.price)
+              : `${formatPrice(dataDetail?.minPrice ?? 0)} - ${formatPrice(
+                  dataDetail?.maxPrice ?? 0
+                )}`}
+            đ
+          </p>
 
-            {dataDetail?.options.map((option, index) => {
-              return (
-                <div key={index}>
-                  <p className={className.containerUpdateQuantity}>
-                    {option.optionName}
-                  </p>
-                  <div className={className.containerUpdateQuantity}>
-                    {option.values_options.map((optionValue, idx) => {
-                      return (
-                        <button
-                          className={clsx(className.buttonInActive, {
-                            [className.buttonActive]: handleCheck({
-                              optionId: option.optionName,
-                              optionValueId: optionValue.id,
-                              value: optionValue.name,
-                            }),
-                            [className.marginLeft]: idx > 0,
-                          })}
-                          onClick={() =>
-                            handleOption({
-                              optionId: option.optionName,
-                              optionValueId: optionValue.id,
-                              value: optionValue.name,
-                            })
-                          }
-                          key={idx}
-                        >
-                          {optionValue.name}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-
-            {selection.length === data_detail.options.length && (
-              <div className={className.containerDescription}>
-                <p className={className.price}>Số lượng</p>
+          {dataDetail?.options.map((option, index) => {
+            return (
+              <div key={index}>
+                <p className={className.containerUpdateQuantity}>
+                  {option.optionName}
+                </p>
                 <div className={className.containerUpdateQuantity}>
-                  <button
-                    className={className.buttonUpdate}
-                    onClick={() => {
-                      if (count > 1) setCount(count - 1);
-                    }}
-                  >
-                    -
-                  </button>
-                  <p className={className.textCount}>{count}</p>
-                  <button
-                    className={className.buttonUpdate}
-                    onClick={() => {
-                      setCount(count + 1);
-                    }}
-                    style={{ marginLeft: 15 }}
-                  >
-                    +
-                  </button>
+                  {option.values_options.map((optionValue, idx) => {
+                    return (
+                      <button
+                        className={clsx(className.buttonInActive, {
+                          [className.buttonActive]: handleCheck({
+                            optionId: option.optionName,
+                            optionValueId: optionValue.id,
+                            value: optionValue.name,
+                          }),
+                          [className.marginLeft]: idx > 0,
+                        })}
+                        onClick={() =>
+                          handleOption({
+                            optionId: option.optionName,
+                            optionValueId: optionValue.id,
+                            value: optionValue.name,
+                          })
+                        }
+                        key={idx}
+                      >
+                        {optionValue.name}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            )}
+            );
+          })}
 
-            {/* {selection.length === data_detail.options.length && (
-          <p
-            className={clsx(
-              className.containerUpdateQuantity,
-              className.containerDescription
-            )}
-          >
-            Total
-            <p className={className.price}>
-              :{" "}
-              {formatPrice((dataF ? dataF.price : state?.item?.price) * count)}đ
-            </p>
-          </p>
-        )} */}
-
-            {selection.length === data_detail.options.length && (
-              <Button
-                variant="outlined"
-                className={className.buttonBuy}
-                onClick={handleBuyProduct}
-              >
-                Mua hàng
-              </Button>
-            )}
-
+          {selection.length === data_detail.options.length && (
             <div className={className.containerDescription}>
-              <p
-                className={className.price}
-                style={{
-                  borderBottomWidth: 1.5,
-                  borderBottomColor: colors.gray59,
-                }}
-              >
-                Mô tả
-              </p>
-              <p className={className.description}>
-                Áo sơ mi ngắn tay, form Body Fit dễ mặc, hợp form dáng. Màu sắc
-                và kiểu dáng trẻ trung, hiện đại, dễ phối đồ. Chất liệu bạc hà
-                kháng khuẩn tự nhiên, mát lạnh, mềm mượt, thân thiện với làn da.
-              </p>
+              <p className={className.price}>Số lượng</p>
+              <div className={className.containerUpdateQuantity}>
+                <button
+                  className={className.buttonUpdate}
+                  onClick={() => {
+                    if (count > 1) setCount(count - 1);
+                  }}
+                >
+                  -
+                </button>
+                <p className={className.textCount}>{count}</p>
+                <button
+                  className={className.buttonUpdate}
+                  onClick={() => {
+                    setCount(count + 1);
+                  }}
+                  style={{ marginLeft: 15 }}
+                >
+                  +
+                </button>
+              </div>
             </div>
+          )}
+
+          {selection.length === data_detail.options.length && (
+            <Button
+              variant="outlined"
+              className={className.buttonBuy}
+              onClick={handleBuyProduct}
+            >
+              Mua hàng
+            </Button>
+          )}
+
+          <div className={className.containerDescription}>
+            <p
+              className={className.price}
+              style={{
+                borderBottomWidth: 1.5,
+                borderBottomColor: colors.gray59,
+              }}
+            >
+              Mô tả
+            </p>
+            <p className={className.description}>
+              {dataDetail?.description ?? ""}
+            </p>
           </div>
-        </>
-      ) : (
-        <div
-          style={{
-            height: 250,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <ReactLoading
-            type="spinningBubbles"
-            color={colors.black}
-            width={40}
-            height={40}
-          />
         </div>
-      )}
+      </>
+      {isLoading && <LoadingProgress />}
     </div>
   );
 };
@@ -383,6 +320,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "row",
       justifyContent: "space-between",
       paddingTop: 20,
+      position: "relative",
     },
     containerImage: {
       width: "45%",

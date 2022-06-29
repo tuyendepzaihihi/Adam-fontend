@@ -17,7 +17,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
 import FooterComponent from "../../component/footer/FooterComponent";
-import { ROUTE } from "../../contant/Contant";
+import { ROUTE, TYPE_ACCOUNT } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   deleteItemCart,
@@ -97,8 +97,15 @@ export default function NavBar() {
     >
       {token && (
         <>
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigate(ROUTE.ACCOUNT, {
+                state: { type: TYPE_ACCOUNT.PROFILE },
+              });
+            }}
+          >
+            My account
+          </MenuItem>
         </>
       )}
 
@@ -435,8 +442,8 @@ export default function NavBar() {
               style={{
                 flex: 1,
                 marginTop: 70,
-                paddingRight: "18%",
-                paddingLeft: "18%",
+                paddingRight: "15%",
+                paddingLeft: "15%",
                 minHeight: size && size?.height ? size?.height - 370 : 0,
               }}
             >

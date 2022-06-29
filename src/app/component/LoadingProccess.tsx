@@ -1,4 +1,4 @@
-import { createStyles, LinearProgress, makeStyles } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core";
 import ReactLoading from "react-loading";
 import { colors } from "../utils/color";
 const LoadingProgress = () => {
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       position: "absolute",
-      backgroundColor: "rgba(0,0,0,0.5)",
+      backgroundColor: "rgba(0,0,0,0.3)",
       width: "100%",
       height: "100%",
       top: 0,

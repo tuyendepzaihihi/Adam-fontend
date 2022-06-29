@@ -1,19 +1,22 @@
+import { requestGetBestSale } from "./../HomeApi";
+import {
+  DataState,
+  ProductAdmin,
+  ResultApi,
+} from "./../../../contant/IntefaceContaint";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { requestGetNewProduct } from "../HomeApi";
 
-export interface Image {
-  id: number;
-  is_active: boolean;
-  url: number;
-  user_id: string;
-}
-interface DataState<T> {
-  data?: T;
-  isLoading?: boolean;
-  isError?: boolean;
+interface DataHome {
+  listNewProduct: ProductAdmin[];
+  listBestSale: ProductAdmin[];
 }
 
-const initialState: DataState<Image[]> = {
-  data: [],
+const initialState: DataState<DataHome> = {
+  data: {
+    listBestSale: [],
+    listNewProduct: [],
+  },
   isError: false,
   isLoading: false,
 };
@@ -21,7 +24,15 @@ const initialState: DataState<Image[]> = {
 export const incrementAsyncHome = createAsyncThunk(
   "home/getImage",
   async () => {
-    return true;
+    const resultNewProduct: ResultApi<ProductAdmin[]> =
+      await requestGetNewProduct();
+    const resultBestSaleProduct: ResultApi<ProductAdmin[]> =
+      await requestGetBestSale();
+    const res: DataHome = {
+      listBestSale: resultBestSaleProduct.data,
+      listNewProduct: resultNewProduct.data,
+    };
+    return { res };
   }
 );
 
@@ -38,6 +49,7 @@ export const homeSlice = createSlice({
       .addCase(incrementAsyncHome.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
+        state.data = action.payload.res;
       })
       .addCase(incrementAsyncHome.rejected, (state) => {
         state.isError = true;
