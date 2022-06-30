@@ -10,3 +10,10 @@ export const getAdmin = () => {
 export const setAdmin = (data: string) => {
   return localStorage.setItem("isAdmin", data);
 };
+
+export const getDrawer = () => {
+  return localStorage.getItem("isDrawer");
+};
+export const setDrawer = (data: string) => {
+  return localStorage.setItem("isDrawer", data);
+};

@@ -6,6 +6,7 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 import { LIST_OPTION } from "../../../../contant/ContaintDataAdmin";
+import { TYPE_DIALOG } from "../../../../contant/Contant";
 import {
   DetailProductAdmin,
   ProductAdmin,
@@ -28,6 +29,7 @@ interface Props {
   option: any[];
   setOption: any;
   setListProductDetail: any;
+  type?: number;
 }
 
 const CreateProductDetail = (props: Props) => {
@@ -38,6 +40,7 @@ const CreateProductDetail = (props: Props) => {
     option,
     setOption,
     setListProductDetail,
+    type,
   } = props;
   const dispatch = useAppDispatch();
   const classes = useStyles();
@@ -67,18 +70,21 @@ const CreateProductDetail = (props: Props) => {
   const handleSubmit = async () => {
     try {
       dispatch(changeLoading(true));
-      const payload: CreateDto = {
-        colorIdList: optionValues.colors,
-        priceExport: 0,
-        priceImport: 0,
-        productId: productItem?.id,
-        quantity: 0,
-        sizeIdList: optionValues.sizes,
-      };
-      console.log({ payload });
-      const res: ResultApi<DetailProductAdmin[]> =
-        await requestPostCreateDetailProduct(payload);
-      setListProductDetail(res.data);
+      if (type === TYPE_DIALOG.CREATE) {
+        const payload: CreateDto = {
+          colorIdList: optionValues.colors,
+          priceExport: 0,
+          priceImport: 0,
+          productId: productItem?.id,
+          quantity: 0,
+          sizeIdList: optionValues.sizes,
+        };
+
+        const res: ResultApi<DetailProductAdmin[]> =
+          await requestPostCreateDetailProduct(payload);
+        setListProductDetail(res.data);
+      } else if (type === TYPE_DIALOG.UPDATE) {
+      }
       handleNext();
       dispatch(changeLoading(false));
     } catch (e) {

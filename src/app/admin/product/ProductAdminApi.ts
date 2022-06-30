@@ -70,6 +70,8 @@ export interface GetProductDto {
 // function product detail
 export const requestGetProductAll = (payload: GetProductDto) =>
   ApiClient.get("/admin/product/findAllByPageble", { params: payload });
+export const requestGetOptionById = (payload: { id: number }) =>
+  ApiClient.get("/admin/product/findOptionProductById", { params: payload });
 
 export const requestPutUpdateProduct = (payload: UpdateDto) =>
   ApiClient.put("/admin/product/update", payload);

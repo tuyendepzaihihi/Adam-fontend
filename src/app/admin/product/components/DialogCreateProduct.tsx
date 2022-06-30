@@ -14,7 +14,12 @@ import LoadingProgress from "../../../component/LoadingProccess";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import {
   DetailProductAdmin,
+  Material,
+  OptionColor,
+  OptionSize,
   ProductAdmin,
+  ResultApi,
+  Tag,
 } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { incrementAsyncCategoryAdmin } from "../../category/slice/CategoryAdminSlice";
@@ -22,6 +27,7 @@ import { incrementAsyncMaterialAdmin } from "../../material/slice/MaterialAdminS
 import { incrementAsyncOptionColor } from "../../option/slice/OptionColorSlice";
 import { incrementAsyncOptionSize } from "../../option/slice/OptionSizeSlice";
 import { incrementAsyncTagAdmin } from "../../tag/slice/TagAdminSlice";
+import { requestGetOptionById } from "../ProductAdminApi";
 import ComponentFormCreate from "./create/ComponentFormCreate";
 import CreateProductDetail from "./create/CreateProductDetail";
 import ListProductDetail from "./create/ListProductDeail";
@@ -32,6 +38,14 @@ interface Props {
   type: number;
   data: ProductAdmin[];
 }
+
+export interface DataOptionProduct {
+  colorList: OptionColor[];
+  sizeList: OptionSize[];
+  tagList: Tag[];
+  materialList: Material[];
+}
+
 const validateProduct = Yup.object({
   product_name: Yup.string().required("Vui lòng nhập").trim(),
   description: Yup.string().required("Vui lòng nhập").trim(),
@@ -69,6 +83,9 @@ const FormDialogProductCreate = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type } = props;
 
+  const [dataOption, setDataOption] = useState<DataOptionProduct | undefined>(
+    undefined
+  );
   const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(
     anchorElData.item
   );
@@ -79,7 +96,8 @@ const FormDialogProductCreate = (props: Props) => {
   const [option, setOption] = useState<any[]>([]);
   useEffect(() => {
     setDataProduct(anchorElData.item);
-  }, [anchorElData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anchorElData.item?.id]);
 
   useEffect(() => {
     getData();
@@ -91,6 +109,20 @@ const FormDialogProductCreate = (props: Props) => {
     await dispatch(incrementAsyncCategoryAdmin());
     await dispatch(incrementAsyncOptionColor());
     await dispatch(incrementAsyncOptionSize());
+  };
+
+  useEffect(() => {
+    getDataOption();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataProduct]);
+
+  const getDataOption = async () => {
+    if (dataProduct) {
+      const res: ResultApi<DataOptionProduct> = await requestGetOptionById({
+        id: dataProduct?.id,
+      });
+      setDataOption(res.data);
+    }
   };
 
   const loadingTags = useAppSelector((state) => state.tagAdmin).isLoading;
@@ -141,6 +173,7 @@ const FormDialogProductCreate = (props: Props) => {
             onSubmit={onSubmit}
             validateProduct={validateProduct}
             dataProduct={dataProduct}
+            options={dataOption}
           />
         );
       case 1:

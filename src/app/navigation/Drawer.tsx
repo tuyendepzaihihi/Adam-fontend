@@ -11,11 +11,11 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Logout from "@material-ui/icons/ExitToApp";
 import clsx from "clsx";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateSwitchRole } from "../admin/sliceSwitchRole/switchRoleSlice";
 import { LIST_MENU_DRAWER, ROUTE } from "../contant/Contant";
 import { useAppDispatch } from "../hooks";
+import { getDrawer, setDrawer } from "../service/StorageService";
 import { colors } from "../utils/color";
 
 const drawerWidth = 240;
@@ -96,8 +96,7 @@ export default function MiniDrawer(props: Props) {
   const handleDrawerClose = () => {
     setOpen(!open);
   };
-  const [selected, setSelected] = useState(0);
-
+  const selected = getDrawer();
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -129,16 +128,28 @@ export default function MiniDrawer(props: Props) {
                 key={index}
                 onClick={() => {
                   navigate(val.route);
-                  setSelected(index);
+                  setDrawer(`${index}`);
+                }}
+                style={{
+                  backgroundColor:
+                    Number(selected) === index ? colors.grayC4 : colors.white,
                 }}
               >
                 <ListItemIcon>
-                  <Icon color={selected === index ? "primary" : "inherit"} />
+                  <Icon
+                    style={{
+                      color:
+                        Number(selected) === index
+                          ? colors.black
+                          : colors.grayC4,
+                    }}
+                  />
                 </ListItemIcon>
                 <ListItemText
                   primary={val.name}
                   style={{
-                    color: selected === index ? colors.black : colors.gray59,
+                    color:
+                      Number(selected) === index ? colors.black : colors.grayC4,
                   }}
                 />
               </ListItem>
@@ -149,26 +160,27 @@ export default function MiniDrawer(props: Props) {
               localStorage.clear();
               dispatch(updateSwitchRole(false));
               navigate(ROUTE.LOGIN);
-              setSelected(LIST_MENU_DRAWER.length + 1);
+              setDrawer(`${LIST_MENU_DRAWER.length + 1}`);
             }}
           >
             <ListItem button>
               <ListItemIcon>
                 <Logout
-                  color={
-                    selected === LIST_MENU_DRAWER.length + 1
-                      ? "primary"
-                      : "inherit"
-                  }
+                  style={{
+                    color:
+                      Number(selected) === LIST_MENU_DRAWER.length + 1
+                        ? "blue"
+                        : colors.grayC4,
+                  }}
                 />
               </ListItemIcon>
               <ListItemText
                 primary={"Đăng xuất"}
                 style={{
                   color:
-                    selected === LIST_MENU_DRAWER.length + 1
+                    Number(selected) === LIST_MENU_DRAWER.length + 1
                       ? colors.black
-                      : colors.gray59,
+                      : colors.grayC4,
                 }}
               />
             </ListItem>

@@ -3,7 +3,6 @@ import BranchAdminSlice from "./admin/branch/slice/BranchAdminSlice";
 import MaterialAdminSlice from "./admin/material/slice/MaterialAdminSlice";
 import OptionAdminSlice from "./admin/option/slice/OptionSizeSlice";
 import OptionColorSlice from "./admin/option/slice/OptionColorSlice";
-import ProductAdminSlice from "./admin/product/slice/ProductAdminSlice";
 import switchRoleSlice from "./admin/sliceSwitchRole/switchRoleSlice";
 import TagAdminSlice from "./admin/tag/slice/TagAdminSlice";
 import userAdminReducer from "./admin/user/slice/UserAdminSlice";
@@ -15,6 +14,7 @@ import addressSlice from "./screen/setting/address/slice/AddressSlice";
 import ProductCustomerSlice from "./screen/product/slice/ProductCustomerSlice";
 import FilterValueSlice from "./screen/product/slice/FilterValueSlice";
 import CategoryAdminSlice from "./admin/category/slice/CategoryAdminSlice";
+import ProductAdminSlice from "./admin/product/slice/ProductAdminSlice";
 
 export const store = configureStore({
   reducer: {

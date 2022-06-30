@@ -1,13 +1,8 @@
 import {
   Button,
   createStyles,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   Grid,
   makeStyles,
-  Radio,
-  RadioGroup,
   Theme,
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
@@ -18,16 +13,20 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { updateSwitchRole } from "../admin/sliceSwitchRole/switchRoleSlice";
 import R from "../assets/R";
+import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
 import { ROUTE, ROUTE_ADMIN } from "../contant/Contant";
-import { setToken, setAdmin } from "../service/StorageService";
+import { ResultApi } from "../contant/IntefaceContaint";
+import { setAdmin, setDrawer, setToken } from "../service/StorageService";
 import { colors } from "../utils/color";
-import { requestLoginApp } from "./AuthApi";
+import { createNotification } from "../utils/MessageUtil";
+import { requestLoginApp, ResultLogin } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
       paddingTop: 100,
+      position: "relative",
     },
     container: {
       flexFlow: "row",
@@ -74,23 +73,21 @@ const initValuesLogin: LoginInterface = {
   user_name: "",
 };
 
+const validateLogin = Yup.object({
+  user_name: Yup.string()
+    .min(2, "Mininum 2 characters")
+    .max(55, "Maximum 55 characters")
+    .required("Required!"),
+  password: Yup.string().min(6, "Minimum 6 characters").required("Required!"),
+});
+
 const LoginScreen = () => {
   const className = useStyles();
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(true);
   const dispatch = useDispatch();
-  const validateLogin = Yup.object({
-    user_name: Yup.string()
-      .min(2, "Mininum 2 characters")
-      .max(55, "Maximum 55 characters")
-      .required("Required!"),
-    password: Yup.string().min(6, "Minimum 6 characters").required("Required!"),
-  });
-  const [value, setValue] = useState("1");
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: initValuesLogin,
@@ -102,21 +99,27 @@ const LoginScreen = () => {
 
   const handleSubmit = async (data: LoginInterface) => {
     try {
-      // const result = await requestLoginApp({
-      //   password: data.password,
-      //   username: data.user_name,
-      // });
-      // console.log({ result });
-      setToken("dangthunghiem");
-      if (Number(value) === 1) {
-        dispatch(updateSwitchRole(true));
-        setAdmin("1");
-        navigate(ROUTE_ADMIN.DASHBOARD);
-      } else {
+      setLoading(true);
+      const result: ResultApi<ResultLogin> = await requestLoginApp({
+        password: data.password,
+        username: data.user_name,
+      });
+
+      setToken(result.data.token);
+      if (result.data.roles === "User") {
         dispatch(updateSwitchRole(false));
         navigate(ROUTE.HOME);
+      } else {
+        dispatch(updateSwitchRole(true));
+        setAdmin("1");
+        setDrawer("0");
+        navigate(ROUTE_ADMIN.DASHBOARD);
       }
-    } catch (e) {}
+      createNotification({ type: "success", message: "Đăng nhập thành công" });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -149,24 +152,7 @@ const LoginScreen = () => {
               setShowPass(!showPass);
             }}
           />
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Role</FormLabel>
-            <RadioGroup
-              aria-label="role"
-              name="role1"
-              value={value}
-              onChange={handleChange}
-              row
-              defaultValue={value}
-            >
-              <FormControlLabel value="1" control={<Radio />} label="Admin" />
-              <FormControlLabel
-                value="2"
-                control={<Radio />}
-                label="Customer"
-              />
-            </RadioGroup>
-          </FormControl>
+
           <p className={className.textForgotPass}>
             <button
               onClick={() => {
@@ -238,6 +224,7 @@ const LoginScreen = () => {
           <img style={{ width: "95%" }} src={R.images.img_banner_fashion} />
         </div>
       </Grid>
+      {loading && <LoadingProgress />}
     </div>
   );
 };

@@ -16,6 +16,7 @@ import {
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 import TextInputComponent from "../../../../component/TextInputComponent";
+import { TYPE_DIALOG } from "../../../../contant/Contant";
 import {
   CategoryAdmin,
   ProductAdmin,
@@ -28,7 +29,7 @@ import {
   requestPostCreateProduct,
 } from "../../ProductAdminApi";
 import { changeLoading } from "../../slice/ProductAdminSlice";
-import { PropsCreateProduct } from "../DialogCreateProduct";
+import { DataOptionProduct, PropsCreateProduct } from "../DialogCreateProduct";
 
 const ITEM_HEIGHT = 50;
 const ITEM_PADDING_TOP = 8;
@@ -48,11 +49,20 @@ interface Props {
   handleClose: () => void;
   steps: any;
   dataProduct: ProductAdmin | null;
+  options?: DataOptionProduct;
+  type?: number;
 }
 
 const ComponentFormCreate = (props: Props) => {
-  const { initialValues, onSubmit, validateProduct, handleClose, dataProduct } =
-    props;
+  const {
+    initialValues,
+    onSubmit,
+    validateProduct,
+    handleClose,
+    dataProduct,
+    options,
+    type,
+  } = props;
 
   const dispatch = useAppDispatch();
   const classes = useStyles();
@@ -65,21 +75,40 @@ const ComponentFormCreate = (props: Props) => {
   const [personTag, setPersonTag] = useState<string[]>([]);
   const [personMaterial, setPersonMaterial] = useState<string[]>([]);
 
-  const [category, setCategory] = useState<string | null>(
-    dataProduct ? `${dataProduct.category.id}` : null
-  );
-  const [categoryChildren, setCategoryChilren] = useState<string | null>(
-    dataProduct ? `${dataProduct.category.id}` : null
-  );
+  const [category, setCategory] = useState<string | null>(null);
+  const [categoryChildren, setCategoryChilren] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (dataProduct) {
+      setCategory(`${dataProduct.category.categoryParentId}`);
+      setCategoryChilren(`${dataProduct.category.id}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataProduct]);
 
   useEffect(() => {
     getDataCategoryChil();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
+  useEffect(() => {
+    changeOptionProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options]);
+
+  const changeOptionProduct = () => {
+    const listTag = options?.tagList?.map((e) => `${e.tagName}`);
+    const listMaterial = options?.materialList?.map((e) => `${e.materialName}`);
+
+    if (options) {
+      listTag && setPersonTag(listTag);
+      listMaterial && setPersonMaterial(listMaterial);
+    }
+  };
+
   const getDataCategoryChil = async () => {
     if (category) {
-      const item = categories.find((e) => e.id === +category);
+      const item = categories?.find((e) => e.id === +category);
       setCategoriesChil(item?.categoryChildren ?? []);
     } else return setCategoriesChil([]);
   };
@@ -98,29 +127,34 @@ const ComponentFormCreate = (props: Props) => {
     let materialList: number[] = [];
     try {
       dispatch(changeLoading(true));
-      materials.forEach((e) => {
-        let res = personMaterial.find((m) => m.includes(`${e.materialName}`));
-        if (res !== undefined) materialList = materialList.concat([e.id]);
-      });
+      if (type === TYPE_DIALOG.CREATE) {
+        materials.forEach((e) => {
+          let res = personMaterial?.find((m) =>
+            m.includes(`${e.materialName}`)
+          );
+          if (res !== undefined) materialList = materialList.concat([e.id]);
+        });
 
-      let tagsList: number[] = [];
-      tags.forEach((e) => {
-        let res = personTag.find((m) => m.includes(`${e.tagName}`));
-        if (res !== undefined) tagsList = tagsList.concat([e.id]);
-      });
+        let tagsList: number[] = [];
+        tags.forEach((e) => {
+          let res = personTag?.find((m) => m.includes(`${e.tagName}`));
+          if (res !== undefined) tagsList = tagsList.concat([e.id]);
+        });
 
-      const itemCreate: CreateProductDto = {
-        categoryId: Number(categoryChildren) ?? 0,
-        description: description,
-        productName: product_name,
-        tagProductIdList: tagsList,
-        materialProductIdList: materialList,
-        image: "d",
-      };
-      const res: ResultApi<ProductAdmin> = await requestPostCreateProduct(
-        itemCreate
-      );
-      onSubmit(res.data);
+        const itemCreate: CreateProductDto = {
+          categoryId: Number(categoryChildren) ?? 0,
+          description: description,
+          productName: product_name,
+          tagProductIdList: tagsList,
+          materialProductIdList: materialList,
+          image: "d",
+        };
+        const res: ResultApi<ProductAdmin> = await requestPostCreateProduct(
+          itemCreate
+        );
+        onSubmit(res.data);
+      } else if (type === TYPE_DIALOG.UPDATE) {
+      }
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
@@ -247,7 +281,7 @@ const ComponentFormCreate = (props: Props) => {
                         marginTop: 5,
                         marginRight: 5,
                         marginLeft: 5,
-                        backgroundColor: personTag.find(
+                        backgroundColor: personTag?.find(
                           (e) => e === `${tag.tagName}`
                         )
                           ? colors.orange
@@ -292,7 +326,7 @@ const ComponentFormCreate = (props: Props) => {
                         marginTop: 5,
                         marginRight: 5,
                         marginLeft: 5,
-                        backgroundColor: personMaterial.find(
+                        backgroundColor: personMaterial?.find(
                           (e) => e === `${material.materialName}`
                         )
                           ? colors.orange
