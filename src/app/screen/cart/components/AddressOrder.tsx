@@ -17,12 +17,10 @@ const AddressOrder = (props: Props) => {
   const classes = useStyles();
   const renderAddress = (item: DataAddress) => {
     let detail = item.addressDetail;
-    let ward = item.wardName ? " - " + item.wardName : "";
-    let district = item.districtName ? " - " + item.districtName : "";
-    let province = item.provinceName ? " - " + item.provinceName : "";
-    return (
-      detail + ward + district + province + " | " + item.name + "-" + item.phone
-    );
+    let ward = item.ward ? " - " + item.ward.name : "";
+    let district = item.district ? " - " + item.district.name : "";
+    let province = item.province ? " - " + item.province.name : "";
+    return detail + ward + district + province;
   };
   return (
     <div className={classes.container}>

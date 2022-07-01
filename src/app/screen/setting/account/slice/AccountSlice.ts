@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { UserInterface } from "../Account.props";
-import { requestGetUserInfo } from "../AccountApi";
+import { UserAdmin } from "../../../../contant/IntefaceContaint";
 
 interface DataState<T> {
   data?: T;
@@ -8,21 +7,23 @@ interface DataState<T> {
   isError?: boolean;
 }
 
-const initialState: DataState<UserInterface | null> = {
-  data: null,
+const initialState: DataState<UserAdmin> = {
   isError: false,
   isLoading: false,
 };
 
 export const getUserInfo = createAsyncThunk("account", async () => {
-  const response = await requestGetUserInfo();
-  return response.data;
+  return true;
 });
 
 export const accountSlice = createSlice({
   name: "account",
   initialState,
-  reducers: {},
+  reducers: {
+    setUser: (state, action) => {
+      state.data = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUserInfo.pending, (state) => {
@@ -30,10 +31,8 @@ export const accountSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getUserInfo.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isError = false;
         state.isLoading = false;
-        state.data = action.payload?.data ?? {};
       })
       .addCase(getUserInfo.rejected, (state) => {
         state.isError = true;
@@ -41,5 +40,5 @@ export const accountSlice = createSlice({
       });
   },
 });
-
+export const { setUser } = accountSlice.actions;
 export default accountSlice.reducer;

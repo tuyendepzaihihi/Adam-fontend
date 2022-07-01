@@ -7,8 +7,8 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import { Formik } from "formik";
-import TextInputComponent from "../../../component/TextInputComponent";
 import * as Yup from "yup";
+import TextInputComponent from "../../../component/TextInputComponent";
 import {
   NAME_REGEX,
   PHONE_REGEX,
@@ -16,15 +16,15 @@ import {
   textValidate,
   TYPE_DIALOG,
 } from "../../../contant/Contant";
+import { UserAdmin } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createUser, updateUser } from "../slice/UserAdminSlice";
-import { UserAdminInteface } from "../../../contant/IntefaceContaint";
+import { updateUser } from "../slice/UserAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData: any;
   type: number;
-  data: UserAdminInteface[];
+  data: UserAdmin[];
 }
 const validateUser = Yup.object({
   phone: Yup.string()
@@ -65,10 +65,10 @@ const FormDialog = (props: Props) => {
     fullname: string;
   }) => {
     const { email, fullname, phone } = data;
-    const item: UserAdminInteface = {
+    const item: UserAdmin = {
       ...anchorElData.item,
       email: email,
-      last_name: fullname,
+      fullname: fullname,
       phone: phone,
     };
     dispatch(updateUser({ item: item }));
@@ -77,16 +77,15 @@ const FormDialog = (props: Props) => {
 
   const onSubmitCreate = (dataCreate: PropsCreateUser) => {
     const { email, fullname, phone, position } = dataCreate;
-    const item: UserAdminInteface = {
-      active: 1,
-      email: email,
-      first_name: fullname,
-      last_name: fullname,
-      phone: phone,
-      position: position,
-      id: data[data.length - 1].id + 1,
-    };
-    dispatch(createUser({ item: item }));
+    // const item: UserAdmin = {
+    //   isActive: true,
+    //   email: email,
+    //   fullName: fullname,
+    //   phoneNumber: phone,
+    //   role: position,
+    //   id: data[data.length - 1].id + 1,
+    // };
+    // dispatch(createUser({ item: item }));
     handleClose();
   };
 

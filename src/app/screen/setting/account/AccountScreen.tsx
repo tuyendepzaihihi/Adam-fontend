@@ -9,18 +9,20 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { PhotoCamera } from "@material-ui/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import R from "../../../assets/R";
 import { DEFINE_TYPE_ACCOUNT, TYPE_ACCOUNT } from "../../../contant/Contant";
 import { colors } from "../../../utils/color";
 import OrderScreen from "../../order/OrderScreen";
 import AddressUser from "../address/AddressUser";
+import InformationScreen from "../information/InformationScreen";
 
 const RenderScreen = (params: { index: number }) => {
   const { index } = params;
   switch (index) {
     case 0:
-      return <AddressUser />;
+      return <InformationScreen />;
     case 1:
       return <AddressUser />;
     case 2:
@@ -33,7 +35,14 @@ const RenderScreen = (params: { index: number }) => {
 };
 const AccountScreen = () => {
   const className = useStyles();
+  const router: any = useLocation().state;
   const [selected, setSelected] = useState(0);
+
+  useEffect(() => {
+    if (router && router.type) {
+      setSelected(DEFINE_TYPE_ACCOUNT[router.type].index);
+    }
+  }, [router]);
 
   return (
     <div className={className.root}>

@@ -1,8 +1,13 @@
+import { ResultApi } from "./../../../../contant/IntefaceContaint";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_ADDRESS } from "../../../../contant/Contant";
 import { DataState } from "../../../../contant/IntefaceContaint";
 import { createNotification } from "../../../../utils/MessageUtil";
+import { requestGetAddressAll } from "../AddressApi";
 
+export interface Address {
+  id: number;
+  name: string;
+}
 export interface DataAddress {
   wardId?: number;
   wardName?: string;
@@ -12,9 +17,13 @@ export interface DataAddress {
   provinceName?: string;
   addressDetail?: string;
   isDefault?: boolean;
+  isActive?: boolean;
   phone?: string;
   name?: string;
   id?: any;
+  ward?: Address;
+  province?: Address;
+  district?: Address;
 }
 
 interface DataStateAddress extends DataState<DataAddress[]> {
@@ -22,15 +31,21 @@ interface DataStateAddress extends DataState<DataAddress[]> {
 }
 
 const initialState: DataStateAddress = {
-  data: LIST_ADDRESS,
+  data: [],
   isError: false,
   isLoading: false,
   dataSelected: null,
 };
 
-export const getAddressInfo = createAsyncThunk("address", async () => {
-  return true;
-});
+export const getAddressInfo = createAsyncThunk(
+  "address",
+  async (account_id: number) => {
+    const res: ResultApi<any> = await requestGetAddressAll({
+      account_id: account_id,
+    });
+    return res;
+  }
+);
 
 export const addressSlice = createSlice({
   name: "address",
@@ -50,8 +65,8 @@ export const addressSlice = createSlice({
     },
     deleteAddress: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: any[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
@@ -63,6 +78,12 @@ export const addressSlice = createSlice({
     setSelectedAddress: (state, action: { payload: { item: DataAddress } }) => {
       state.dataSelected = action.payload.item;
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -73,6 +94,7 @@ export const addressSlice = createSlice({
       .addCase(getAddressInfo.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
+        state.data = action.payload.data;
       })
       .addCase(getAddressInfo.rejected, (state) => {
         state.isError = true;
@@ -85,6 +107,8 @@ export const {
   deleteAddress,
   updateAddress,
   setSelectedAddress,
+  changeError,
+  changeLoading,
 } = addressSlice.actions;
 
 export default addressSlice.reducer;

@@ -17,7 +17,13 @@ import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
 import { ROUTE, ROUTE_ADMIN } from "../contant/Contant";
 import { ResultApi } from "../contant/IntefaceContaint";
-import { setAdmin, setDrawer, setToken } from "../service/StorageService";
+import { setUser } from "../screen/setting/account/slice/AccountSlice";
+import {
+  setAdmin,
+  setDrawer,
+  setIdAccount,
+  setToken,
+} from "../service/StorageService";
 import { colors } from "../utils/color";
 import { createNotification } from "../utils/MessageUtil";
 import { requestLoginApp, ResultLogin } from "./AuthApi";
@@ -106,6 +112,8 @@ const LoginScreen = () => {
       });
 
       setToken(result.data.token);
+      dispatch(setUser(result.data));
+      setIdAccount(`${result.data.id}`);
       if (result.data.roles === "User") {
         dispatch(updateSwitchRole(false));
         navigate(ROUTE.HOME);

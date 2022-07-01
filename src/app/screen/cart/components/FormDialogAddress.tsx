@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useNavigate } from "react-router";
-import { ROUTE } from "../../../contant/Contant";
+import { ROUTE, TYPE_ACCOUNT } from "../../../contant/Contant";
 import { useAppDispatch } from "../../../hooks";
 import ItemAddress from "../../setting/address/components/ItemAddressComponent";
 import {
@@ -63,7 +63,7 @@ const FormDialogAddress = (props: Props) => {
       <DialogActions>
         <Button
           onClick={() => {
-            navigate(ROUTE.ADDRESS);
+            navigate(ROUTE.ACCOUNT, { state: { type: TYPE_ACCOUNT.ADDRESS } });
           }}
           color="primary"
         >

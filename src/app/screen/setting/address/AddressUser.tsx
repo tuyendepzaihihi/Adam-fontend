@@ -1,21 +1,36 @@
 import { Button, IconButton, makeStyles } from "@material-ui/core";
 import { EditLocation, LocationOn } from "@material-ui/icons";
 import { useEffect, useState } from "react";
+import LoadingProgress from "../../../component/LoadingProccess";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { getIdAccount } from "../../../service/StorageService";
 import { colors } from "../../../utils/color";
 import FormDialog from "./components/FormDialog";
-import { DataAddress } from "./slice/AddressSlice";
+import { DataAddress, getAddressInfo } from "./slice/AddressSlice";
+import { getProvinceInfo } from "./slice/ProvinceSlice";
 
 const AddressUser = () => {
   const dispatch = useAppDispatch();
   const className = useStyles();
+
   const [open, setOpen] = useState(false);
-  const { data } = useAppSelector((state) => state.addressUser);
+  const { data, isLoading } = useAppSelector((state) => state.addressUser);
+  const idAccount = getIdAccount();
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const [anchorElData, setAnchorElData] = useState<null | {
     item: DataAddress;
   }>(null);
+
+  const [selectedAddress, setSelectedAddress] = useState<{
+    ward: string | null;
+    district: string | null;
+    province: string | null;
+  }>({
+    ward: null,
+    district: null,
+    province: null,
+  });
 
   const handleClose = () => {
     setOpen(false);
@@ -24,10 +39,13 @@ const AddressUser = () => {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = async () => {
     try {
+      await dispatch(getAddressInfo(Number(idAccount) ?? 0));
+      await dispatch(getProvinceInfo());
     } catch (e) {
       console.log({ e });
     }
@@ -35,9 +53,9 @@ const AddressUser = () => {
 
   const renderAddress = (item: DataAddress) => {
     let detail = item.addressDetail;
-    let ward = item.wardName ? " - " + item.wardName : "";
-    let district = item.districtName ? " - " + item.districtName : "";
-    let province = item.provinceName ? " - " + item.provinceName : "";
+    let ward = item.ward ? " - " + item.ward.name : "";
+    let district = item.district ? " - " + item.district.name : "";
+    let province = item.province ? " - " + item.province.name : "";
     return detail + ward + district + province;
   };
 
@@ -53,9 +71,9 @@ const AddressUser = () => {
             <p style={{ color: colors.black, fontWeight: "bold" }}>
               {renderAddress(item)}
             </p>
-            <p style={{ color: colors.gray59 }}>
+            {/* <p style={{ color: colors.gray59 }}>
               {item.name} | {item.phone}
-            </p>
+            </p> */}
           </div>
         </div>
         <div>
@@ -72,8 +90,9 @@ const AddressUser = () => {
       </div>
     );
   };
+
   return (
-    <div>
+    <div style={{ position: "relative", minHeight: 300 }}>
       <div
         style={{
           paddingTop: 10,
@@ -105,6 +124,7 @@ const AddressUser = () => {
         type={typeDialog}
         data={data}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 };

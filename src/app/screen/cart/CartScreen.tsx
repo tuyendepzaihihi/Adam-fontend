@@ -8,14 +8,16 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Delete from "@material-ui/icons/Delete";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { LIST_VOUCHER } from "../../contant/ContaintDataAdmin";
 import { ItemCart, ROUTE } from "../../contant/Contant";
 import { VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { getIdAccount } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil } from "../../utils/function";
+import { getAddressInfo } from "../setting/address/slice/AddressSlice";
 import AddressOrder from "./components/AddressOrder";
 import FormDialogAddress from "./components/FormDialogAddress";
 import FormDialogVoucher from "./components/FormDialogVoucher";
@@ -53,6 +55,7 @@ const CartScreen = () => {
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
   const { data } = useAppSelector((state) => state.cart);
   const address = useAppSelector((state) => state.addressUser);
+
   const [openVoucher, setOpenVoucher] = useState(false);
   const [openAddress, setOpenAddress] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState<VoucherAdmin | null>(
@@ -60,6 +63,17 @@ const CartScreen = () => {
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const accountId = getIdAccount();
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    dispatch(getAddressInfo(Number(accountId)));
+  };
+
   const checkTotal = () => {
     let array: ItemCart[] = [];
     selected.map((a) => {

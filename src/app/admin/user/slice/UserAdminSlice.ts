@@ -1,15 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { rows_example_user } from "../../../contant/ContaintDataAdmin";
 import {
   DataState,
   ResultApi,
-  UserAdminInteface,
+  UserAdmin,
 } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
 import { requestGetUserAll } from "../UserApi";
 
-const initialState: DataState<UserAdminInteface[]> = {
-  data: rows_example_user,
+const initialState: DataState<UserAdmin[]> = {
+  data: [],
   isError: false,
   isLoading: false,
 };
@@ -17,10 +16,8 @@ const initialState: DataState<UserAdminInteface[]> = {
 export const incrementAsyncUserAdmin = createAsyncThunk(
   "user/admin",
   async () => {
-    const res: ResultApi<any> = await requestGetUserAll();
-    console.log({ res });
-
-    return true;
+    const res: ResultApi<UserAdmin[]> = await requestGetUserAll();
+    return res;
   }
 );
 
@@ -30,20 +27,20 @@ export const userAdminSlice = createSlice({
   reducers: {
     updateUser: (state, action) => {
       let oldArray = state.data;
-      let item: UserAdminInteface = action.payload?.item;
+      let item: UserAdmin = action.payload?.item;
       state.data = oldArray?.map((e) => {
         if (e.id === item.id) return item;
         else return e;
       });
     },
     createUser: (state, action) => {
-      let item: UserAdminInteface = action.payload?.item;
+      let item: UserAdmin = action.payload?.item;
       state.data = [item].concat(state.data);
     },
     deleteUser: (state, action) => {
       let array = state.data;
       let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
@@ -60,6 +57,7 @@ export const userAdminSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(incrementAsyncUserAdmin.fulfilled, (state, action) => {
+        state.data = action.payload.data;
         state.isError = false;
         state.isLoading = false;
       })

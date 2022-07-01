@@ -1,24 +1,24 @@
+import { Axios, AxiosResponse } from "axios";
+import { DataState, ResultApi } from "../../../contant/IntefaceContaint";
 import { ApiClient } from "../../../service/ApiService";
+import { Address } from "./slice/AddressSlice";
 
 // interface product detail
 export interface UpdateDto {
+  accountId: number;
   addressDetail: string;
-  district: { id: number };
-  province: { id: number };
-  ward: { id: number };
-  phone: string;
-  name: string;
-  isDefault: number;
+  districtId: number;
+  id: number;
+  provinceId: number;
+  wardId: number;
 }
 
 export interface CreateDto {
+  accountId?: number;
   addressDetail: string;
-  district: { id: number };
-  province: { id: number };
-  ward: { id: number };
-  phone: string;
-  name: string;
-  isDefault: number;
+  districtId: number;
+  provinceId: number;
+  wardId: number;
 }
 
 export interface DeleteInterface {
@@ -26,14 +26,22 @@ export interface DeleteInterface {
 }
 
 // function product detail
-export const requestGetDetailProductAll = (payload: any) =>
-  ApiClient.get("/admin/detailProduct/findAll", payload);
+export const requestGetAddressAll = (payload?: { account_id: number }) =>
+  ApiClient.get("/address/findByAccountId", { params: payload });
 
-export const requestPutUpdateDetailProduct = (payload: UpdateDto) =>
-  ApiClient.put("/admin/detailProduct/update", payload);
+export const requestPutUpdateAddress = (payload: UpdateDto) =>
+  ApiClient.put("/address/update", payload);
 
-export const requestDeleteDetailProduct = (payload: DeleteInterface) =>
-  ApiClient.delete("/admin/detailProduct/delete", { params: payload });
+export const requestDeleteAddress = (payload: DeleteInterface) =>
+  ApiClient.delete("/address/delete", { params: payload });
 
-export const requestPostCreateDetailProduct = (payload: CreateDto) =>
-  ApiClient.post("/admin/detailProduct/create", payload);
+export const requestPostCreateAddress = (payload: CreateDto) =>
+  ApiClient.post("/address/create", payload);
+
+export const requestGetProvinceAll = () =>
+  ApiClient.get("/province/findAll", {});
+export const requestGetDistrictByProvinceId = (payload: {
+  province_id: number;
+}) => ApiClient.get("/district/findByProviceId", { params: payload });
+export const requestGetWardByDistrictId = (payload: { district_id: number }) =>
+  ApiClient.get("/ward/findByDistrictId", { params: payload });

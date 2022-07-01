@@ -10,11 +10,13 @@ import VoucherAdminSlice from "./admin/voucher/slice/VoucherAdminSlice";
 import cartReducer from "./screen/cart/slice/CartSlice";
 import homeReducer from "./screen/home/slice/HomeSlice";
 import OrderSlice from "./screen/order/slice/OrderSlice";
-import addressSlice from "./screen/setting/address/slice/AddressSlice";
 import ProductCustomerSlice from "./screen/product/slice/ProductCustomerSlice";
 import FilterValueSlice from "./screen/product/slice/FilterValueSlice";
 import CategoryAdminSlice from "./admin/category/slice/CategoryAdminSlice";
 import ProductAdminSlice from "./admin/product/slice/ProductAdminSlice";
+import AddressSlice from "./screen/setting/address/slice/AddressSlice";
+import ProvinceSlice from "./screen/setting/address/slice/ProvinceSlice";
+import AccountSlice from "./screen/setting/account/slice/AccountSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,7 +26,7 @@ export const store = configureStore({
     categoryAdmin: CategoryAdminSlice,
     swicth: switchRoleSlice,
     voucherAdmin: VoucherAdminSlice,
-    addressUser: addressSlice,
+    addressUser: AddressSlice,
     orderUser: OrderSlice,
     materialAdmin: MaterialAdminSlice,
     tagAdmin: TagAdminSlice,
@@ -34,6 +36,8 @@ export const store = configureStore({
     colorAdmin: OptionColorSlice,
     productCustomer: ProductCustomerSlice,
     filterCustomer: FilterValueSlice,
+    provinceSlice: ProvinceSlice,
+    userSlice: AccountSlice,
   },
 });
 

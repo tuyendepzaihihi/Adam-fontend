@@ -15,6 +15,19 @@ export interface UserAdminInteface {
   active: number;
 }
 
+export interface UserAdmin {
+  fullName: string;
+  priority: number;
+  id: number;
+  isActive: boolean;
+  email: string;
+  username: string;
+  password: string;
+  role: number;
+  phoneNumber: string;
+  isDelete: number;
+}
+
 export interface DataState<T> {
   data: T;
   isLoading?: boolean;

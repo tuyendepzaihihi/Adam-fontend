@@ -17,3 +17,10 @@ export const getDrawer = () => {
 export const setDrawer = (data: string) => {
   return localStorage.setItem("isDrawer", data);
 };
+
+export const getIdAccount = () => {
+  return localStorage.getItem("isAccount");
+};
+export const setIdAccount = (data: string) => {
+  return localStorage.setItem("isAccount", data);
+};

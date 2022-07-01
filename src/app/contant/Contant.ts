@@ -1,24 +1,22 @@
+import User from "@material-ui/icons/AccountBalance";
 import Product from "@material-ui/icons/Computer";
 import Dashboard from "@material-ui/icons/Dashboard";
-import User from "@material-ui/icons/AccountBalance";
 
-import R from "../assets/R";
-import { ItemProduct } from "../component/product_item/ProductItemComponent";
 import {
-  PermMediaOutlined,
+  AccountBalance,
   BrandingWatermark,
-  TagFaces,
   ColorLens,
   LocationCity,
-  AccountBalance,
+  PermMediaOutlined,
   SettingsApplications,
+  TagFaces,
 } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
+import R from "../assets/R";
+import { ItemProduct } from "../component/product_item/ProductItemComponent";
 import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
-import { DetailProductAdmin } from "./IntefaceContaint";
 import { LIST_PRODUCT_DETAIL } from "./ContaintDataAdmin";
-import AddressUser from "../screen/setting/address/AddressUser";
-import OrderScreen from "../admin/branch/OrderScreen";
+import { DetailProductAdmin } from "./IntefaceContaint";
 export const BaseUrl = "http://localhost:3001/";
 export const REG_EMAIL =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -337,21 +335,22 @@ export const DEFINE_TYPE_ACCOUNT = {
   [TYPE_ACCOUNT.PROFILE]: {
     name: "Thông tin cá nhân",
     icon: AccountBalance,
+    index: 0,
   },
   [TYPE_ACCOUNT.ADDRESS]: {
     name: "Địa chỉ nhận hàng",
     icon: LocationCity,
-    // screen: AddressUser,
+    index: 1,
   },
 
   [TYPE_ACCOUNT.ORDER]: {
     name: "Thông tin đơn hàng",
     icon: AccountBalance,
-    // screen: OrderScreen,
+    index: 2,
   },
   [TYPE_ACCOUNT.SETTING]: {
     name: "Cài đặt",
     icon: SettingsApplications,
-    // screen: OrderScreen,
+    index: 3,
   },
 };

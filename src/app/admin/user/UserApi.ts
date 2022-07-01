@@ -16,7 +16,7 @@ export interface CreateDto {
 
 // function
 export const requestGetUserAll = (payload?: any) =>
-  ApiClient.get("/admin/tag/findAll", payload);
+  ApiClient.get("/admin/account/findAll", payload);
 
 // export const requestPutUpdateTag = (payload: UpdateDto) =>
 //   ApiClient.put("/admin/tag/update", payload);

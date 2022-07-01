@@ -12,6 +12,7 @@ import {
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
+import LoadingProgress from "../../../../component/LoadingProccess";
 import TextInputComponent from "../../../../component/TextInputComponent";
 import {
   NAME_REGEX,
@@ -19,9 +20,20 @@ import {
   textValidate,
   TYPE_DIALOG,
 } from "../../../../contant/Contant";
-import { useAppDispatch } from "../../../../hooks";
+import { ResultApi } from "../../../../contant/IntefaceContaint";
+import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { getIdAccount } from "../../../../service/StorageService";
 import { createNotification } from "../../../../utils/MessageUtil";
 import {
+  CreateDto,
+  requestGetDistrictByProvinceId,
+  requestGetWardByDistrictId,
+  requestPostCreateAddress,
+  requestPutUpdateAddress,
+  UpdateDto,
+} from "../AddressApi";
+import {
+  changeLoading,
   createAddress,
   DataAddress,
   updateAddress,
@@ -37,23 +49,6 @@ interface Address {
   id: any;
   name: string;
 }
-
-const LIST_WARD: Address[] = [
-  { id: 1, name: "Mỹ Đình" },
-  { id: 2, name: "Phú đô" },
-  { id: 3, name: "Mễ Trì" },
-];
-
-const LIST_PROVINCE: Address[] = [
-  { id: 1, name: "Ha noi" },
-  { id: 2, name: "HCM" },
-  { id: 3, name: "Da nang" },
-];
-const LIST_DISRICT1: Address[] = [
-  { id: 1, name: "Quan 1" },
-  { id: 2, name: "Quan 2" },
-  { id: 3, name: "Quan 3" },
-];
 
 const validateVoucher = Yup.object({
   phone: Yup.string()
@@ -78,9 +73,9 @@ interface PropsCreateAddress {
   address_detail: string;
 }
 const initialValues: PropsCreateAddress = {
-  name: "",
-  phone: "",
-  address_detail: "",
+  name: "khanh",
+  phone: "0965259441",
+  address_detail: "9645 / 255",
 };
 
 const initAddress = {
@@ -92,19 +87,22 @@ const initAddress = {
 const initDataAddress = {
   ward: [],
   district: [],
-  province: LIST_PROVINCE,
 };
 
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
+  const provinces = useAppSelector((state) => state.provinceSlice).data;
+  const { isLoading } = useAppSelector((state) => state.addressUser);
+  const accountId = getIdAccount();
+  const { handleClose, open, anchorElData, type } = props;
   const [isDefault, setIsDefault] = useState<boolean>(
     anchorElData?.item.isDefault ?? false
   );
+
   const [selectedAddress, setSelectedAddress] = useState<{
-    ward: Address | null;
-    district: Address | null;
-    province: Address | null;
+    ward: string | null;
+    district: string | null;
+    province: string | null;
   }>({
     ward: null,
     district: null,
@@ -114,8 +112,11 @@ const FormDialog = (props: Props) => {
   const [dataAddress, setDataAddress] = useState<{
     ward: Address[];
     district: Address[];
-    province: Address[];
   }>(initDataAddress);
+
+  useEffect(() => {
+    getDataAddressChange();
+  }, [anchorElData]);
 
   useEffect(() => {
     selectedAddress.province !== null && getDataDistrict();
@@ -125,15 +126,38 @@ const FormDialog = (props: Props) => {
     selectedAddress.district !== null && getDataWard();
   }, [selectedAddress.district]);
 
-  const getDataDistrict = () => {
-    setDataAddress({ ...dataAddress, district: LIST_DISRICT1, ward: [] });
-    setSelectedAddress({ ...selectedAddress, district: null, ward: null });
+  const getDataAddressChange = async () => {
+    if (anchorElData && type === TYPE_DIALOG.UPDATE) {
+      const resDistrict: ResultApi<Address[]> =
+        await requestGetDistrictByProvinceId({
+          province_id: anchorElData.item.province?.id ?? 1,
+        });
+      const resWard: ResultApi<Address[]> = await requestGetWardByDistrictId({
+        district_id: anchorElData.item.district?.id ?? 1,
+      });
+      setDataAddress({ ward: resWard.data, district: resDistrict.data });
+    }
   };
 
-  const getDataWard = () => {
-    setDataAddress({ ...dataAddress, ward: LIST_WARD });
-    setSelectedAddress({ ...selectedAddress, ward: null });
+  const getDataDistrict = async (id?: number) => {
+    try {
+      const res: ResultApi<Address[]> = await requestGetDistrictByProvinceId({
+        province_id: id ?? Number(selectedAddress.province),
+      });
+      setDataAddress({ ...dataAddress, district: res.data });
+    } catch (e) {}
   };
+
+  const getDataWard = async (id?: number) => {
+    try {
+      const res: ResultApi<Address[]> = await requestGetWardByDistrictId({
+        district_id: id ?? Number(selectedAddress.district),
+      });
+
+      setDataAddress({ ...dataAddress, ward: res.data });
+    } catch (e) {}
+  };
+  // console.log({ dataAddress });
 
   const close = () => {
     setSelectedAddress(initAddress);
@@ -142,50 +166,85 @@ const FormDialog = (props: Props) => {
     handleClose();
   };
 
-  const onSubmit = (data: PropsCreateAddress) => {
-    const { name, phone, address_detail } = data;
-    if (anchorElData) {
-      const item: DataAddress = {
-        ...anchorElData.item,
-        name: name,
-        phone: phone,
-        isDefault: isDefault,
-        addressDetail: address_detail,
-      };
-      dispatch(updateAddress({ item: item }));
-      close();
+  const onSubmit = async (data: PropsCreateAddress) => {
+    const { address_detail } = data;
+    try {
+      if (anchorElData) {
+        if (anchorElData && selectedAddress.province !== null) {
+          console.log("ka");
+
+          if (!validateAddress()) return;
+        }
+        // code
+        dispatch(changeLoading(true));
+        const payload: UpdateDto = {
+          accountId: Number(accountId),
+          addressDetail: address_detail,
+          districtId: selectedAddress.district
+            ? Number(selectedAddress.district)
+            : Number(anchorElData?.item.district?.id),
+          provinceId: selectedAddress.province
+            ? Number(selectedAddress.province)
+            : Number(anchorElData?.item.province?.id),
+          wardId: selectedAddress.ward
+            ? Number(selectedAddress.ward)
+            : Number(anchorElData?.item.ward?.id),
+          id: anchorElData?.item.id,
+        };
+
+        const res: ResultApi<DataAddress> = await requestPutUpdateAddress(
+          payload
+        );
+        dispatch(updateAddress({ item: res.data }));
+        close();
+      }
+      // loading
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
     }
   };
-
-  const onSubmitCreate = (dataCreate: PropsCreateAddress) => {
+  const validateAddress = () => {
     if (
-      selectedAddress.province === null ||
-      selectedAddress.district === null ||
-      selectedAddress.ward === null
+      !selectedAddress.province ||
+      !selectedAddress.district ||
+      !selectedAddress.ward
     ) {
       createNotification({
         type: "warning",
         message: "Bạn cần điền đầy đủ thông tin",
       });
-      return;
+      return false;
     }
-    const { name, address_detail, phone } = dataCreate;
-    const item: DataAddress = {
-      addressDetail: address_detail,
-      id: data.length,
-      name: name,
-      phone: phone,
-      isDefault: isDefault,
-    };
-    dispatch(createAddress({ item: item }));
+    return true;
+  };
 
-    close();
+  const onSubmitCreate = async (dataCreate: PropsCreateAddress) => {
+    if (!validateAddress()) return;
+    try {
+      dispatch(changeLoading(true));
+      const { address_detail } = dataCreate;
+      const payload: CreateDto = {
+        accountId: Number(accountId),
+        addressDetail: address_detail,
+        districtId: Number(selectedAddress.district),
+        provinceId: Number(selectedAddress.province),
+        wardId: Number(selectedAddress.ward),
+      };
+      const res: ResultApi<DataAddress> = await requestPostCreateAddress(
+        payload
+      );
+      dispatch(createAddress({ item: res.data }));
+      close();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (
     <Dialog
       open={open}
-      onClose={close}
       aria-labelledby="form-dialog-title"
       style={{ width: "100%" }}
     >
@@ -197,8 +256,8 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                name: anchorElData?.item.name ?? "",
-                phone: anchorElData?.item.phone ?? "",
+                name: anchorElData?.item.name ?? initialValues.name,
+                phone: anchorElData?.item.phone ?? initialValues.phone,
                 address_detail: anchorElData?.item.addressDetail ?? "",
               }
         }
@@ -218,7 +277,7 @@ const FormDialog = (props: Props) => {
           handleSubmit,
           touched,
         }) => (
-          <>
+          <div style={{ position: "relative" }}>
             <DialogContent style={{ width: "100%" }}>
               <DialogContentText>
                 Cập nhật thông tin địa chỉ, vui lòng điền tất cả thông tin cần
@@ -251,13 +310,19 @@ const FormDialog = (props: Props) => {
 
               <TextInputComponent
                 label="province"
-                value={selectedAddress.province}
+                value={
+                  type === TYPE_DIALOG.UPDATE &&
+                  selectedAddress.province === null
+                    ? `${anchorElData?.item.province?.id}`
+                    : selectedAddress.province
+                }
                 onChange={(event: any) => {
                   const value = event.target.value;
+                  setDataAddress({ ...dataAddress, district: [], ward: [] });
                   setSelectedAddress({
                     province: value,
-                    district: null,
-                    ward: null,
+                    district: "",
+                    ward: "",
                   });
                 }}
                 isSelected={true}
@@ -266,7 +331,7 @@ const FormDialog = (props: Props) => {
                     <option key={0} value={0}>
                       Chưa chọn
                     </option>
-                    {dataAddress.province.map((option) => (
+                    {provinces.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.name}
                       </option>
@@ -277,13 +342,19 @@ const FormDialog = (props: Props) => {
               {dataAddress.district.length > 0 && (
                 <TextInputComponent
                   label="district"
-                  value={selectedAddress.district}
+                  value={
+                    type === TYPE_DIALOG.UPDATE &&
+                    selectedAddress.district === null
+                      ? `${anchorElData?.item.district?.id}`
+                      : selectedAddress.district
+                  }
                   onChange={(event: any) => {
                     const value = event.target.value;
+                    setDataAddress({ ...dataAddress, ward: [] });
                     setSelectedAddress({
                       ...selectedAddress,
                       district: value,
-                      ward: null,
+                      ward: "",
                     });
                   }}
                   isSelected={true}
@@ -304,7 +375,11 @@ const FormDialog = (props: Props) => {
               {dataAddress.ward.length > 0 && (
                 <TextInputComponent
                   label="ward"
-                  value={selectedAddress.ward}
+                  value={
+                    type === TYPE_DIALOG.UPDATE && selectedAddress.ward === null
+                      ? `${anchorElData?.item.ward?.id}`
+                      : selectedAddress.ward
+                  }
                   onChange={(event: any) => {
                     const value = event.target.value;
                     setSelectedAddress({
@@ -346,7 +421,8 @@ const FormDialog = (props: Props) => {
                 Submit
               </Button>
             </DialogActions>
-          </>
+            {isLoading && <LoadingProgress />}
+          </div>
         )}
       </Formik>
     </Dialog>

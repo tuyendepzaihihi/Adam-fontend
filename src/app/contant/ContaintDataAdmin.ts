@@ -10,6 +10,7 @@ import {
   OptionSize,
   ProductAdmin,
   Tag,
+  UserAdmin,
   UserAdminInteface,
   VoucherAdmin,
 } from "./IntefaceContaint";
@@ -89,7 +90,7 @@ export const rows_example_user: UserAdminInteface[] = [
   },
 ];
 
-export const headCells: HeadCell<UserAdminInteface>[] = [
+export const headCells: HeadCell<UserAdmin>[] = [
   {
     id: "id",
     numeric: false,
@@ -97,16 +98,15 @@ export const headCells: HeadCell<UserAdminInteface>[] = [
     label: "Id",
   },
   { id: "email", numeric: true, disablePadding: false, label: "Email" },
-  { id: "phone", numeric: true, disablePadding: false, label: "Phone" },
-  { id: "position", numeric: true, disablePadding: false, label: "Position" },
+  { id: "phoneNumber", numeric: true, disablePadding: false, label: "Phone" },
+  { id: "role", numeric: true, disablePadding: false, label: "Position" },
   {
-    id: "first_name",
+    id: "fullName",
     numeric: true,
     disablePadding: false,
-    label: "First Name",
+    label: "Full Name",
   },
-  { id: "last_name", numeric: true, disablePadding: false, label: "Last Name" },
-  { id: "active", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Status" },
 ];
 
 export const headCellsCategory: HeadCell<CategoryAdmin>[] = [

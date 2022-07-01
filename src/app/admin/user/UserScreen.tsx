@@ -22,7 +22,7 @@ import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCells } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { UserAdminInteface } from "../../contant/IntefaceContaint";
+import { UserAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
@@ -62,14 +62,14 @@ export default function UserScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof UserAdminInteface>("id");
+  const [orderBy, setOrderBy] = React.useState<keyof UserAdmin>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
-    item: UserAdminInteface;
+    item: UserAdmin;
   }>(null);
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
@@ -92,8 +92,7 @@ export default function UserScreen() {
   };
 
   const createSortHandler =
-    (property: keyof UserAdminInteface) =>
-    (event: React.MouseEvent<unknown>) => {
+    (property: keyof UserAdmin) => (event: React.MouseEvent<unknown>) => {
       const isAsc = orderBy === property && order === "asc";
       setOrder(isAsc ? "desc" : "asc");
       setOrderBy(property);
@@ -243,17 +242,16 @@ export default function UserScreen() {
                           {row.id}
                         </TableCell>
                         <TableCell align="right">{row.email}</TableCell>
-                        <TableCell align="right">{row.phone}</TableCell>
-                        <TableCell align="right">{row.position}</TableCell>
-                        <TableCell align="right">{row.first_name}</TableCell>
-                        <TableCell align="right">{row.last_name}</TableCell>
+                        <TableCell align="right">{row.phoneNumber}</TableCell>
+                        <TableCell align="right">{row.role}</TableCell>
+                        <TableCell align="right">{row.fullName}</TableCell>
                         <TableCell align="right">
                           <Switch
-                            checked={row.active === 1 ? true : false}
-                            onChange={(data) => {
+                            checked={row.isActive}
+                            onChange={() => {
                               let item = {
                                 ...row,
-                                active: row.active === 1 ? 0 : 1,
+                                isActive: !row.isActive,
                               };
                               dispatch(updateUser({ item: item }));
                             }}
@@ -293,13 +291,13 @@ export default function UserScreen() {
         />
       </Paper>
       {renderMenu}
-      <FormDialog
+      {/* <FormDialog
         open={open}
         handleClose={handleClose}
         anchorElData={anchorElData}
         type={typeDialog}
         data={data}
-      />
+      /> */}
     </div>
   );
 }
