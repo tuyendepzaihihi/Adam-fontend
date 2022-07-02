@@ -18,7 +18,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       position: "absolute",
-      backgroundColor: "rgba(0,0,0,0.3)",
+      backgroundColor: "rgba(0,0,0,0.1)",
       width: "100%",
       height: "100%",
       top: 0,

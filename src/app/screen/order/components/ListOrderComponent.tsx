@@ -1,10 +1,10 @@
 import { Paper, TablePagination } from "@material-ui/core";
 import { ErrorOutline } from "@material-ui/icons";
 import { useState } from "react";
-import { DataOrder } from "../slice/OrderSlice";
+import { OrderDto } from "../slice/OrderSlice";
 import ItemOrderComponent from "./ItemOrderComponent";
 interface Props {
-  data: DataOrder[];
+  data: OrderDto[];
 }
 const ListOrderComponent = (props: Props) => {
   const { data } = props;

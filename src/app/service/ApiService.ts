@@ -8,7 +8,7 @@ export interface ResponseType<T> {
   status: number;
   code: number;
   message: string;
-  data: any;
+  data: T;
 }
 
 const createAPI = () => {
@@ -31,7 +31,7 @@ const createAPI = () => {
       const navigate = useNavigate();
       localStorage.clear();
       navigate(ROUTE.LOGIN);
-    } else if (data && data.status !== 200)
+    } else if (data && data?.status !== 200 && data?.code !== 200)
       createNotification({ type: "warning", message: data.message });
     return response;
   });
@@ -48,7 +48,7 @@ function handleResult<T>(api: any) {
 }
 
 function handleResponse<T>(data: ResponseType<T>) {
-  if (data.status !== 200)
+  if (data?.status !== 200 && data?.code !== 200)
     return Promise.reject(new Error(data?.message || "Co loi xay ra"));
   return Promise.resolve(data);
 }

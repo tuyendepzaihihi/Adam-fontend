@@ -6,18 +6,15 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import R from "../../assets/R";
 import LoadingProgress from "../../component/LoadingProccess";
-import { data_detail, ItemCart, LIST_CART } from "../../contant/Contant";
-import {
-  DetailProductAdmin,
-  ProductAdmin,
-  ResultApi,
-} from "../../contant/IntefaceContaint";
+import { data_detail, ItemCart } from "../../contant/Contant";
+import { DetailProductAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../hooks";
-import { getToken } from "../../service/StorageService";
+import { getIdAccount, getToken } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
 import { createNotification } from "../../utils/MessageUtil";
-import { addProductToCart } from "../cart/slice/CartSlice";
+import { CreateCartDto, requestPostCreateCart } from "../cart/CartApi";
+import { addProductToCart, incrementAsyncCart } from "../cart/slice/CartSlice";
 import {
   requestGetProductCustomerById,
   requestGetProductDetailByIdProduct,
@@ -41,6 +38,7 @@ export const sortPriceToMax = (array: DetailProductAdmin[]) => {
 interface DataFilter {
   url: any;
   price: number;
+  id: number;
 }
 interface Selection {
   optionId: string;
@@ -100,6 +98,7 @@ const ProductDetailScreen = () => {
       setDataDetail(resultProductById.data);
       setListDataFilter(res.data);
       setIsLoading(false);
+      await dispatch(incrementAsyncCart());
     } catch (e) {
       setIsLoading(false);
     }
@@ -122,7 +121,11 @@ const ProductDetailScreen = () => {
             count = count + 1;
         }
         if (count === selection.length) {
-          setDataF({ price: listDataFilter[index].priceExport, url: "" });
+          setDataF({
+            price: listDataFilter[index].priceExport,
+            url: "",
+            id: listDataFilter[index].id,
+          });
         }
       }
     } else {
@@ -171,7 +174,7 @@ const ProductDetailScreen = () => {
     else return false;
   };
 
-  const handleBuyProduct = () => {
+  const handleBuyProduct = async () => {
     const token = getToken();
     if (!token) {
       createNotification({
@@ -180,20 +183,26 @@ const ProductDetailScreen = () => {
       });
       return;
     }
-    const itemProduct: ProductAdmin = state?.item;
 
-    const item: ItemCart = {
-      id: LIST_CART.length + Math.random() + 1000,
-      count: count,
-      name: itemProduct?.productName,
-      price: dataF ? dataF?.price : 0,
-      totalPrice: count * (dataF ? dataF?.price : 1),
-      url_image: dataF ? dataF?.url : itemProduct.image,
-      descriptionDiscount: itemProduct.description,
-      discountPersent: 10,
-      product_id: itemProduct.id,
-    };
-    dispatch(addProductToCart({ item: item }));
+    try {
+      setIsLoading(true);
+
+      const idAccount = getIdAccount();
+
+      const payload: CreateCartDto = {
+        accountId: Number(idAccount),
+        detailProductId: dataF?.id ?? 0,
+        quantity: count,
+        totalPrice: dataF?.price ? count * dataF?.price : 0,
+      };
+
+      const res: ResultApi<ItemCart> = await requestPostCreateCart(payload);
+
+      dispatch(addProductToCart({ item: res.data }));
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -287,7 +296,7 @@ const ProductDetailScreen = () => {
               className={className.buttonBuy}
               onClick={handleBuyProduct}
             >
-              Mua hàng
+              Thêm vào giỏ hàng
             </Button>
           )}
 

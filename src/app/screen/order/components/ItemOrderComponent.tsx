@@ -1,22 +1,22 @@
-import React from "react";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { DataOrder } from "../slice/OrderSlice";
-import R from "../../../assets/R";
-import { colors } from "../../../utils/color";
-import { ItemCart } from "../../../contant/Contant";
-import { formatPrice } from "../../../utils/function";
 import { LocationOn } from "@material-ui/icons";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import React from "react";
+import R from "../../../assets/R";
+import { ItemCart } from "../../../contant/Contant";
+import { colors } from "../../../utils/color";
+import { formatPrice } from "../../../utils/function";
 import { renderAddress } from "../../../utils/helper";
-import { Button } from "@material-ui/core";
+import { OrderDto } from "../slice/OrderSlice";
 import TimeLineComponent from "./TimeLineComponent";
 
 interface Props {
-  item: DataOrder;
+  item: OrderDto;
 }
 
 export const TYPE_ORDER = {
@@ -86,14 +86,16 @@ const ItemProduct = (props: { item?: ItemCart; inList?: boolean }) => {
       >
         <img alt="" src={R.images.img_product} style={{ width: 50 }} />
         <div style={{ flex: 1, paddingLeft: 20 }}>
-          <Typography className={classes.heading}>{item?.name}</Typography>
+          <Typography className={classes.heading}>
+            {item?.detailProduct.product.productName}
+          </Typography>
           <Typography
             className={classes.secondaryHeading}
             style={{ display: "flex" }}
           >
             Price:
             <Typography className={classes.heading}>
-              {formatPrice(item?.price ?? 0)}đ
+              {formatPrice(item?.detailProduct.priceExport ?? 0)}đ
             </Typography>
           </Typography>
           <Typography
@@ -107,7 +109,7 @@ const ItemProduct = (props: { item?: ItemCart; inList?: boolean }) => {
           </Typography>
         </div>
       </div>
-      {inList && <p>x{item?.count}</p>}
+      {inList && <p>x{item?.quantity}</p>}
     </div>
   );
 };
@@ -149,51 +151,52 @@ export default function ItemOrderComponent(props: Props) {
                 justifyContent: "space-between",
               }}
             >
-              <Typography className={classes.heading}>{item.code}</Typography>
+              <Typography className={classes.heading}>{item.id}</Typography>
               <Typography className={classes.secondaryHeading}>
-                {item.create_date}
+                {item.createDate}
               </Typography>
             </div>
-            <div style={{ paddingLeft: 20 }}>
+            {/* <div style={{ paddingLeft: 20 }}>
               {item.products?.map((e, index) => {
                 return (
                   <Typography key={index} className={classes.secondaryHeading}>
-                    {e.name} | {formatPrice(e.price)}đ | x{e.count}
+                    {e.detailProduct.product.productName} |{" "}
+                    {formatPrice(e.detailProduct.priceExport)}đ | x{e.quantity}
                   </Typography>
                 );
               })}
-            </div>
+            </div> */}
             <Typography className={classes.heading}>
               Tổng tiền: {formatPrice(item.totalPrice)}đ
             </Typography>
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.detailInformation}>
-          <TimeLineComponent list={item.history} />
-          <Typography className={classes.heading}>
+          {/* <TimeLineComponent list={item.history} /> */}
+          {/* <Typography className={classes.heading}>
             {DEFINE_ORDER[item.status].title}
           </Typography>
           <Typography className={classes.secondaryHeading}>
             {DEFINE_ORDER[item.status].description}
-          </Typography>
+          </Typography> */}
           <div style={{ paddingTop: 10 }}>
             <div style={{ display: "flex", paddingTop: 5 }}>
               <LocationOn />
               <div style={{ paddingLeft: 15 }}>
                 <Typography className={classes.heading}>
-                  {item.address?.name} | {item.address?.phone}
+                  {item.fullName} | {item.phoneNumber}
                 </Typography>
-                <Typography className={classes.secondaryHeading}>
+                {/* <Typography className={classes.secondaryHeading}>
                   {renderAddress(item.address)}
-                </Typography>
+                </Typography> */}
               </div>
             </div>
           </div>
-          <div className={classes.containerListProducts}>
+          {/* <div className={classes.containerListProducts}>
             {item.products?.map((e, index) => {
               return <ItemProduct item={e} key={index} inList={true} />;
             })}
-          </div>
+          </div> */}
           <div style={{ display: "flex" }}>
             <div>
               <Typography className={classes.heading}>
@@ -204,10 +207,10 @@ export default function ItemOrderComponent(props: Props) {
             </div>
             <div style={{ paddingLeft: 20 }}>
               <Typography className={classes.secondaryHeading}>
-                {formatPrice(item.totalProduct)}đ
+                {formatPrice(item.amountPrice)}đ
               </Typography>
               <Typography className={classes.secondaryHeading}>
-                {formatPrice(item.totalDiscount)}đ
+                {formatPrice(item.salePrice)}đ
               </Typography>
               <Typography className={classes.secondaryHeading}>
                 {formatPrice(item.totalPrice)}đ

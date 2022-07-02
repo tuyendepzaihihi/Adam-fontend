@@ -233,35 +233,15 @@ export const LIST_PRODUCT = [
   //   url_image: R.images.img_product,
   // },
 ];
-export interface ItemCart extends ItemProduct {
+export interface ItemCart {
   totalPrice: number;
-  count: number;
+  quantity: number;
   product_id?: number;
+  detailProduct: DetailProductAdmin;
+  id: number;
+  isActive: boolean;
 }
-export const LIST_CART: ItemCart[] = [
-  {
-    id: 100,
-    name: "Áo sơ mi nam",
-    price: 628000,
-    discountPersent: 10,
-    descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    totalPrice: 628000 * 2,
-    count: 2,
-    url_image: R.images.img_product,
-    product_id: 7,
-  },
-  {
-    id: 150,
-    name: "Áo kẻ sọc đẹp",
-    price: 628000,
-    discountPersent: 10,
-    descriptionDiscount: "Giảm 10% cho sp thứ 2",
-    totalPrice: 628000 * 2,
-    count: 2,
-    url_image: R.images.img_product,
-    product_id: 7,
-  },
-];
+export const LIST_CART: ItemCart[] = [];
 
 export interface Category {
   id: any;

@@ -16,10 +16,18 @@ import clsx from "clsx";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
+import R from "../../assets/R";
 import FooterComponent from "../../component/footer/FooterComponent";
+import LoadingProgress from "../../component/LoadingProccess";
 import { ROUTE, TYPE_ACCOUNT } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  requestDeleteCart,
+  requestPutUpdateCart,
+  UpdateCartDto,
+} from "../../screen/cart/CartApi";
+import {
+  changeLoading,
   deleteItemCart,
   updateQuantity,
 } from "../../screen/cart/slice/CartSlice";
@@ -37,7 +45,7 @@ export default function NavBar() {
   const size = useWindowSize();
   const classes = useNavBarStyles();
   const navigate = useNavigate();
-  const { data } = useAppSelector((state) => state.cart);
+  const { data, isLoading } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(true);
 
@@ -151,37 +159,68 @@ export default function NavBar() {
           return (
             <div className={classes.containerItemCart} key={index}>
               <div className={classes.containerInfoCart}>
-                <img src={e.url_image} style={{ width: 25 }} alt="" />
+                <img src={R.images.img_product} style={{ width: 25 }} alt="" />
               </div>
               <div className={classes.containerInfoCart}>
-                <p className={classes.textNameProductCart}>{e.name}</p>
+                <p className={classes.textNameProductCart}>
+                  {e.detailProduct.product.productName}
+                </p>
+                <p style={{ marginLeft: 5 }}>
+                  {e.detailProduct.color.colorName +
+                    "/" +
+                    e.detailProduct.size.sizeName}
+                </p>
                 <p className={classes.textPriceCart}>
                   {" "}
-                  {formatPrice(e.price)}đ
+                  {formatPrice(e.detailProduct.priceExport)}đ
                 </p>
               </div>
               <div className={classes.containerQuantity}>
                 <button
                   className={classes.buttonChangeQuantityCart}
-                  onClick={() => {
-                    e.count > 1 &&
+                  onClick={async () => {
+                    if (e.quantity > 1) {
+                      dispatch(changeLoading(true));
+                      const payload: UpdateCartDto = {
+                        id: e.id,
+                        quantity: e.quantity - 1,
+                        totalPrice:
+                          e.quantity - 1 * e.detailProduct.priceExport,
+                      };
+                      await requestPutUpdateCart(payload);
                       dispatch(
-                        updateQuantity({ id: e.id, new_quantity: e.count - 1 })
+                        updateQuantity({
+                          id: e.id,
+                          new_quantity: e.quantity - 1,
+                        })
                       );
+                      dispatch(changeLoading(false));
+                    }
                   }}
                 >
                   -
                 </button>
                 <input
-                  value={e.count}
+                  value={e.quantity}
                   style={{ width: 50, height: 40, textAlign: "center" }}
                 />
                 <button
                   className={classes.buttonChangeQuantityCart}
-                  onClick={() => {
+                  onClick={async () => {
+                    dispatch(changeLoading(true));
+                    const payload: UpdateCartDto = {
+                      id: e.id,
+                      quantity: e.quantity + 1,
+                      totalPrice: e.quantity + 1 * e.detailProduct.priceExport,
+                    };
+                    await requestPutUpdateCart(payload);
                     dispatch(
-                      updateQuantity({ id: e.id, new_quantity: e.count + 1 })
+                      updateQuantity({
+                        id: e.id,
+                        new_quantity: e.quantity + 1,
+                      })
                     );
+                    dispatch(changeLoading(false));
                   }}
                 >
                   +
@@ -193,12 +232,16 @@ export default function NavBar() {
                 aria-haspopup="true"
                 color="inherit"
                 style={{ marginLeft: 5 }}
-                onClick={() => {
+                onClick={async () => {
+                  dispatch(changeLoading(true));
+                  await requestDeleteCart({ id: e.id });
                   dispatch(deleteItemCart({ id: e.id }));
+                  dispatch(changeLoading(false));
                 }}
               >
                 <Delete />
               </IconButton>
+              {isLoading && <LoadingProgress />}
             </div>
           );
         })

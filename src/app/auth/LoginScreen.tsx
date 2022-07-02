@@ -176,6 +176,11 @@ const LoginScreen = () => {
             color="primary"
             onClick={() => formik.handleSubmit()}
             className={className.button}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                formik.handleSubmit();
+              }
+            }}
           >
             Login
           </Button>

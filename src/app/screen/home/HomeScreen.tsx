@@ -12,6 +12,8 @@ import { colors } from "../../utils/color";
 import { incrementAsyncHome } from "./slice/HomeSlice";
 import ReactLoading from "react-loading";
 import { incrementAsyncFilter } from "../product/slice/FilterValueSlice";
+import { incrementAsyncCart } from "../cart/slice/CartSlice";
+import { getIdAccount } from "../../service/StorageService";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -57,12 +59,15 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(incrementAsyncFilter());
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = async () => {
     try {
-      dispatch(incrementAsyncHome());
+      await dispatch(incrementAsyncHome());
+      const idAccount = getIdAccount();
+      if (idAccount) await dispatch(incrementAsyncCart());
     } catch (e) {}
   };
   return (

@@ -1,8 +1,8 @@
 import { ApiClient } from "../../service/ApiService";
 // interface
 // function
-export const requestGetCartAll = (payload: any) =>
-  ApiClient.get("/cart/findAll", payload);
+export const requestGetCartAll = (payload: { account_id: number }) =>
+  ApiClient.get("/cart/findByAccountId", payload);
 
 export const requestPutUpdateCart = (payload: any) =>
   ApiClient.put("/cart/update", payload);

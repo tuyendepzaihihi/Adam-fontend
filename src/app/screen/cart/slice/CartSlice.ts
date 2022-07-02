@@ -1,3 +1,4 @@
+import { ResultApi } from "./../../../contant/IntefaceContaint";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ItemCart, LIST_CART } from "../../../contant/Contant";
 import {
@@ -6,6 +7,8 @@ import {
   VoucherAdmin,
 } from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+import { requestGetCartByAccountId } from "../CartApi";
+import { getIdAccount } from "../../../service/StorageService";
 interface DataStateCart extends DataState<ItemCart[]> {
   addressSelected?: AddressOrderInterface | null;
   voucherSelected?: VoucherAdmin | null;
@@ -18,7 +21,11 @@ const initialState: DataStateCart = {
 };
 
 export const incrementAsyncCart = createAsyncThunk("getCart", async () => {
-  return { data: [] };
+  const accountId = getIdAccount();
+  const res: ResultApi<ItemCart[]> = await requestGetCartByAccountId({
+    account_id: Number(accountId),
+  });
+  return res;
 });
 
 export const cartSlice = createSlice({
@@ -32,17 +39,17 @@ export const cartSlice = createSlice({
         if (e.id === id) {
           return {
             ...e,
-            count: new_quantity,
-            totalPrice: new_quantity * e.price,
+            quantity: new_quantity,
+            totalPrice: new_quantity * e.detailProduct.priceExport,
           };
         }
         return e;
       });
     },
-    deleteMoreCart:(state, action)=>{
+    deleteMoreCart: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: ItemCart[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
@@ -61,14 +68,17 @@ export const cartSlice = createSlice({
     addProductToCart: (state, action) => {
       let carts = state.data;
       let item: ItemCart = action.payload?.item;
-      let checkExistItem = carts?.find((e) => e.product_id === item.product_id);
+      let checkExistItem = carts?.find(
+        (e) => e.detailProduct.id === item.detailProduct.id
+      );
       if (checkExistItem) {
         carts = carts?.map((e) => {
-          if (e.product_id === item?.product_id) {
+          if (e.detailProduct.id === item?.detailProduct.id) {
             return {
               ...e,
-              count: e.count + item.count,
-              totalPrice: (e.count + item.count) * e.price,
+              quantity: e.quantity + item.quantity,
+              totalPrice:
+                (e.quantity + item.quantity) * e.detailProduct.priceExport,
             };
           }
           return e;
@@ -82,6 +92,12 @@ export const cartSlice = createSlice({
         message: "Bạn đã thêm vào giỏ hàng thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,10 +106,9 @@ export const cartSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(incrementAsyncCart.fulfilled, (state, action) => {
-        console.log(action.payload);
+        state.data = action.payload.data;
         state.isError = false;
         state.isLoading = false;
-        state.data = action.payload?.data ?? [];
       })
       .addCase(incrementAsyncCart.rejected, (state) => {
         state.isError = true;
@@ -101,6 +116,11 @@ export const cartSlice = createSlice({
       });
   },
 });
-export const { updateQuantity, addProductToCart, deleteItemCart ,deleteMoreCart} =
-  cartSlice.actions;
+export const {
+  updateQuantity,
+  addProductToCart,
+  deleteItemCart,
+  deleteMoreCart,
+  changeLoading,
+} = cartSlice.actions;
 export default cartSlice.reducer;

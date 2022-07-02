@@ -10,21 +10,29 @@ import TableRow from "@material-ui/core/TableRow";
 import Delete from "@material-ui/icons/Delete";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import LoadingProgress from "../../component/LoadingProccess";
 import { LIST_VOUCHER } from "../../contant/ContaintDataAdmin";
-import { ItemCart, ROUTE } from "../../contant/Contant";
+import { ItemCart, ROUTE, TYPE_ACCOUNT } from "../../contant/Contant";
 import { VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { getIdAccount } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil } from "../../utils/function";
 import { getAddressInfo } from "../setting/address/slice/AddressSlice";
+import {
+  requestDeleteCart,
+  requestPutUpdateCart,
+  UpdateCartDto,
+} from "./CartApi";
 import AddressOrder from "./components/AddressOrder";
 import FormDialogAddress from "./components/FormDialogAddress";
 import FormDialogVoucher from "./components/FormDialogVoucher";
 import VoucherOrder from "./components/VoucherOrder";
 import {
+  changeLoading,
   deleteItemCart,
   deleteMoreCart,
+  incrementAsyncCart,
   updateQuantity,
 } from "./slice/CartSlice";
 
@@ -45,7 +53,7 @@ const useStyles = makeStyles({
 
 function subtotal(items: ItemCart[]) {
   return items
-    .map(({ price, count }) => price * count)
+    .map(({ detailProduct, quantity }) => detailProduct.priceExport * quantity)
     .reduce((sum: any, i: any) => sum + i, 0);
 }
 
@@ -53,7 +61,7 @@ const CartScreen = () => {
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
-  const { data } = useAppSelector((state) => state.cart);
+  const { data, isLoading } = useAppSelector((state) => state.cart);
   const address = useAppSelector((state) => state.addressUser);
 
   const [openVoucher, setOpenVoucher] = useState(false);
@@ -72,15 +80,13 @@ const CartScreen = () => {
 
   const getData = async () => {
     dispatch(getAddressInfo(Number(accountId)));
+    dispatch(incrementAsyncCart());
   };
 
   const checkTotal = () => {
     let array: ItemCart[] = [];
-    selected.map((a) => {
-      const exist = data.find((e) => {
-        if (e.id === Number(a)) return e;
-      });
-
+    selected.forEach((a) => {
+      const exist = data.find((e) => e.id === Number(a));
       if (exist) array = array.concat([exist]);
     });
     return subtotal(array);
@@ -94,7 +100,7 @@ const CartScreen = () => {
   };
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <AddressOrder
         address={address.dataSelected}
         onChoose={() => {
@@ -128,7 +134,7 @@ const CartScreen = () => {
                 )}
               </TableCell>
 
-              <TableCell align="center" colSpan={3}>
+              <TableCell align="center" colSpan={4}>
                 Details
               </TableCell>
               <TableCell align="right" />
@@ -151,6 +157,7 @@ const CartScreen = () => {
               </TableCell>
               <TableCell>Id</TableCell>
               <TableCell align="right">Name</TableCell>
+              <TableCell align="right">Option(color/size)</TableCell>
               <TableCell align="right">Quantity</TableCell>
               <TableCell align="right">Price</TableCell>
               <TableCell align="right">Sum</TableCell>
@@ -179,47 +186,79 @@ const CartScreen = () => {
                       />
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
-                    <TableCell align="right">{row.name}</TableCell>
+                    <TableCell align="right">
+                      {row.detailProduct.product.productName}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.detailProduct.color.colorName ?? ""}
+                      {row.detailProduct.size.sizeName
+                        ? "/" + row.detailProduct.size.sizeName
+                        : ""}
+                    </TableCell>
                     <TableCell align="right">
                       <button
                         className={classes.buttonQuantity}
-                        onClick={() => {
-                          row.count > 1 &&
+                        onClick={async () => {
+                          if (row.quantity > 1) {
+                            dispatch(changeLoading(true));
+                            const payload: UpdateCartDto = {
+                              id: row.id,
+                              quantity: row.quantity - 1,
+                              totalPrice:
+                                row.quantity -
+                                1 * row.detailProduct.priceExport,
+                            };
+                            await requestPutUpdateCart(payload);
                             dispatch(
                               updateQuantity({
                                 id: row.id,
-                                new_quantity: row.count - 1,
+                                new_quantity: row.quantity - 1,
                               })
                             );
+                            dispatch(changeLoading(false));
+                          }
                         }}
                       >
                         -
                       </button>
-                      {row.count}
+                      {row.quantity}
                       <button
                         className={classes.buttonQuantity}
-                        onClick={() => {
+                        onClick={async () => {
+                          dispatch(changeLoading(true));
+                          const payload: UpdateCartDto = {
+                            id: row.id,
+                            quantity: row.quantity + 1,
+                            totalPrice:
+                              row.quantity + 1 * row.detailProduct.priceExport,
+                          };
+                          await requestPutUpdateCart(payload);
+
                           dispatch(
                             updateQuantity({
                               id: row.id,
-                              new_quantity: row.count + 1,
+                              new_quantity: row.quantity + 1,
                             })
                           );
+                          dispatch(changeLoading(false));
                         }}
                       >
                         +
                       </button>
                     </TableCell>
                     <TableCell align="right">
-                      {formatPrice(row.price)}đ
+                      {formatPrice(row.detailProduct.priceExport)}đ
                     </TableCell>
                     <TableCell align="right">
                       {formatPrice(row.totalPrice)}đ
                     </TableCell>
                     <TableCell padding="checkbox">
                       <button
-                        onClick={() => {
+                        onClick={async () => {
+                          dispatch(changeLoading(true));
+                          await requestDeleteCart({ id: row.id });
                           dispatch(deleteItemCart({ id: row.id }));
+                          dispatch(changeLoading(false));
                         }}
                       >
                         <Delete color="action" />
@@ -230,19 +269,19 @@ const CartScreen = () => {
               })}
 
             <TableRow>
-              <TableCell colSpan={3} />
+              <TableCell colSpan={4} />
               <TableCell colSpan={2}>Tổng tiền</TableCell>
               <TableCell align="right">{formatPrice(checkTotal())}đ</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={3} />
+              <TableCell colSpan={4} />
               <TableCell colSpan={2}>Giảm giá</TableCell>
               <TableCell align="right">
                 {formatPrice(checkDiscount())}đ
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={3} />
+              <TableCell colSpan={4} />
               <TableCell colSpan={2}>Thành tiền</TableCell>
               <TableCell align="right">
                 {formatPrice(checkTotal() - checkDiscount())}đ
@@ -260,18 +299,20 @@ const CartScreen = () => {
           paddingTop: 40,
         }}
       >
-        <Button
-          variant="outlined"
-          color="default"
-          style={{
-            width: "30%",
-          }}
-          onClick={() => {
-            navigate(ROUTE.ORDER);
-          }}
-        >
-          Thanh toán
-        </Button>
+        {selected.length > 0 && address?.dataSelected && (
+          <Button
+            variant="outlined"
+            color="default"
+            style={{
+              width: "30%",
+            }}
+            onClick={() => {
+              navigate(ROUTE.ACCOUNT, { state: TYPE_ACCOUNT.ORDER });
+            }}
+          >
+            Thanh toán
+          </Button>
+        )}
       </div>
       <FormDialogVoucher
         data={LIST_VOUCHER}
@@ -291,6 +332,7 @@ const CartScreen = () => {
         open={openAddress}
         description={"Vui lòng chọn địa chỉ nhận hàng"}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 };
