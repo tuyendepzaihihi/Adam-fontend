@@ -76,7 +76,7 @@ export const rows_example_user: UserAdminInteface[] = [
     phone: "0965259441",
     position: "Admin",
     first_name: "Pham",
-    last_name: "K Khanh",
+    last_name: "K cu",
     active: 0,
   },
   {
@@ -419,7 +419,7 @@ export const LIST_PRODUCT: ProductAdmin[] = [
   // {
   //   productName: "Áo",
   //   category_id: 1,
-  //   description: "khanh",
+  //   description: "cu",
   //   image: R.images.img_product,
   //   id: 1,
   //   createDate: "15/10/2021",
@@ -430,7 +430,7 @@ export const LIST_PRODUCT: ProductAdmin[] = [
   // {
   //   productName: "Áo sơ mi",
   //   category_id: 1,
-  //   description: "khanh",
+  //   description: "cu",
   //   image: R.images.img_product,
   //   id: 2,
   //   createDate: "15/10/2021",
@@ -441,7 +441,7 @@ export const LIST_PRODUCT: ProductAdmin[] = [
   // {
   //   productName: "Áo gió",
   //   category_id: 1,
-  //   description: "khanh",
+  //   description: "cu",
   //   image: R.images.img_product,
   //   id: 3,
   //   createDate: "15/10/2021",

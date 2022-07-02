@@ -1,4 +1,4 @@
 const InformationScreen = () => {
-  return <div>khanh</div>;
+  return <div>cu</div>;
 };
 export default InformationScreen;

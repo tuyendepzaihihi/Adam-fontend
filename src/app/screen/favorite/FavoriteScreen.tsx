@@ -1,4 +1,4 @@
 const FavoriteScreen = () => {
-  return <div>khanh</div>;
+  return <div>cu</div>;
 };
 export default FavoriteScreen;

@@ -73,7 +73,7 @@ interface PropsCreateAddress {
   address_detail: string;
 }
 const initialValues: PropsCreateAddress = {
-  name: "khanh",
+  name: "cu",
   phone: "0965259441",
   address_detail: "9645 / 255",
 };
