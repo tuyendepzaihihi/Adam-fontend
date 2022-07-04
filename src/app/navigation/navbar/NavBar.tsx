@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
@@ -200,10 +200,7 @@ export default function NavBar() {
                 >
                   -
                 </button>
-                <input
-                  value={e.quantity}
-                  style={{ width: 50, height: 40, textAlign: "center" }}
-                />
+                <Typography>{e.quantity}</Typography>
                 <button
                   className={classes.buttonChangeQuantityCart}
                   onClick={async () => {

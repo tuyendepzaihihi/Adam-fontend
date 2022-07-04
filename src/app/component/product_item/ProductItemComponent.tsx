@@ -1,10 +1,11 @@
 import {
-  Button,
   createStyles,
   makeStyles,
   Paper,
   Theme,
+  Typography,
 } from "@material-ui/core";
+import clsx from "clsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import R from "../../assets/R";
@@ -36,18 +37,24 @@ const ProductItemComponent = (props: Props) => {
 
   return (
     <Paper
-      elevation={3}
-      className={className.container}
+      elevation={show ? 3 : 0}
+      className={clsx(className.container)}
       style={{ width: width }}
     >
-      <div
+      <button
         onMouseEnter={() => {
           setShow(true);
         }}
         onMouseLeave={() => {
           setShow(false);
         }}
-        style={{ width: "100%" }}
+        style={{
+          minWidth: 170,
+          maxWidth: "100%",
+        }}
+        onClick={() => {
+          navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
+        }}
       >
         <img
           src={R.images.img_product}
@@ -56,24 +63,16 @@ const ProductItemComponent = (props: Props) => {
         />
         <div className={className.containerInfo}>
           <p className={className.textDiscount}>{item.description}</p>
-          <p className={className.textName}>{item.productName}</p>
+          <Typography
+            variant="body1"
+            component={"p"}
+            className={className.textName}
+          >
+            {item.productName}
+          </Typography>
           <p className={className.textPrice}>{formatPrice(2500000)} đ</p>
         </div>
-        {show && (
-          <div className={className.positionContainer}>
-            <Button
-              color="primary"
-              className={className.button}
-              onClick={() => {
-                navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
-                // navigate(ROUTE.PRODUCT);
-              }}
-            >
-              Mua ngay
-            </Button>
-          </div>
-        )}
-      </div>
+      </button>
     </Paper>
   );
 };
@@ -81,14 +80,35 @@ export default ProductItemComponent;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      width: "20%",
       marginRight: `${(100 - 32 * 3) / 3}%`,
       marginTop: 15,
       position: "relative",
+      minWidth: 170,
+      maxWidth: "20%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      "&:hover": {
+        animation: `$spin-exist 1s ${theme.transitions.easing.sharp}`,
+        marginTop: -5,
+      },
+    },
+
+    "@keyframes spin-exist": {
+      "0%": {
+        transform: "translateY(0px)",
+      },
+      "100%": {
+        transform: "translateY(0px)",
+      },
+      "50%": {
+        transform: "translateY(-5px)",
+      },
     },
     image_banner: {
-      width: "100%",
-      height: 250,
+      minWidth: 170,
+      minHeight: 300,
+      maxWidth: "100%",
     },
     textDiscount: {
       color: colors.black,
@@ -96,11 +116,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     containerInfo: {
       padding: 10,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      minWidth: 170,
     },
     textName: {
       color: colors.gray59,
       fontWeight: "bold",
       marginTop: 5,
+      textAlign: "left",
+      wordWrap: "break-word",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      WebkitLineClamp: 1,
+      WebkitBoxOrient: "vertical",
     },
     textPrice: {
       color: colors.black,

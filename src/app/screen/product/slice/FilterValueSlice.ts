@@ -6,7 +6,7 @@ import {
 } from "../../../admin/option/OptionApi";
 import { requestGetTagAll } from "../../../admin/tag/TagApi";
 import { DataState, ResultApi } from "../../../contant/IntefaceContaint";
-import { requestGetCategorylAll } from "../ProductCustomerApi";
+import { requestGetCategorylAllByParentId } from "../ProductCustomerApi";
 import {
   CategoryAdmin,
   Material,
@@ -39,7 +39,7 @@ export const incrementAsyncFilter = createAsyncThunk(
   "Filter/getImage",
   async () => {
     const resCategory: ResultApi<CategoryAdmin[]> =
-      await requestGetCategorylAll();
+      await requestGetCategorylAllByParentId();
     const resSize: ResultApi<OptionSize[]> = await requestGetSizeAll();
     const resColor: ResultApi<OptionColor[]> = await requestGetColorAll();
     const resTag: ResultApi<Tag[]> = await requestGetTagAll();

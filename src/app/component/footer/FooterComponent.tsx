@@ -66,7 +66,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
-      height: 300,
     },
     containerInfoCompany: {
       width: "30%",

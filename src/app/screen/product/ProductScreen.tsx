@@ -3,6 +3,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Checkbox,
+  Chip,
   Collapse,
   createStyles,
   FormControlLabel,
@@ -13,6 +14,7 @@ import {
   Slider,
   TablePagination,
   Theme,
+  Typography,
 } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import { useEffect, useState } from "react";
@@ -21,8 +23,46 @@ import ProductItemComponent from "../../component/product_item/ProductItemCompon
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
-import { GetProductDto } from "./ProductCustomerApi";
+import {
+  FilterPayloadProductDto,
+  FilterProductDto,
+} from "./ProductCustomerApi";
 import { incrementAsyncProduct } from "./slice/ProductCustomerSlice";
+import { incrementAsyncFilter } from "./slice/FilterValueSlice";
+
+const RenderChipFilter = (params: {
+  keyValue: string;
+  arrayFind: any[];
+  listId: any[];
+  onDelete: (id: number) => void;
+  color: string;
+}) => {
+  const { arrayFind, keyValue, listId, onDelete, color } = params;
+  return (
+    <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
+      {listId.length > 0 && (
+        <Typography
+          variant="caption"
+          style={{ color: color, fontWeight: "bolder" }}
+        >
+          {keyValue ? keyValue : "Fvalue"} {":"}
+        </Typography>
+      )}
+      {listId.map((e, index) => {
+        const value = arrayFind.find((el: any) => el.id === e);
+        return (
+          <Chip
+            label={`${value ? value[keyValue] : ""}`}
+            onDelete={() => onDelete(e)}
+            variant="outlined"
+            key={index}
+            style={{ marginLeft: 5, color: color }}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -123,18 +163,37 @@ const ProductScreen = () => {
   ).isLoading;
   const dataFilter = useAppSelector((state) => state.filterCustomer).data;
   const [selectedParent, setSeletedParent] = useState<Number[]>([]);
-  const [payload, setPayLoad] = useState<GetProductDto>({
+  const [payload, setPayLoad] = useState<FilterPayloadProductDto>({
     page: 0,
     size: 10,
+    listCategoryId: [],
+    listColorId: [],
+    listMaterialId: [],
+    listSizeId: [],
+    listTagId: [],
   });
 
   useEffect(() => {
-    getData();
+    const timer = setTimeout(() => {
+      getData();
+    }, 2000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payload]);
 
+  useEffect(() => {
+    if (dataFilter.categories?.length === 0) {
+      dispatch(incrementAsyncFilter());
+    }
+  }, []);
+
   const getData = async () => {
-    dispatch(incrementAsyncProduct(payload));
+    const payloadGetList: FilterProductDto = {
+      ...payload,
+      topPrice: value[1],
+      bottomPrice: value[0],
+    };
+    dispatch(incrementAsyncProduct(payloadGetList));
   };
 
   const rangeSelector = (event: any, newValue: any) => {
@@ -149,6 +208,7 @@ const ProductScreen = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setPayLoad({
+      ...payload,
       page: 0,
       size: parseInt(event.target.value, 10),
     });
@@ -158,6 +218,25 @@ const ProductScreen = () => {
     const res = selectedParent.find((e) => e === id);
     if (res) setSeletedParent(selectedParent.filter((e) => e !== id));
     else setSeletedParent(selectedParent.concat([id]));
+  };
+
+  const onChangeValueFilter = (params: {
+    key: keyof FilterPayloadProductDto;
+    status?: boolean;
+    id: number;
+  }) => {
+    const { key, status, id } = params;
+    let newArray: any = payload[key];
+    if (status) {
+      newArray = newArray.concat([id]);
+    } else {
+      newArray = newArray.filter((e: number) => e !== id);
+    }
+    const newData = {
+      ...payload,
+      [key]: newArray,
+    };
+    setPayLoad(newData);
   };
 
   return (
@@ -193,8 +272,8 @@ const ProductScreen = () => {
                     </ListItem>
                     <Collapse in={isSelectParent} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        {dataFilter?.categories &&
-                          dataFilter?.categories.map((val, index) => {
+                        {value?.categoryChildren &&
+                          value?.categoryChildren.map((val, index) => {
                             return (
                               <ListItem
                                 button
@@ -202,7 +281,32 @@ const ProductScreen = () => {
                                 style={{ marginLeft: 10 }}
                                 key={index}
                               >
-                                <ListItemText primary={`${val.categoryName}`} />
+                                <FormControlLabel
+                                  aria-label="Acknowledge"
+                                  control={
+                                    <Checkbox
+                                      checked={
+                                        payload.listCategoryId.find(
+                                          (ex) => ex === val.id
+                                        )
+                                          ? true
+                                          : false
+                                      }
+                                      onChange={(
+                                        event: any,
+                                        checked: boolean
+                                      ) => {
+                                        onChangeValueFilter({
+                                          key: "listCategoryId",
+                                          status: checked,
+                                          id: val.id,
+                                        });
+                                      }}
+                                    />
+                                  }
+                                  label={`${val.categoryName}`}
+                                  key={index}
+                                />
                               </ListItem>
                             );
                           })}
@@ -261,7 +365,22 @@ const ProductScreen = () => {
                 return (
                   <FormControlLabel
                     aria-label="Acknowledge"
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        onChange={(event: any, checked: boolean) => {
+                          onChangeValueFilter({
+                            key: "listColorId",
+                            status: checked,
+                            id: e.id,
+                          });
+                        }}
+                        checked={
+                          payload.listColorId.find((ex) => ex === e.id)
+                            ? true
+                            : false
+                        }
+                      />
+                    }
                     label={`${e.colorName}`}
                     key={index}
                   />
@@ -286,9 +405,22 @@ const ProductScreen = () => {
                 return (
                   <FormControlLabel
                     aria-label="Acknowledge"
-                    onClick={(event) => event.stopPropagation()}
-                    onFocus={(event) => event.stopPropagation()}
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        onChange={(event: any, checked: boolean) => {
+                          onChangeValueFilter({
+                            key: "listSizeId",
+                            status: checked,
+                            id: e.id,
+                          });
+                        }}
+                        checked={
+                          payload.listSizeId.find((ex) => ex === e.id)
+                            ? true
+                            : false
+                        }
+                      />
+                    }
                     label={`${e.sizeName}`}
                     key={index}
                   />
@@ -313,9 +445,22 @@ const ProductScreen = () => {
                 return (
                   <FormControlLabel
                     aria-label="Acknowledge"
-                    onClick={(event) => event.stopPropagation()}
-                    onFocus={(event) => event.stopPropagation()}
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        onChange={(event: any, checked: boolean) => {
+                          onChangeValueFilter({
+                            key: "listMaterialId",
+                            status: checked,
+                            id: e.id,
+                          });
+                        }}
+                        checked={
+                          payload.listMaterialId.find((ex) => ex === e.id)
+                            ? true
+                            : false
+                        }
+                      />
+                    }
                     label={`${e.materialName}`}
                     key={index}
                   />
@@ -340,9 +485,22 @@ const ProductScreen = () => {
                 return (
                   <FormControlLabel
                     aria-label="Acknowledge"
-                    onClick={(event) => event.stopPropagation()}
-                    onFocus={(event) => event.stopPropagation()}
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        onChange={(event: any, checked: boolean) => {
+                          onChangeValueFilter({
+                            key: "listTagId",
+                            status: checked,
+                            id: e.id,
+                          });
+                        }}
+                        checked={
+                          payload.listTagId.find((ex) => ex === e.id)
+                            ? true
+                            : false
+                        }
+                      />
+                    }
                     label={`${e.tagName}`}
                     key={index}
                   />
@@ -355,8 +513,80 @@ const ProductScreen = () => {
 
       <div className={className.image_banner}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <p className={className.textTitle}>Sản phẩm mới</p>
+          <p className={className.textTitle}>Sản phẩm</p>
         </div>
+        <div>
+          {payload.listCategoryId.map((e, index) => {
+            return (
+              <Chip
+                label={`${e}`}
+                onDelete={() => {
+                  onChangeValueFilter({
+                    key: "listMaterialId",
+                    status: false,
+                    id: e,
+                  });
+                }}
+                color="primary"
+                variant="outlined"
+                key={index}
+                style={{ marginLeft: 5 }}
+              />
+            );
+          })}
+        </div>
+        <RenderChipFilter
+          arrayFind={dataFilter.colors ?? []}
+          keyValue={"colorName"}
+          listId={payload.listColorId}
+          onDelete={(id: number) => {
+            onChangeValueFilter({
+              key: "listColorId",
+              status: false,
+              id: id,
+            });
+          }}
+          color={"red"}
+        />
+        <RenderChipFilter
+          arrayFind={dataFilter.sizes ?? []}
+          keyValue={"sizeName"}
+          listId={payload.listSizeId}
+          onDelete={(id: number) => {
+            onChangeValueFilter({
+              key: "listSizeId",
+              status: false,
+              id: id,
+            });
+          }}
+          color={colors.gray59}
+        />
+        <RenderChipFilter
+          arrayFind={dataFilter.materials ?? []}
+          keyValue={"materialName"}
+          listId={payload.listMaterialId}
+          onDelete={(id: number) => {
+            onChangeValueFilter({
+              key: "listMaterialId",
+              status: false,
+              id: id,
+            });
+          }}
+          color={colors.orange}
+        />
+        <RenderChipFilter
+          arrayFind={dataFilter.tags ?? []}
+          keyValue={"tagName"}
+          listId={payload.listTagId}
+          onDelete={(id: number) => {
+            onChangeValueFilter({
+              key: "listTagId",
+              status: false,
+              id: id,
+            });
+          }}
+          color={"green"}
+        />
         <div className={className.listImage}>
           {dataProduct.map((value, idx) => {
             return (

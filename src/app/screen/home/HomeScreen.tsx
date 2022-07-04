@@ -1,4 +1,11 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import {
+  createStyles,
+  IconButton,
+  makeStyles,
+  Theme,
+  Typography,
+} from "@material-ui/core";
+import { ArrowForwardIos } from "@material-ui/icons";
 import { useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
 import LoadingProgress from "../../component/LoadingProccess";
@@ -8,12 +15,11 @@ import {
   LIST_IMAGE_BANNER_SECOND,
 } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { colors } from "../../utils/color";
-import { incrementAsyncHome } from "./slice/HomeSlice";
-import ReactLoading from "react-loading";
-import { incrementAsyncFilter } from "../product/slice/FilterValueSlice";
-import { incrementAsyncCart } from "../cart/slice/CartSlice";
 import { getIdAccount } from "../../service/StorageService";
+import { colors } from "../../utils/color";
+import { incrementAsyncCart } from "../cart/slice/CartSlice";
+import { incrementAsyncFilter } from "../product/slice/FilterValueSlice";
+import { incrementAsyncHome } from "./slice/HomeSlice";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -27,13 +33,18 @@ const useStyles = makeStyles((theme: Theme) =>
     listImage: {
       display: "flex",
       justifyContent: "space-between",
+      marginTop: 20,
+      maxHeight: 500,
+      minHeight: 450,
     },
     textTitle: {
       paddingTop: 5,
       paddingBottom: 10,
       fontWeight: "bold",
-      fontSize: 20,
-      textAlign: "center",
+      fontSize: 24,
+      textAlign: "left",
+      fontFamily: ["sans-serif"].join(","),
+      color: colors.gray59,
     },
     root: {
       position: "absolute",
@@ -43,6 +54,13 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       display: "flex",
       justifyContent: "center",
+      alignItems: "center",
+    },
+    containerTitle: {
+      borderBottomColor: colors.grayC4,
+      borderBottomWidth: 0.5,
+      display: "flex",
+      justifyContent: "space-between",
       alignItems: "center",
     },
   })
@@ -71,7 +89,7 @@ const HomeScreen = () => {
   };
   return (
     <div className={className.container}>
-      <div style={{ width: "100%", height: 500 }}>
+      <div style={{ width: "100%" }}>
         <Carousel
           autoPlay
           animation="fade"
@@ -80,14 +98,34 @@ const HomeScreen = () => {
         >
           {LIST_IMAGE_BANNER.map((e, index) => {
             return (
-              <img src={e.url} alt="" style={{ width: "100%" }} key={index} />
+              <img
+                src={e.url}
+                alt=""
+                style={{ width: "100%", minWidth: 1000 }}
+                key={index}
+              />
             );
           })}
         </Carousel>
       </div>
       {data?.listBestSale && data?.listBestSale.length > 0 && (
-        <div style={{ width: "100%", height: 500 }}>
-          <p className={className.textTitle}>Sản phẩm bán chạy</p>
+        <div
+          style={{
+            width: "100%",
+            padding: 10,
+            scrollbarWidth: "auto",
+            marginTop: 10,
+          }}
+        >
+          <div className={className.containerTitle}>
+            <p className={className.textTitle}>Sản phẩm bán chạy</p>
+            <IconButton>
+              <Typography color="inherit">Xem thêm</Typography>
+              <ArrowForwardIos
+                style={{ width: 15, height: 15, marginLeft: 5 }}
+              />
+            </IconButton>
+          </div>
           <Carousel
             autoPlay
             animation="slide"
@@ -116,7 +154,6 @@ const HomeScreen = () => {
       <div
         style={{
           width: "100%",
-          paddingBottom: 20,
           paddingTop: 20,
         }}
       >
@@ -135,7 +172,13 @@ const HomeScreen = () => {
         </Carousel>
       </div>
       <div style={{ width: "100%" }}>
-        <p className={className.textTitle}>Sản phẩm mới</p>
+        <div className={className.containerTitle}>
+          <p className={className.textTitle}>Sản phẩm mới</p>
+          <IconButton>
+            <Typography color="inherit">Xem thêm</Typography>
+            <ArrowForwardIos style={{ width: 15, height: 15, marginLeft: 5 }} />
+          </IconButton>
+        </div>
         <Carousel
           autoPlay
           animation="slide"

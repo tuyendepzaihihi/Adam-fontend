@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  GetProductDto,
-  requestGetProductCustomer,
-} from "../ProductCustomerApi";
-import {
   DataState,
   ProductAdmin,
   ResultApi,
 } from "../../../contant/IntefaceContaint";
+import {
+  FilterProductDto,
+  requestGetProductCustomer,
+} from "../ProductCustomerApi";
 interface ProductCustomer extends DataState<ProductAdmin[]> {
   count?: number;
 }
@@ -20,7 +20,7 @@ const initialState: ProductCustomer = {
 
 export const incrementAsyncProduct = createAsyncThunk(
   "Product/getImage",
-  async (params: GetProductDto) => {
+  async (params: FilterProductDto) => {
     const res: ResultApi<{ content: ProductAdmin[]; totalElements: number }> =
       await requestGetProductCustomer(params);
     return res;

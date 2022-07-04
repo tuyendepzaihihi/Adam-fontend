@@ -147,9 +147,12 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
       borderColor: colors.grayC4,
       borderWidth: 0.8,
       borderRadius: 5,
+      marginLeft: 5,
+      marginRight: 5,
     },
     containerQuantity: {
       paddingLeft: 10,
+      display: "flex",
     },
     containerInfoCart: {
       paddingLeft: 5,

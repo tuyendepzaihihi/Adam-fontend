@@ -76,9 +76,8 @@ export const cartSlice = createSlice({
           if (e.detailProduct.id === item?.detailProduct.id) {
             return {
               ...e,
-              quantity: e.quantity + item.quantity,
-              totalPrice:
-                (e.quantity + item.quantity) * e.detailProduct.priceExport,
+              quantity: item.quantity,
+              totalPrice: item.quantity * e.detailProduct.priceExport,
             };
           }
           return e;
