@@ -1,11 +1,4 @@
-import {
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Switch,
-  Tooltip,
-} from "@material-ui/core";
+import { Button, IconButton, Menu, MenuItem, Tooltip } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -15,18 +8,19 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
-import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
-import { headCellsBranch } from "../../contant/ContaintDataAdmin";
+import LoadingProgress from "../../component/LoadingProccess";
+import { headCellsOrderAdmin } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { Branch } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { FunctionUtil, Order } from "../../utils/function";
+import { OrderDto } from "../../screen/order/slice/OrderSlice";
+import { formatPrice, FunctionUtil, Order } from "../../utils/function";
+import EnhancedTableToolbarOrder from "./components/EnhancedTableToolbar";
 import FormDialog from "./components/FormDialog";
-import { deleteBranch, updateBranch } from "./slice/OrderAdminSlice";
+import { incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,20 +52,32 @@ export default function OrderScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Branch>("id");
+  const [orderBy, setOrderBy] = React.useState<keyof OrderDto>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
-    item: Branch;
+    item: OrderDto;
   }>(null);
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.branchAdmin);
-  const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+  const { data, isLoading } = useAppSelector((state) => state.orderAdmin);
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getData = async () => {
+    try {
+      await dispatch(
+        incrementAsyncOrderAdminAdmin({ page: page, size: rowsPerPage })
+      );
+    } catch (e) {}
+  };
+
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
@@ -79,7 +85,7 @@ export default function OrderScreen() {
   };
 
   const createSortHandler =
-    (property: keyof Branch) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof OrderDto) => (event: React.MouseEvent<unknown>) => {
       const isAsc = orderBy === property && order === "asc";
       setOrder(isAsc ? "desc" : "asc");
       setOrderBy(property);
@@ -125,20 +131,6 @@ export default function OrderScreen() {
     >
       <MenuItem
         onClick={() => {
-          console.log({ anchorElData });
-        }}
-        button
-      >
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon color="secondary" />
-          </IconButton>
-        </Tooltip>
-        <p>Xoá</p>
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          setTypeDialog(TYPE_DIALOG.UPDATE);
           setOpen(!open);
         }}
       >
@@ -147,7 +139,7 @@ export default function OrderScreen() {
             <UpdateIcon color="primary" />
           </IconButton>
         </Tooltip>
-        <p>Cập nhật</p>
+        <p>Xem chi tiết</p>
       </MenuItem>
     </Menu>
   );
@@ -155,20 +147,11 @@ export default function OrderScreen() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          onCreate={() => {
-            setTypeDialog(TYPE_DIALOG.CREATE);
-            setOpen(!open);
-          }}
-          onDelete={() => {
-            dispatch(deleteBranch({ array: selected }));
-            setSelected([]);
-          }}
-          label={"Quản lý Branch"}
-          isNonSearchTime={true}
-        />
         <TableContainer>
+          <EnhancedTableToolbarOrder
+            label="Đơn hàng"
+            numSelected={selected.length}
+          />
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -184,10 +167,10 @@ export default function OrderScreen() {
                 setSelected(FunctionUtil.handleSelectAllClick(event, data));
               }}
               rowCount={data.length}
-              headCells={headCellsBranch}
+              headCells={headCellsOrderAdmin}
               createSortHandler={createSortHandler}
             />
-            <TableBody>
+            <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&
                 FunctionUtil.stableSort(
                   data,
@@ -229,23 +212,13 @@ export default function OrderScreen() {
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.branch_name}</TableCell>
-
+                        <TableCell align="right">{row.fullName}</TableCell>
+                        <TableCell align="right">{row.phoneNumber}</TableCell>
                         <TableCell align="right">
-                          <Switch
-                            checked={row.status === 1 ? true : false}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                status: row.status === 1 ? 0 : 1,
-                              };
-                              dispatch(updateBranch({ item: item }));
-                            }}
-                            name={labelId}
-                            inputProps={{ "aria-label": labelId }}
-                            color="primary"
-                          />
+                          {formatPrice(row.totalPrice ?? 0)}đ
                         </TableCell>
+
+                        <TableCell align="right">{row.status}</TableCell>
                         <TableCell align="right">
                           <Button
                             onClick={(event) => {
@@ -262,6 +235,11 @@ export default function OrderScreen() {
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
+              )}
+              {data?.length === 0 && (
+                <div style={{ position: "absolute", top: 0, width: "100%" }}>
+                  <EmptyComponent />
+                </div>
               )}
             </TableBody>
           </Table>
@@ -281,9 +259,8 @@ export default function OrderScreen() {
         open={open}
         handleClose={handleClose}
         anchorElData={anchorElData}
-        type={typeDialog}
-        data={data}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

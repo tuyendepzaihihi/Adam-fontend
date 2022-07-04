@@ -15,6 +15,7 @@ import {
   VoucherAdmin,
 } from "./IntefaceContaint";
 import R from "../assets/R";
+import { OrderDto } from "../screen/order/slice/OrderSlice";
 export const rows_example_user: UserAdminInteface[] = [
   {
     id: 1,
@@ -302,6 +303,34 @@ export const headCellsBranch: HeadCell<Branch>[] = [
     numeric: true,
     disablePadding: false,
     label: "Branch name",
+  },
+  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+];
+
+export const headCellsOrderAdmin: HeadCell<OrderDto>[] = [
+  {
+    id: "id",
+    numeric: false,
+    disablePadding: true,
+    label: "Id",
+  },
+  {
+    id: "fullName",
+    numeric: true,
+    disablePadding: false,
+    label: "Tên người nhận",
+  },
+  {
+    id: "phoneNumber",
+    numeric: true,
+    disablePadding: false,
+    label: "Số điện thoại",
+  },
+  {
+    id: "totalPrice",
+    numeric: true,
+    disablePadding: false,
+    label: "Tổng tiền hàng",
   },
   { id: "status", numeric: true, disablePadding: false, label: "Active" },
 ];

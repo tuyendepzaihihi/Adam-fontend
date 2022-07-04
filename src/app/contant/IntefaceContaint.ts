@@ -144,18 +144,6 @@ export interface DetailProductAdmin {
   createDate: string;
 }
 
-export interface OrderAdmin {
-  id: number;
-  account_id: number;
-  status: number;
-  create_date: string;
-  sale_price: number;
-  amount_price: number;
-  total_price: number;
-  phone_number: string;
-  full_name: string;
-}
-
 export interface DetailOrderAdmin {
   id: number;
   quantity: number;

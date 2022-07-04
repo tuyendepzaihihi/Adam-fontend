@@ -18,8 +18,10 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
+import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import LoadingProgress from "../../component/LoadingProccess";
 import { headCells } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
 import { UserAdmin } from "../../contant/IntefaceContaint";
@@ -74,7 +76,7 @@ export default function UserScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.userAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.userAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
 
   useEffect(() => {
@@ -199,7 +201,7 @@ export default function UserScreen() {
               headCells={headCells}
               createSortHandler={createSortHandler}
             />
-            <TableBody>
+            <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&
                 FunctionUtil.stableSort(
                   data,
@@ -277,6 +279,11 @@ export default function UserScreen() {
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
+              {data?.length === 0 && (
+                <div style={{ position: "absolute", top: 0, width: "100%" }}>
+                  <EmptyComponent />
+                </div>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -298,6 +305,7 @@ export default function UserScreen() {
         type={typeDialog}
         data={data}
       /> */}
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

@@ -22,6 +22,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
+import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import LoadingProgress from "../../component/LoadingProccess";
@@ -232,7 +233,7 @@ export default function CategoryScreen() {
                 </>
               }
             />
-            <TableBody>
+            <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&
                 data
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -332,6 +333,11 @@ export default function CategoryScreen() {
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
+              )}
+              {data?.length === 0 && (
+                <div style={{ position: "absolute", top: 0, width: "100%" }}>
+                  <EmptyComponent />
+                </div>
               )}
             </TableBody>
           </Table>

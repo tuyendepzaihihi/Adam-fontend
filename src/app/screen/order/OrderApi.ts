@@ -1,17 +1,21 @@
 import { ApiClient } from "../../service/ApiService";
 // interface
+export interface GetOrderDto {
+  account_id: number;
+  status: number;
+}
 // function
-export const requestGetCartAll = (payload: { account_id: number }) =>
-  ApiClient.get("/cart/findByAccountId", payload);
+export const requestGetOrderAll = (payload: GetOrderDto) =>
+  ApiClient.get("user/order/findByAccountId", { params: payload });
 
-export const requestPutUpdateCart = (payload: any) =>
-  ApiClient.put("/cart/update", payload);
+export const requestPutUpdateorder = (payload: any) =>
+  ApiClient.put("/order/update", payload);
 
-export const requestDeleteCart = (payload: { cart_id: number }) =>
-  ApiClient.delete("/cart/delete", { params: payload });
+export const requestDeleteorder = (payload: { order_id: number }) =>
+  ApiClient.delete("/order/delete", { params: payload });
 
-export const requestPostCreateCart = (payload: any) =>
-  ApiClient.post("/cart/create", payload);
+export const requestPostCreateorder = (payload: any) =>
+  ApiClient.post("/order/create", payload);
 
 export const requestGetOrderDetail = (payload: { order_id: number }) =>
   ApiClient.get("/order/detail", payload);

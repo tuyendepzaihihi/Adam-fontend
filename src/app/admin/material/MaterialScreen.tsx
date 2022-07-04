@@ -18,6 +18,7 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
+import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import LoadingProgress from "../../component/LoadingProccess";
@@ -222,7 +223,7 @@ export default function MaterialScreen() {
               headCells={headCellsMaterial}
               createSortHandler={createSortHandler}
             />
-            <TableBody>
+            <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&
                 FunctionUtil.stableSort(
                   data,
@@ -287,6 +288,11 @@ export default function MaterialScreen() {
                       </TableRow>
                     );
                   })}
+              {data?.length === 0 && (
+                <div style={{ position: "absolute", top: 0, width: "100%" }}>
+                  <EmptyComponent />
+                </div>
+              )}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />

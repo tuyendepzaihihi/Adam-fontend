@@ -5,9 +5,10 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppSelector } from "../../hooks";
 import { colors } from "../../utils/color";
+import { DEFINE_ORDER, TYPE_ORDER } from "./components/ItemOrderComponent";
 import ListOrderComponent from "./components/ListOrderComponent";
 
 function TabPanel(props: {
@@ -87,7 +88,6 @@ export default function OrderScreen() {
     <div className={classes.root}>
       <Typography className={classes.heading}>Đơn hàng của bạn</Typography>
       <AppBar position="static" color="default">
-        {/* <div /> */}
         <Tabs
           value={value}
           onChange={handleChange}
@@ -101,7 +101,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Chờ xác nhận
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(0)}
@@ -110,7 +110,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Đã xác nhận
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(1)}
@@ -119,7 +119,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Đang vận chuyển
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(2)}
@@ -128,7 +128,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Đã tới nơi
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(3)}
@@ -137,7 +137,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Thành công
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(4)}
@@ -146,7 +146,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Huỷ
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(5)}
@@ -155,7 +155,7 @@ export default function OrderScreen() {
             label={
               <div>
                 Đơn hoàn lại
-                <div className={classes.containerCountTab}>{5}</div>
+                {/* <div className={classes.containerCountTab}>{5}</div> */}
               </div>
             }
             {...a11yProps(6)}
@@ -163,25 +163,60 @@ export default function OrderScreen() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <ListOrderComponent data={dataOrder.pedding.data} />
+        <ListOrderComponent
+          data={dataOrder.pedding.data}
+          status={TYPE_ORDER.PENDING}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <ListOrderComponent data={dataOrder.confirm.data} />
+        <ListOrderComponent
+          data={dataOrder.confirm.data}
+          status={TYPE_ORDER.CONFIRM}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <ListOrderComponent data={dataOrder.delivery.data} />
+        <ListOrderComponent
+          data={dataOrder.delivery.data}
+          status={TYPE_ORDER.DELIVETY}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <ListOrderComponent data={dataOrder.adrived.data} />
+        <ListOrderComponent
+          data={dataOrder.adrived.data}
+          status={TYPE_ORDER.RECEIVED}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <ListOrderComponent data={dataOrder.done.data} />
+        <ListOrderComponent
+          data={dataOrder.done.data}
+          status={TYPE_ORDER.DONE}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <ListOrderComponent data={dataOrder.cancel.data} />
+        <ListOrderComponent
+          data={dataOrder.cancel.data}
+          status={TYPE_ORDER.CANCEL}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
       <TabPanel value={value} index={6}>
-        <ListOrderComponent data={dataOrder.roll_back.data} />
+        <ListOrderComponent
+          data={dataOrder.roll_back.data}
+          status={TYPE_ORDER.DELAY}
+          loading={dataOrder.pedding.isLoading}
+          value={value}
+        />
       </TabPanel>
     </div>
   );

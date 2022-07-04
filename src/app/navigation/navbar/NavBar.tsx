@@ -13,7 +13,7 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
 import R from "../../assets/R";
@@ -29,9 +29,11 @@ import {
 import {
   changeLoading,
   deleteItemCart,
+  incrementAsyncCart,
   updateQuantity,
 } from "../../screen/cart/slice/CartSlice";
-import { getAdmin } from "../../service/StorageService";
+import { incrementAsyncFilter } from "../../screen/product/slice/FilterValueSlice";
+import { getAdmin, getIdAccount } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
 import { useWindowSize } from "../../utils/helper";
@@ -62,6 +64,18 @@ export default function NavBar() {
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+    getDataInit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getDataInit = async () => {
+    dispatch(incrementAsyncFilter());
+    if (getIdAccount()) {
+      await dispatch(incrementAsyncCart());
+    }
+  };
+
   const handleCartOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (token) {
       setCartMoreAnchorEl(event.currentTarget);

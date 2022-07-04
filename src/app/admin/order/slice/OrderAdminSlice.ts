@@ -1,19 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_BRANCH } from "../../../contant/ContaintDataAdmin";
-import { Branch, DataState } from "../../../contant/IntefaceContaint";
+import { DataState, ResultApi } from "../../../contant/IntefaceContaint";
+import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { createNotification } from "../../../utils/MessageUtil";
+import { GetOrderAdminDto, requestGetOrderAdminAll } from "../OrderApi";
 
-const initialState: DataState<Branch[]> = {
-  data: LIST_BRANCH,
+const initialState: DataState<OrderDto[]> = {
+  data: [],
   isError: false,
   isLoading: false,
 };
 
-export const incrementAsyncBranchAdmin = createAsyncThunk(
+export const incrementAsyncOrderAdminAdmin = createAsyncThunk(
   "order/admin",
-  async () => {
+  async (payload: GetOrderAdminDto) => {
     // call api here
-    return true;
+    const res: ResultApi<{ content: OrderDto[]; totalPages: number }> =
+      await requestGetOrderAdminAll(payload);
+    return res;
   }
 );
 
@@ -21,22 +24,22 @@ export const orderAdminSlice = createSlice({
   name: "order/admin",
   initialState,
   reducers: {
-    updateBranch: (state, action) => {
+    updateOrderAdmin: (state, action) => {
       let oldArray = state.data;
-      let item: Branch = action.payload?.item;
+      let item: OrderDto = action.payload?.item;
       state.data = oldArray?.map((e) => {
         if (e.id === item.id) return item;
         else return e;
       });
     },
-    createBranch: (state, action) => {
-      let item: Branch = action.payload?.item;
+    createOrderAdmin: (state, action) => {
+      let item: OrderDto = action.payload?.item;
       state.data = [item].concat(state.data);
     },
-    deleteBranch: (state, action) => {
+    deleteOrderAdmin: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: OrderDto[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
@@ -48,21 +51,21 @@ export const orderAdminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(incrementAsyncBranchAdmin.pending, (state) => {
+      .addCase(incrementAsyncOrderAdminAdmin.pending, (state) => {
         state.isError = false;
         state.isLoading = true;
       })
-      .addCase(incrementAsyncBranchAdmin.fulfilled, (state, action) => {
+      .addCase(incrementAsyncOrderAdminAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = [];
+        state.data = action.payload.data.content;
       })
-      .addCase(incrementAsyncBranchAdmin.rejected, (state) => {
+      .addCase(incrementAsyncOrderAdminAdmin.rejected, (state) => {
         state.isError = true;
         state.isLoading = false;
       });
   },
 });
-export const { createBranch, updateBranch, deleteBranch } =
+export const { createOrderAdmin, updateOrderAdmin, deleteOrderAdmin } =
   orderAdminSlice.actions;
 export default orderAdminSlice.reducer;

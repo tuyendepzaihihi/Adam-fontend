@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import BranchAdminSlice from "./admin/branch/slice/BranchAdminSlice";
 import MaterialAdminSlice from "./admin/material/slice/MaterialAdminSlice";
 import OptionAdminSlice from "./admin/option/slice/OptionSizeSlice";
 import OptionColorSlice from "./admin/option/slice/OptionColorSlice";
@@ -17,6 +16,7 @@ import ProductAdminSlice from "./admin/product/slice/ProductAdminSlice";
 import AddressSlice from "./screen/setting/address/slice/AddressSlice";
 import ProvinceSlice from "./screen/setting/address/slice/ProvinceSlice";
 import AccountSlice from "./screen/setting/account/slice/AccountSlice";
+import OrderAdminSlice from "./admin/order/slice/OrderAdminSlice";
 
 export const store = configureStore({
   reducer: {
@@ -30,7 +30,6 @@ export const store = configureStore({
     orderUser: OrderSlice,
     materialAdmin: MaterialAdminSlice,
     tagAdmin: TagAdminSlice,
-    branchAdmin: BranchAdminSlice,
     optionAdmin: OptionAdminSlice,
     productAdmin: ProductAdminSlice,
     colorAdmin: OptionColorSlice,
@@ -38,6 +37,7 @@ export const store = configureStore({
     filterCustomer: FilterValueSlice,
     provinceSlice: ProvinceSlice,
     userSlice: AccountSlice,
+    orderAdmin: OrderAdminSlice,
   },
 });
 

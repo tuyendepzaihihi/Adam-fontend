@@ -1,13 +1,19 @@
 import { Paper, TablePagination } from "@material-ui/core";
-import { ErrorOutline } from "@material-ui/icons";
-import { useState } from "react";
-import { OrderDto } from "../slice/OrderSlice";
+import { useEffect, useState } from "react";
+import EmptyComponent from "../../../component/EmptyComponent";
+import LoadingProgress from "../../../component/LoadingProccess";
+import { useAppDispatch } from "../../../hooks";
+import { getOrderInfo, OrderDto } from "../slice/OrderSlice";
 import ItemOrderComponent from "./ItemOrderComponent";
 interface Props {
   data: OrderDto[];
+  status: number;
+  loading?: boolean;
+  value: number;
 }
 const ListOrderComponent = (props: Props) => {
-  const { data } = props;
+  const { data, status, loading, value } = props;
+  const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -20,8 +26,20 @@ const ListOrderComponent = (props: Props) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, status]);
+
+  const getData = async () => {
+    try {
+      await dispatch(getOrderInfo({ status: status }));
+    } catch (e) {}
+  };
+
   return (
-    <>
+    <div style={{ position: "relative" }}>
       {data.length > 0 ? (
         <Paper>
           {data.map((e, index) => {
@@ -38,20 +56,10 @@ const ListOrderComponent = (props: Props) => {
           />
         </Paper>
       ) : (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 300,
-            flexDirection: "column",
-          }}
-        >
-          <p>Danh sách rỗng</p>
-          <ErrorOutline fontSize="large" style={{ width: 100, height: 100 }} />
-        </div>
+        <EmptyComponent />
       )}
-    </>
+      {loading && <LoadingProgress />}
+    </div>
   );
 };
 export default ListOrderComponent;

@@ -132,7 +132,7 @@ export default function MiniDrawer(props: Props) {
                 }}
                 style={{
                   backgroundColor:
-                    Number(selected) === index ? colors.grayC4 : colors.white,
+                    Number(selected) === index ? "royalblue" : colors.white,
                 }}
               >
                 <ListItemIcon>
@@ -140,8 +140,8 @@ export default function MiniDrawer(props: Props) {
                     style={{
                       color:
                         Number(selected) === index
-                          ? colors.black
-                          : colors.grayC4,
+                          ? colors.white
+                          : colors.gray59,
                     }}
                   />
                 </ListItemIcon>
@@ -149,7 +149,7 @@ export default function MiniDrawer(props: Props) {
                   primary={val.name}
                   style={{
                     color:
-                      Number(selected) === index ? colors.black : colors.grayC4,
+                      Number(selected) === index ? colors.white : colors.gray59,
                   }}
                 />
               </ListItem>

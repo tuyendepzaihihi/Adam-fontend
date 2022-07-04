@@ -11,9 +11,7 @@ import R from "../../../assets/R";
 import { ItemCart } from "../../../contant/Contant";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
-import { renderAddress } from "../../../utils/helper";
 import { OrderDto } from "../slice/OrderSlice";
-import TimeLineComponent from "./TimeLineComponent";
 
 interface Props {
   item: OrderDto;
@@ -22,11 +20,11 @@ interface Props {
 export const TYPE_ORDER = {
   PENDING: 1,
   CONFIRM: 2,
-  DELIVETY: 3,
-  ARIVED: 4,
+  RECEIVED: 3,
+  DELAY: 4,
   DONE: 5,
-  CANCEL: 6,
-  ROLL_BACK: 7,
+  CANCEL: 0,
+  DELIVETY: 7,
 };
 
 export const DEFINE_ORDER = {
@@ -45,11 +43,6 @@ export const DEFINE_ORDER = {
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
   },
-  [TYPE_ORDER.ARIVED]: {
-    title: "Đã tới nói",
-    icon: R.images.ic_voucher,
-    description: "Đơn của bạn đang đợi nhân viên xác nhận",
-  },
   [TYPE_ORDER.DONE]: {
     title: "Thành công",
     icon: R.images.ic_voucher,
@@ -60,14 +53,14 @@ export const DEFINE_ORDER = {
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
   },
-  [TYPE_ORDER.ROLL_BACK]: {
+  [TYPE_ORDER.DELAY]: {
     title: "Đơn trả",
     icon: R.images.ic_voucher,
-    description: "Đơn của bạn đang đợi nhân viên xác nhận",
+    description: "Đơn của bạn đã được hoàn trả",
   },
 };
 
-const ItemProduct = (props: { item?: ItemCart; inList?: boolean }) => {
+export const ItemProduct = (props: { item?: ItemCart; inList?: boolean }) => {
   const { item, inList } = props;
   const classes = useStyles();
   return (
@@ -146,26 +139,32 @@ export default function ItemOrderComponent(props: Props) {
                 borderTopColor: colors.grayC4,
                 borderTopWidth: 0.7,
                 marginBottom: 5,
-                // paddingLeft: 5,
+
                 display: "flex",
                 justifyContent: "space-between",
               }}
             >
-              <Typography className={classes.heading}>{item.id}</Typography>
+              <Typography className={classes.heading}>
+                {`${item.order_code}`.slice(0, 10)}
+              </Typography>
               <Typography className={classes.secondaryHeading}>
                 {item.createDate}
               </Typography>
             </div>
-            {/* <div style={{ paddingLeft: 20 }}>
-              {item.products?.map((e, index) => {
+            <div style={{ paddingLeft: 20 }}>
+              {item.cartItems?.map((e, index) => {
                 return (
-                  <Typography key={index} className={classes.secondaryHeading}>
+                  <Typography
+                    key={index}
+                    className={classes.secondaryHeading}
+                    style={{ fontSize: 14 }}
+                  >
                     {e.detailProduct.product.productName} |{" "}
                     {formatPrice(e.detailProduct.priceExport)}đ | x{e.quantity}
                   </Typography>
                 );
               })}
-            </div> */}
+            </div>
             <Typography className={classes.heading}>
               Tổng tiền: {formatPrice(item.totalPrice)}đ
             </Typography>
@@ -173,12 +172,6 @@ export default function ItemOrderComponent(props: Props) {
         </AccordionSummary>
         <AccordionDetails className={classes.detailInformation}>
           {/* <TimeLineComponent list={item.history} /> */}
-          {/* <Typography className={classes.heading}>
-            {DEFINE_ORDER[item.status].title}
-          </Typography>
-          <Typography className={classes.secondaryHeading}>
-            {DEFINE_ORDER[item.status].description}
-          </Typography> */}
           <div style={{ paddingTop: 10 }}>
             <div style={{ display: "flex", paddingTop: 5 }}>
               <LocationOn />
@@ -186,17 +179,17 @@ export default function ItemOrderComponent(props: Props) {
                 <Typography className={classes.heading}>
                   {item.fullName} | {item.phoneNumber}
                 </Typography>
-                {/* <Typography className={classes.secondaryHeading}>
-                  {renderAddress(item.address)}
-                </Typography> */}
+                <Typography className={classes.secondaryHeading}>
+                  {`${item.addressDetail} | ${item.address.ward.name} | ${item.address.district.name} | ${item.address.province.name}`}
+                </Typography>
               </div>
             </div>
           </div>
-          {/* <div className={classes.containerListProducts}>
-            {item.products?.map((e, index) => {
+          <div className={classes.containerListProducts}>
+            {item.cartItems?.map((e, index) => {
               return <ItemProduct item={e} key={index} inList={true} />;
             })}
-          </div> */}
+          </div>
           <div style={{ display: "flex" }}>
             <div>
               <Typography className={classes.heading}>

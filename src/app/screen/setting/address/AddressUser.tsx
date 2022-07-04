@@ -1,6 +1,7 @@
 import { Button, IconButton, makeStyles } from "@material-ui/core";
 import { EditLocation, LocationOn } from "@material-ui/icons";
 import { useEffect, useState } from "react";
+import EmptyComponent from "../../../component/EmptyComponent";
 import LoadingProgress from "../../../component/LoadingProccess";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -116,6 +117,7 @@ const AddressUser = () => {
       {data?.map((e, index) => {
         return <div key={index}>{ItemAddress({ item: e })}</div>;
       })}
+      {data.length === 0 && <EmptyComponent />}
 
       <FormDialog
         open={open}

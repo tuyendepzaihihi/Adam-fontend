@@ -19,6 +19,7 @@ import { Delete } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useState } from "react";
+import EmptyComponent from "../../../component/EmptyComponent";
 
 import EnhancedTableHead from "../../../component/EnhancedTableHead";
 import { headCellsCategory } from "../../../contant/ContaintDataAdmin";
@@ -222,7 +223,7 @@ export default function CategoryChildrenComponent(props: Props) {
               headCells={headCellsCategory}
               createSortHandler={createSortHandler}
             />
-            <TableBody>
+            <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&
                 data
 
@@ -294,6 +295,11 @@ export default function CategoryChildrenComponent(props: Props) {
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
+              )}
+              {data?.length === 0 && (
+                <div style={{ position: "absolute", top: 0, width: "100%" }}>
+                  <EmptyComponent />
+                </div>
               )}
             </TableBody>
           </Table>

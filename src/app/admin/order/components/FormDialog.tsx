@@ -3,60 +3,78 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
+  Typography,
 } from "@material-ui/core";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import TextInputComponent from "../../../component/TextInputComponent";
-import { TYPE_DIALOG } from "../../../contant/Contant";
-import { Branch } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
-import { createBranch, updateBranch } from "../slice/OrderAdminSlice";
+import { ItemProduct } from "../../../screen/order/components/ItemOrderComponent";
+import { OrderDto } from "../../../screen/order/slice/OrderSlice";
+import { colors } from "../../../utils/color";
+import { formatPrice } from "../../../utils/function";
 interface Props {
   open: any;
   handleClose: any;
-  anchorElData: any;
-  type: number;
-  data: Branch[];
+  anchorElData: { item: OrderDto } | null;
 }
-const validateBranch = Yup.object({
-  branch_name: Yup.string()
-    .required("Vui lòng nhập")
 
-    .trim(),
-});
-
-interface PropsCreateBranch {
-  branch_name: string;
-}
-const initialValues: PropsCreateBranch = {
-  branch_name: "",
+const RenderLabel = (params: { label: string; value?: string }) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <Typography style={{ color: colors.gray59 }}>
+        {params.label ?? "..."}
+      </Typography>
+      <Typography style={{ color: colors.black, fontWeight: "bold" }}>
+        {": " + (params.value ?? "...")}
+      </Typography>
+    </div>
+  );
 };
+
+const RenderInfoOrder = (params: { item?: OrderDto }) => {
+  const { item } = params;
+  return (
+    <div>
+      <RenderLabel label={"Tên người nhận"} value={item?.fullName} />
+      <RenderLabel label={"Số điện thoại"} value={item?.fullName} />
+      <RenderLabel
+        label={"Địa chỉ"}
+        value={`${item?.addressDetail} - ${item?.address.ward.name} - ${item?.address.district.name} - ${item?.address.province.name}`}
+      />
+      <RenderLabel
+        label={"Tiền sản phẩm"}
+        value={`${formatPrice(item?.amountPrice ?? 0)}đ`}
+      />
+      <RenderLabel
+        label={"Tiền giảm giá"}
+        value={`${formatPrice(item?.salePrice ?? 0)}đ`}
+      />
+      <RenderLabel
+        label={"Thành tiền thanh toán"}
+        value={`${formatPrice(item?.totalPrice ?? 0)}đ`}
+      />
+      <Typography
+        style={{ color: colors.black, fontWeight: "bold" }}
+        variant="h5"
+      >
+        Danh sách sản phẩm
+      </Typography>
+      <div style={{ paddingLeft: "5%" }}>
+        {item?.cartItems.map((e) => {
+          return <ItemProduct item={e} inList />;
+        })}
+      </div>
+    </div>
+  );
+};
+
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
-
-  const onSubmit = (data: PropsCreateBranch) => {
-    const { branch_name } = data;
-    const item: Branch = {
-      ...anchorElData.item,
-      branch_name: branch_name,
-    };
-    dispatch(updateBranch({ item: item }));
-    handleClose();
-  };
-
-  const onSubmitCreate = (dataCreate: PropsCreateBranch) => {
-    const { branch_name } = dataCreate;
-    const item: Branch = {
-      branch_name: branch_name,
-      id: data[data.length - 1].id + 1,
-      status: 1,
-    };
-    dispatch(createBranch({ item: item }));
-    handleClose();
-  };
+  const { handleClose, open, anchorElData } = props;
 
   return (
     <Dialog
@@ -64,60 +82,19 @@ const FormDialog = (props: Props) => {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
       style={{ width: "100%" }}
+      maxWidth="lg"
+      fullWidth={true}
     >
-      <DialogTitle id="form-dialog-title">
-        {TYPE_DIALOG.CREATE === type ? "Tạo mới Branch" : `Cập nhật Branch`}
-      </DialogTitle>
-      <Formik
-        initialValues={
-          type === TYPE_DIALOG.CREATE
-            ? initialValues
-            : {
-                branch_name: anchorElData?.item.branch_name ?? "",
-              }
-        }
-        onSubmit={(data) => {
-          type === TYPE_DIALOG.CREATE
-            ? onSubmitCreate({ ...data })
-            : onSubmit(data);
-        }}
-        validateOnChange
-        validationSchema={validateBranch}
-      >
-        {({
-          values,
-          errors,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          touched,
-        }) => (
-          <>
-            <DialogContent style={{ width: "100%" }}>
-              <DialogContentText>
-                Cập nhật thông tin cá nhân của Branch, vui lòng điền tất cả
-                thông tin cần thiết
-              </DialogContentText>
-              <TextInputComponent
-                error={errors.branch_name}
-                touched={touched.branch_name}
-                value={values.branch_name}
-                label={"Branch name"}
-                onChange={handleChange("branch_name")}
-                onBlur={handleBlur("branch_name")}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={() => handleSubmit()} color="primary">
-                Subscribe
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Formik>
+      <DialogTitle id="form-dialog-title">{"Địa chỉ đơn hàng"}</DialogTitle>
+      <DialogContent style={{ width: "100%" }}>
+        <RenderInfoOrder item={anchorElData?.item} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button color="primary">Subscribe</Button>
+      </DialogActions>
     </Dialog>
   );
 };

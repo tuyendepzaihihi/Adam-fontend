@@ -23,7 +23,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
+import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
+import LoadingProgress from "../../component/LoadingProccess";
 import {
   headCellsOptionColor,
   headCellsOptionSize,
@@ -40,25 +42,23 @@ import { FunctionUtil, Order } from "../../utils/function";
 import FormDialogColor from "./components/FormDialogColor";
 import FormDialogSize from "./components/FormDialogSize";
 import {
-  changeLoading,
-  deleteSize,
-  incrementAsyncOptionSize,
-  updateSize,
-} from "./slice/OptionSizeSlice";
-import {
-  deleteColor,
-  incrementAsyncOptionColor,
-  updateColor,
-} from "./slice/OptionColorSlice";
-import LoadingProgress from "../../component/LoadingProccess";
-import {
   requestDeleteColor,
   requestDeleteSize,
   requestPutUpdateColor,
   requestPutUpdateSize,
   UpdateColorDto,
-  UpdateSizeDto,
 } from "./OptionApi";
+import {
+  deleteColor,
+  incrementAsyncOptionColor,
+  updateColor,
+} from "./slice/OptionColorSlice";
+import {
+  changeLoading,
+  deleteSize,
+  incrementAsyncOptionSize,
+  updateSize,
+} from "./slice/OptionSizeSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -426,7 +426,7 @@ export default function OptionScreen() {
                       headCells={headCellsOptionColor}
                       createSortHandler={createSortHandlerColor}
                     />
-                    <TableBody>
+                    <TableBody style={{ position: "relative" }}>
                       {dataColor.length > 0 &&
                         FunctionUtil.stableSort(
                           dataColor,
@@ -498,6 +498,17 @@ export default function OptionScreen() {
                               </TableRow>
                             );
                           })}
+                      {dataColor?.length === 0 && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            width: "100%",
+                          }}
+                        >
+                          <EmptyComponent />
+                        </div>
+                      )}
                       {emptyRowsColor > 0 && (
                         <TableRow style={{ height: 53 * emptyRowsColor }}>
                           <TableCell colSpan={6} />
@@ -587,7 +598,7 @@ export default function OptionScreen() {
                       headCells={headCellsOptionSize}
                       createSortHandler={createSortHandlerSize}
                     />
-                    <TableBody>
+                    <TableBody style={{ position: "relative" }}>
                       {data.length > 0 &&
                         FunctionUtil.stableSort(
                           data,
@@ -659,6 +670,17 @@ export default function OptionScreen() {
                               </TableRow>
                             );
                           })}
+                      {data?.length === 0 && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            width: "100%",
+                          }}
+                        >
+                          <EmptyComponent />
+                        </div>
+                      )}
                       {emptyRows > 0 && (
                         <TableRow style={{ height: 53 * emptyRows }}>
                           <TableCell colSpan={6} />

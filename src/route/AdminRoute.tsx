@@ -1,9 +1,9 @@
 import { Navigate } from "react-router";
-import BranchScreen from "../app/admin/branch/OrderScreen";
 import CategoryScreen from "../app/admin/category/CategoryScreen";
 import DashboardScreen from "../app/admin/dashboard/DashboardScreen";
 import MaterialScreen from "../app/admin/material/MaterialScreen";
 import OptionScreen from "../app/admin/option/OptionScreen";
+import OrderScreen from "../app/admin/order/OrderScreen";
 import ProductAdminScreen from "../app/admin/product/ProductAdminScreen";
 import TagScreen from "../app/admin/tag/TagScreen";
 import UserScreen from "../app/admin/user/UserScreen";
@@ -38,7 +38,7 @@ export const PRIVATE_ROUTE_ADMIN = [
   },
   {
     route: ROUTE_ADMIN.ORDER,
-    screen: <BranchScreen />,
+    screen: <OrderScreen />,
   },
   {
     route: ROUTE_ADMIN.TAG,
