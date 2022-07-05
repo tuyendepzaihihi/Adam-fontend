@@ -30,6 +30,7 @@ import {
 import { incrementAsyncProduct } from "./slice/ProductCustomerSlice";
 import { incrementAsyncFilter } from "./slice/FilterValueSlice";
 import R from "../../assets/R";
+import { ProductSkeleton } from "../../component/Skeleton";
 
 const RenderChipFilter = (params: {
   keyValue: string;
@@ -186,6 +187,7 @@ const ProductScreen = () => {
     if (dataFilter.categories?.length === 0) {
       dispatch(incrementAsyncFilter());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = async () => {
@@ -594,16 +596,20 @@ const ProductScreen = () => {
           color={"green"}
         />
         <div className={className.listImage}>
-          {dataProduct.map((value, idx) => {
-            return (
-              <ProductItemComponent
-                item={value}
-                key={idx}
-                width={"22%"}
-                image={value?.productImage ?? R.images.img_product}
-              />
-            );
-          })}
+          {dataProduct.length > 0
+            ? dataProduct.map((value, idx) => {
+                return (
+                  <ProductItemComponent
+                    item={value}
+                    key={idx}
+                    width={"22%"}
+                    image={value?.productImage ?? R.images.img_product}
+                  />
+                );
+              })
+            : [0, 1, 2].map((e) => {
+                return <ProductSkeleton />;
+              })}
         </div>
         <div>
           <TablePagination

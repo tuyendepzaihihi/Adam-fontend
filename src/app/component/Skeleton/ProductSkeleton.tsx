@@ -1,9 +1,17 @@
 import { Skeleton } from "@material-ui/lab";
-
-const ProductSkeleton = () => {
+interface Props {
+  width?: number | string;
+  height?: number | string;
+}
+const ProductSkeleton = (props: Props) => {
+  const { height, width } = props;
   return (
-    <div>
-      <Skeleton variant="rect" style={{ width: "100%", height: 180 }} />
+    <div style={{ marginLeft: 10 }}>
+      <Skeleton
+        variant="rect"
+        style={{ width: width ? width : 160, height: height ?? 220 }}
+        width={"100%"}
+      />
       <Skeleton />
       <Skeleton width="60%" />
     </div>

@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
 import LoadingProgress from "../../component/LoadingProccess";
 import ProductItemComponent from "../../component/product_item/ProductItemComponent";
+import { ProductSkeleton } from "../../component/Skeleton";
 import {
   LIST_IMAGE_BANNER,
   LIST_IMAGE_BANNER_SECOND,
@@ -194,25 +195,33 @@ const HomeScreen = () => {
           reverseEdgeAnimationDirection
           interval={6000}
         >
-          {[1, 2].map((e) => {
-            const list =
-              e === 1
-                ? data?.listNewProduct.slice(0, 5)
-                : data?.listNewProduct.slice(5, data?.listNewProduct.length);
-            return (
-              <div className={className.listImage}>
-                {list.map((value, idx) => {
-                  return (
-                    <ProductItemComponent
-                      item={value}
-                      key={idx}
-                      image={value.image}
-                    />
-                  );
-                })}
-              </div>
-            );
-          })}
+          {data?.listNewProduct.length > 0 ? (
+            [1, 2].map((e) => {
+              const list =
+                e === 1
+                  ? data?.listNewProduct.slice(0, 5)
+                  : data?.listNewProduct.slice(5, data?.listNewProduct.length);
+              return (
+                <div className={className.listImage}>
+                  {list.map((value, idx) => {
+                    return (
+                      <ProductItemComponent
+                        item={value}
+                        key={idx}
+                        image={value.image}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })
+          ) : (
+            <div className={className.listImage}>
+              {[0, 1, 2, 3, 4].map((e) => {
+                return <ProductSkeleton />;
+              })}
+            </div>
+          )}
         </Carousel>
       </div>
       {isLoading && <LoadingProgress />}
