@@ -1,20 +1,32 @@
 import {
   Button,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  makeStyles,
+  MenuItem,
+  Select,
+  Theme,
   Typography,
 } from "@material-ui/core";
 import { useAppDispatch } from "../../../hooks";
-import { ItemProduct } from "../../../screen/order/components/ItemOrderComponent";
+import {
+  DEFINE_ORDER,
+  ItemProduct,
+  TYPE_ORDER,
+} from "../../../screen/order/components/ItemOrderComponent";
 import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
+import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData: { item: OrderDto } | null;
+  setAnchorElData: any;
 }
 
 const RenderLabel = (params: { label: string; value?: string }) => {
@@ -35,8 +47,12 @@ const RenderLabel = (params: { label: string; value?: string }) => {
   );
 };
 
-const RenderInfoOrder = (params: { item?: OrderDto }) => {
-  const { item } = params;
+const RenderInfoOrder = (params: {
+  item?: OrderDto;
+  handleChange: Function;
+}) => {
+  const classes = useStyles();
+  const { item, handleChange } = params;
   return (
     <div>
       <RenderLabel label={"Tên người nhận"} value={item?.fullName} />
@@ -57,6 +73,56 @@ const RenderInfoOrder = (params: { item?: OrderDto }) => {
         label={"Thành tiền thanh toán"}
         value={`${formatPrice(item?.totalPrice ?? 0)}đ`}
       />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Typography style={{ color: colors.gray59 }}>
+          {"Trạng thái đơn hàng: "}
+        </Typography>
+        <FormControl className={classes.formControl}>
+          <Select
+            value={item?.status ?? 1}
+            onChange={(event) =>
+              handleChange({
+                value: event.target.value,
+                row: item,
+              })
+            }
+            style={{
+              color: colors.white,
+              height: 45,
+            }}
+          >
+            {Object.values(TYPE_ORDER).map((e) => {
+              if (e >= Number(item?.status)) {
+                return (
+                  <MenuItem
+                    value={e}
+                    style={{
+                      marginTop: 5,
+                      color: colors.white,
+                      display: "flex",
+                    }}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: DEFINE_ORDER[e].color,
+                        width: "100%",
+                        borderRadius: 10,
+                        alignSelf: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: 5,
+                        paddingRight: 0,
+                      }}
+                    >
+                      <Typography>{DEFINE_ORDER[e].title}</Typography>
+                    </div>
+                  </MenuItem>
+                );
+              } else return null;
+            })}
+          </Select>
+        </FormControl>
+      </div>
       <Typography
         style={{ color: colors.black, fontWeight: "bold" }}
         variant="h5"
@@ -74,8 +140,22 @@ const RenderInfoOrder = (params: { item?: OrderDto }) => {
 
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData } = props;
-
+  const { handleClose, open, anchorElData, setAnchorElData } = props;
+  const handleChange = (params: { value: any; row: OrderDto }) => {
+    const { row, value } = params;
+    try {
+      dispatch(changeLoading(true));
+      const item = {
+        ...row,
+        status: value,
+      };
+      setAnchorElData({ item });
+      dispatch(updateOrderAdmin({ item }));
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
   return (
     <Dialog
       open={open}
@@ -87,15 +167,44 @@ const FormDialog = (props: Props) => {
     >
       <DialogTitle id="form-dialog-title">{"Địa chỉ đơn hàng"}</DialogTitle>
       <DialogContent style={{ width: "100%" }}>
-        <RenderInfoOrder item={anchorElData?.item} />
+        <RenderInfoOrder
+          item={anchorElData?.item}
+          handleChange={handleChange}
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
         <Button color="primary">Subscribe</Button>
       </DialogActions>
     </Dialog>
   );
 };
 export default FormDialog;
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    paper: {
+      width: "100%",
+      marginBottom: theme.spacing(2),
+    },
+    table: {
+      minWidth: 750,
+    },
+    visuallyHidden: {
+      border: 0,
+      clip: "rect(0 0 0 0)",
+      height: 1,
+      margin: -1,
+      overflow: "hidden",
+      padding: 0,
+      position: "absolute",
+      top: 20,
+      width: 1,
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+  })
+);

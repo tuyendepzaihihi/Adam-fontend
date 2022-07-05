@@ -23,16 +23,6 @@ const AddressUser = () => {
     item: DataAddress;
   }>(null);
 
-  const [selectedAddress, setSelectedAddress] = useState<{
-    ward: string | null;
-    district: string | null;
-    province: string | null;
-  }>({
-    ward: null,
-    district: null,
-    province: null,
-  });
-
   const handleClose = () => {
     setOpen(false);
     setAnchorElData(null);
@@ -72,9 +62,9 @@ const AddressUser = () => {
             <p style={{ color: colors.black, fontWeight: "bold" }}>
               {renderAddress(item)}
             </p>
-            {/* <p style={{ color: colors.gray59 }}>
-              {item.name} | {item.phone}
-            </p> */}
+            <p style={{ color: colors.gray59 }}>
+              {item.fullName} | {item.phoneNumber}
+            </p>
           </div>
         </div>
         <div>

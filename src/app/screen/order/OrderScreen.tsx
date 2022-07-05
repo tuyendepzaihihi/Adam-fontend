@@ -5,10 +5,10 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React from "react";
 import { useAppSelector } from "../../hooks";
 import { colors } from "../../utils/color";
-import { DEFINE_ORDER, TYPE_ORDER } from "./components/ItemOrderComponent";
+import { TYPE_ORDER } from "./components/ItemOrderComponent";
 import ListOrderComponent from "./components/ListOrderComponent";
 
 function TabPanel(props: {

@@ -29,6 +29,7 @@ import {
 } from "./ProductCustomerApi";
 import { incrementAsyncProduct } from "./slice/ProductCustomerSlice";
 import { incrementAsyncFilter } from "./slice/FilterValueSlice";
+import R from "../../assets/R";
 
 const RenderChipFilter = (params: {
   keyValue: string;
@@ -190,8 +191,13 @@ const ProductScreen = () => {
   const getData = async () => {
     const payloadGetList: FilterProductDto = {
       ...payload,
-      topPrice: value[1],
+      topPrice: value[1] * 100000,
       bottomPrice: value[0],
+      listCategoryId: [0],
+      listColorId: [0],
+      listMaterialId: [0],
+      listSizeId: [0],
+      listTagId: [0],
     };
     dispatch(incrementAsyncProduct(payloadGetList));
   };
@@ -590,7 +596,12 @@ const ProductScreen = () => {
         <div className={className.listImage}>
           {dataProduct.map((value, idx) => {
             return (
-              <ProductItemComponent item={value} key={idx} width={"22%"} />
+              <ProductItemComponent
+                item={value}
+                key={idx}
+                width={"22%"}
+                image={value?.productImage ?? R.images.img_product}
+              />
             );
           })}
         </div>

@@ -11,6 +11,9 @@ export interface UpdateDto {
   id: number;
   provinceId: number;
   wardId: number;
+  fullName: string;
+  isDefault: boolean;
+  phoneNumber: string;
 }
 
 export interface CreateDto {
@@ -19,6 +22,9 @@ export interface CreateDto {
   districtId: number;
   provinceId: number;
   wardId: number;
+  fullName: string;
+  isDefault: boolean;
+  phoneNumber: string;
 }
 
 export interface DeleteInterface {

@@ -21,11 +21,11 @@ const useStyles = makeStyles(() =>
       backgroundColor: "rgba(0,0,0,0.1)",
       width: "105%",
       height: "105%",
-      top: -15,
+      top: -10,
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      left: -15,
+      left: -10,
     },
   })
 );

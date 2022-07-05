@@ -6,7 +6,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import R from "../../assets/R";
 import LoadingProgress from "../../component/LoadingProccess";
-import { data_detail, ItemCart } from "../../contant/Contant";
+import { ProductSkeleton, TextSkeleton } from "../../component/Skeleton";
+import {
+  data_detail,
+  descriptionProduct,
+  ItemCart,
+} from "../../contant/Contant";
 import { DetailProductAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../hooks";
 import { getIdAccount, getToken } from "../../service/StorageService";
@@ -208,25 +213,45 @@ const ProductDetailScreen = () => {
   return (
     <div className={className.container}>
       <>
-        <div className={className.containerImage}>
+        {isLoading ? <ProductSkeleton /> :<div className={className.containerImage}>
           <img alt="" src={R.images.img_product} />
+        </div>}
+        <div style={{ width: "10%", padding: 10 }}>
+          {listDataFilter.map((e, index) => {
+            return (
+              <img
+                alt=""
+                src={e?.productImage ? e.productImage : R.images.img_product}
+                style={{ width: "100%", marginBottom: 10 }}
+                key={index}
+              />
+            );
+          })}
         </div>
 
         <div className={className.containerInfo}>
-          <p className={className.title}>
-            {`${
-              dataDetail?.productName ?? "Dang loading du lieu"
-            }`.toUpperCase()}
-          </p>
+          {isLoading ? (
+            <TextSkeleton />
+          ) : (
+            <p className={className.title}>
+              {`${
+                dataDetail?.productName ?? "Dang loading du lieu"
+              }`.toUpperCase()}
+            </p>
+          )}
 
-          <p className={className.price}>
-            {dataF
-              ? formatPrice(dataF.price)
-              : `${formatPrice(dataDetail?.minPrice ?? 0)} - ${formatPrice(
-                  dataDetail?.maxPrice ?? 0
-                )}`}
-            đ
-          </p>
+          {isLoading ? (
+            <TextSkeleton />
+          ) : (
+            <p className={className.price}>
+              {dataF
+                ? formatPrice(dataF.price)
+                : `${formatPrice(dataDetail?.minPrice ?? 0)} - ${formatPrice(
+                    dataDetail?.maxPrice ?? 0
+                  )}`}
+              đ
+            </p>
+          )}
 
           {dataDetail?.options.map((option, index) => {
             return (
@@ -300,20 +325,24 @@ const ProductDetailScreen = () => {
             </Button>
           )}
 
-          <div className={className.containerDescription}>
-            <p
-              className={className.price}
-              style={{
-                borderBottomWidth: 1.5,
-                borderBottomColor: colors.gray59,
-              }}
-            >
-              Mô tả
-            </p>
-            <p className={className.description}>
-              {dataDetail?.description ?? ""}
-            </p>
-          </div>
+          {!isLoading ? (
+            <div className={className.containerDescription}>
+              <p
+                className={className.price}
+                style={{
+                  borderBottomWidth: 1.5,
+                  borderBottomColor: colors.gray59,
+                }}
+              >
+                Mô tả
+              </p>
+              <p className={className.description}>
+                {dataDetail?.description ?? descriptionProduct}
+              </p>
+            </div>
+          ) : (
+            <TextSkeleton />
+          )}
         </div>
       </>
       {isLoading && <LoadingProgress />}
@@ -332,10 +361,10 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "relative",
     },
     containerImage: {
-      width: "45%",
+      width: "40%",
     },
     containerInfo: {
-      width: "48%",
+      width: "50%",
     },
     img: {
       width: "100%",

@@ -143,7 +143,13 @@ const HomeScreen = () => {
               return (
                 <div className={className.listImage}>
                   {list.map((value, idx) => {
-                    return <ProductItemComponent item={value} key={idx} />;
+                    return (
+                      <ProductItemComponent
+                        item={value}
+                        key={idx}
+                        image={value.image}
+                      />
+                    );
                   })}
                 </div>
               );
@@ -196,7 +202,13 @@ const HomeScreen = () => {
             return (
               <div className={className.listImage}>
                 {list.map((value, idx) => {
-                  return <ProductItemComponent item={value} key={idx} />;
+                  return (
+                    <ProductItemComponent
+                      item={value}
+                      key={idx}
+                      image={value.image}
+                    />
+                  );
                 })}
               </div>
             );

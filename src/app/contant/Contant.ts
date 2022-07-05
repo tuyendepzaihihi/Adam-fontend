@@ -13,7 +13,6 @@ import {
 } from "@material-ui/icons";
 import CategoryIcon from "@material-ui/icons/Category";
 import R from "../assets/R";
-import { ItemProduct } from "../component/product_item/ProductItemComponent";
 import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
 import { LIST_PRODUCT_DETAIL } from "./ContaintDataAdmin";
 import { DetailProductAdmin } from "./IntefaceContaint";
@@ -53,15 +52,15 @@ export const textValidate = {
 
 export const ROUTE = {
   HOME: "/",
-  PRODUCT: "/product",
+  PRODUCT: "/home/product",
   LOGIN: "/auth/login",
   REGISTER: "/auth/register",
   FORGOT_PASS: "/auth/forgotPassword",
   EMAIL_INPUT: "/auth/emailInput",
-  PRODUCT_DETAIL: "/product/detail",
-  CART: "/cart",
-  ADDRESS: "/address",
-  ORDER: "/order",
+  PRODUCT_DETAIL: "/home/product/detail",
+  CART: "/home/cart",
+  ADDRESS: "/home/account/address",
+  ORDER: "/home/account/order",
   ACCOUNT: "/account",
 };
 
@@ -295,8 +294,8 @@ export const LIST_ADDRESS: DataAddress[] = [
     districtId: 1,
     districtName: "Nam từ liêm",
     isDefault: false,
-    name: "Lê Văn Cử",
-    phone: "0965259555",
+    fullName: "Lê Văn Cử",
+    phoneNumber: "0965259555",
     provinceId: 1,
     provinceName: "Ha noi",
     wardId: 1,
@@ -334,3 +333,6 @@ export const DEFINE_TYPE_ACCOUNT = {
     index: 3,
   },
 };
+
+export const descriptionProduct =
+  "At the moment, we do not recommend using synchronous methods, since calling methods synchronously can have strong performance penalties and introduce threading-related bugs to your native modules. Additionally, please note that if you choose to use RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD, your app can no longer use the Google Chrome debugger. This is because synchronous methods require the JS VM to share memory with the app. For the Google Chrome debugger, React Native runs inside the JS VM in Google Chrome, and communicates asynchronously with the mobile devices via WebSockets.";

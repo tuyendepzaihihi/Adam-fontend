@@ -6,4 +6,7 @@ export const colors = {
   gray: "gray",
   orange: "orange",
   blue: "blue",
+  red: "red",
+  green: "green",
+  yellow: "yellow",
 };

@@ -167,7 +167,7 @@ const FormDialog = (props: Props) => {
   };
 
   const onSubmit = async (data: PropsCreateAddress) => {
-    const { address_detail } = data;
+    const { address_detail, name, phone } = data;
     try {
       if (anchorElData) {
         if (anchorElData && selectedAddress.province !== null) {
@@ -190,6 +190,9 @@ const FormDialog = (props: Props) => {
             ? Number(selectedAddress.ward)
             : Number(anchorElData?.item.ward?.id),
           id: anchorElData?.item.id,
+          fullName: name,
+          isDefault: isDefault,
+          phoneNumber: phone,
         };
 
         const res: ResultApi<DataAddress> = await requestPutUpdateAddress(
@@ -223,13 +226,16 @@ const FormDialog = (props: Props) => {
     if (!validateAddress()) return;
     try {
       dispatch(changeLoading(true));
-      const { address_detail } = dataCreate;
+      const { address_detail, name, phone } = dataCreate;
       const payload: CreateDto = {
         accountId: Number(accountId),
         addressDetail: address_detail,
         districtId: Number(selectedAddress.district),
         provinceId: Number(selectedAddress.province),
         wardId: Number(selectedAddress.ward),
+        fullName: name,
+        phoneNumber: phone,
+        isDefault: isDefault,
       };
       const res: ResultApi<DataAddress> = await requestPostCreateAddress(
         payload
@@ -256,8 +262,8 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                name: anchorElData?.item.name ?? initialValues.name,
-                phone: anchorElData?.item.phone ?? initialValues.phone,
+                name: anchorElData?.item.fullName ?? initialValues.name,
+                phone: anchorElData?.item.phoneNumber ?? initialValues.phone,
                 address_detail: anchorElData?.item.addressDetail ?? "",
               }
         }
@@ -403,7 +409,9 @@ const FormDialog = (props: Props) => {
                 />
               )}
               <div style={{ paddingTop: 10 }}>
-                <Typography color="secondary">Mac dinh</Typography>
+                <Typography color="secondary">
+                  Đặt địa chỉ làm mặc định
+                </Typography>
                 <Switch
                   checked={isDefault}
                   onChange={() => {

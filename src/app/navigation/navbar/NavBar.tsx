@@ -14,7 +14,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
 import R from "../../assets/R";
 import FooterComponent from "../../component/footer/FooterComponent";
@@ -189,69 +189,72 @@ export default function NavBar() {
                   {formatPrice(e.detailProduct.priceExport)}đ
                 </p>
               </div>
-              <div className={classes.containerQuantity}>
-                <button
-                  className={classes.buttonChangeQuantityCart}
-                  onClick={async () => {
-                    if (e.quantity > 1) {
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div className={classes.containerQuantity}>
+                  <button
+                    className={classes.buttonChangeQuantityCart}
+                    onClick={async () => {
+                      if (e.quantity > 1) {
+                        dispatch(changeLoading(true));
+                        const payload: UpdateCartDto = {
+                          id: e.id,
+                          quantity: e.quantity - 1,
+                          totalPrice:
+                            e.quantity - 1 * e.detailProduct.priceExport,
+                        };
+                        await requestPutUpdateCart(payload);
+                        dispatch(
+                          updateQuantity({
+                            id: e.id,
+                            new_quantity: e.quantity - 1,
+                          })
+                        );
+                        dispatch(changeLoading(false));
+                      }
+                    }}
+                  >
+                    -
+                  </button>
+                  <Typography>{e.quantity}</Typography>
+                  <button
+                    className={classes.buttonChangeQuantityCart}
+                    onClick={async () => {
                       dispatch(changeLoading(true));
                       const payload: UpdateCartDto = {
                         id: e.id,
-                        quantity: e.quantity - 1,
+                        quantity: e.quantity + 1,
                         totalPrice:
-                          e.quantity - 1 * e.detailProduct.priceExport,
+                          e.quantity + 1 * e.detailProduct.priceExport,
                       };
                       await requestPutUpdateCart(payload);
                       dispatch(
                         updateQuantity({
                           id: e.id,
-                          new_quantity: e.quantity - 1,
+                          new_quantity: e.quantity + 1,
                         })
                       );
                       dispatch(changeLoading(false));
-                    }
-                  }}
-                >
-                  -
-                </button>
-                <Typography>{e.quantity}</Typography>
-                <button
-                  className={classes.buttonChangeQuantityCart}
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="primary-search-account-menu"
+                  aria-haspopup="true"
+                  color="inherit"
+                  style={{ marginLeft: 5 }}
                   onClick={async () => {
                     dispatch(changeLoading(true));
-                    const payload: UpdateCartDto = {
-                      id: e.id,
-                      quantity: e.quantity + 1,
-                      totalPrice: e.quantity + 1 * e.detailProduct.priceExport,
-                    };
-                    await requestPutUpdateCart(payload);
-                    dispatch(
-                      updateQuantity({
-                        id: e.id,
-                        new_quantity: e.quantity + 1,
-                      })
-                    );
+                    await requestDeleteCart({ id: e.id });
+                    dispatch(deleteItemCart({ id: e.id }));
                     dispatch(changeLoading(false));
                   }}
                 >
-                  +
-                </button>
+                  <Delete />
+                </IconButton>
               </div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="primary-search-account-menu"
-                aria-haspopup="true"
-                color="inherit"
-                style={{ marginLeft: 5 }}
-                onClick={async () => {
-                  dispatch(changeLoading(true));
-                  await requestDeleteCart({ id: e.id });
-                  dispatch(deleteItemCart({ id: e.id }));
-                  dispatch(changeLoading(false));
-                }}
-              >
-                <Delete />
-              </IconButton>
               {isLoading && <LoadingProgress />}
             </div>
           );
@@ -342,6 +345,7 @@ export default function NavBar() {
     </Menu>
   );
   const isAdmin = getAdmin();
+  const location = useLocation();
   return (
     <div className={classes.grow}>
       {isAdmin ? (
@@ -496,12 +500,22 @@ export default function NavBar() {
               style={{
                 flex: 1,
                 marginTop: 70,
-                paddingRight: "15%",
-                paddingLeft: "15%",
+                paddingRight: "12%",
+                paddingLeft: "12%",
                 minHeight: size && size?.height ? size?.height - 370 : 0,
               }}
             >
-              {/* <ActiveBreadcrumbs /> */}
+              <Typography
+                style={{
+                  paddingBottom: 20,
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  color: colors.gray59,
+                  paddingTop: 10,
+                }}
+              >
+                {`${location.pathname}`.toUpperCase().replace("/", "")}
+              </Typography>
               <MainApp isAdmin={isAdmin ? true : false} />
             </div>
             {renderMobileMenu}

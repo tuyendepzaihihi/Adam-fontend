@@ -20,11 +20,11 @@ interface Props {
 export const TYPE_ORDER = {
   PENDING: 1,
   CONFIRM: 2,
+  DELIVETY: 7,
   RECEIVED: 3,
-  DELAY: 4,
   DONE: 5,
   CANCEL: 0,
-  DELIVETY: 7,
+  DELAY: 4,
 };
 
 export const DEFINE_ORDER = {
@@ -32,31 +32,43 @@ export const DEFINE_ORDER = {
     title: "Đang chờ",
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
+    color: colors.gray59,
   },
   [TYPE_ORDER.CONFIRM]: {
     title: "Đã xác nhận",
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
+    color: colors.green,
   },
   [TYPE_ORDER.DELIVETY]: {
     title: "Đang vận chuyển",
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
+    color: colors.green,
   },
   [TYPE_ORDER.DONE]: {
     title: "Thành công",
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
+    color: colors.green,
   },
   [TYPE_ORDER.CANCEL]: {
     title: "Huỷ",
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đang đợi nhân viên xác nhận",
+    color: colors.red,
   },
   [TYPE_ORDER.DELAY]: {
     title: "Đơn trả",
     icon: R.images.ic_voucher,
     description: "Đơn của bạn đã được hoàn trả",
+    color: colors.orange,
+  },
+  [TYPE_ORDER.RECEIVED]: {
+    title: "Đã đến nơi",
+    icon: R.images.ic_voucher,
+    description: "Đơn hàng của bạn đã đến nơi",
+    color: colors.green,
   },
 };
 

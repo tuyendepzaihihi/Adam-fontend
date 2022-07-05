@@ -48,6 +48,12 @@ export const orderAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    changeError: (state, action) => {
+      state.isError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -66,6 +72,10 @@ export const orderAdminSlice = createSlice({
       });
   },
 });
-export const { createOrderAdmin, updateOrderAdmin, deleteOrderAdmin } =
-  orderAdminSlice.actions;
+export const {
+  createOrderAdmin,
+  updateOrderAdmin,
+  deleteOrderAdmin,
+  changeLoading,
+} = orderAdminSlice.actions;
 export default orderAdminSlice.reducer;

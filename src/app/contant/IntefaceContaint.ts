@@ -128,6 +128,7 @@ export interface ProductAdmin {
   voteAverage: number;
   category: CategoryAdmin;
   isComplete: boolean;
+  productImage: any;
 }
 
 export interface DetailProductAdmin {

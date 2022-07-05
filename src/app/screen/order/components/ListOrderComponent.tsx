@@ -30,7 +30,7 @@ const ListOrderComponent = (props: Props) => {
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, status]);
+  }, [value, status, page, rowsPerPage]);
 
   const getData = async () => {
     try {

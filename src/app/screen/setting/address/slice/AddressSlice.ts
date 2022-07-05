@@ -18,12 +18,13 @@ export interface DataAddress {
   addressDetail?: string;
   isDefault?: boolean;
   isActive?: boolean;
-  phone?: string;
-  name?: string;
+  phoneNumber?: string;
+  fullName?: string;
   id?: any;
   ward?: Address;
   province?: Address;
   district?: Address;
+  name?: string;
 }
 
 interface DataStateAddress extends DataState<DataAddress[]> {

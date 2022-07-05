@@ -1,4 +1,13 @@
-import { Button, IconButton, Menu, MenuItem, Tooltip } from "@material-ui/core";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  Menu,
+  MenuItem,
+  Select,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -9,18 +18,26 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsOrderAdmin } from "../../contant/ContaintDataAdmin";
-import { TYPE_DIALOG } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import {
+  DEFINE_ORDER,
+  TYPE_ORDER,
+} from "../../screen/order/components/ItemOrderComponent";
 import { OrderDto } from "../../screen/order/slice/OrderSlice";
+import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil, Order } from "../../utils/function";
 import EnhancedTableToolbarOrder from "./components/EnhancedTableToolbar";
 import FormDialog from "./components/FormDialog";
-import { incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
+import {
+  changeLoading,
+  incrementAsyncOrderAdminAdmin,
+  updateOrderAdmin,
+} from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +61,10 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       top: 20,
       width: 1,
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
     },
   })
 );
@@ -117,6 +138,22 @@ export default function OrderScreen() {
   ) => {
     setAnchorEl(event.currentTarget);
     setAnchorElData({ item: item });
+  };
+
+  const handleChange = (params: { value: any; row: OrderDto }) => {
+    const { row, value } = params;
+    try {
+      dispatch(changeLoading(true));
+      const item = {
+        ...row,
+        status: value,
+      };
+
+      dispatch(updateOrderAdmin({ item }));
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const renderMenu = (
@@ -218,7 +255,72 @@ export default function OrderScreen() {
                           {formatPrice(row.totalPrice ?? 0)}đ
                         </TableCell>
 
-                        <TableCell align="right">{row.status}</TableCell>
+                        <TableCell align="right">
+                          {/* <FormControl className={classes.formControl}>
+                            <Select
+                              value={row.status}
+                              onChange={(event) =>
+                                handleChange({
+                                  value: event.target.value,
+                                  row: row,
+                                })
+                              }
+                              style={{
+                                color: colors.white,
+                                height: 45,
+                              }}
+                            >
+                              {Object.values(TYPE_ORDER).map((e) => {
+                                if (e >= Number(row.status)) {
+                                  return (
+                                    <MenuItem
+                                      value={e}
+                                      style={{
+                                        marginTop: 5,
+                                        color: colors.white,
+                                        display: "flex",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          backgroundColor:
+                                            DEFINE_ORDER[e].color,
+                                          width: "100%",
+                                          borderRadius: 10,
+                                          alignSelf: "center",
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          padding: 5,
+                                          paddingRight: 0,
+                                        }}
+                                      >
+                                        <Typography>
+                                          {DEFINE_ORDER[e].title}
+                                        </Typography>
+                                      </div>
+                                    </MenuItem>
+                                  );
+                                } else return null;
+                              })}
+                            </Select>
+                          </FormControl> */}
+                          <div
+                            style={{
+                              backgroundColor:
+                                DEFINE_ORDER[Number(row.status)].color,
+                              width: "100%",
+                              borderRadius: 10,
+                              alignSelf: "center",
+                              display: "flex",
+                              justifyContent: "center",
+                              padding: 5,
+                            }}
+                          >
+                            <Typography style={{ color: colors.white }}>
+                              {DEFINE_ORDER[Number(row.status)].title}
+                            </Typography>
+                          </div>
+                        </TableCell>
                         <TableCell align="right">
                           <Button
                             onClick={(event) => {
@@ -259,6 +361,7 @@ export default function OrderScreen() {
         open={open}
         handleClose={handleClose}
         anchorElData={anchorElData}
+        setAnchorElData={setAnchorElData}
       />
       {isLoading && <LoadingProgress />}
     </div>

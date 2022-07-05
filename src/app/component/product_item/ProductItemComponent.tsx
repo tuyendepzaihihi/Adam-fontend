@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import R from "../../assets/R";
 import { ROUTE } from "../../contant/Contant";
 import { ProductAdmin } from "../../contant/IntefaceContaint";
@@ -27,12 +27,13 @@ export interface ItemProduct {
 interface Props {
   item: ProductAdmin;
   width?: number | string;
+  image?: any;
 }
 
 const ProductItemComponent = (props: Props) => {
   const className = useStyles();
   const navigate = useNavigate();
-  const { item, width } = props;
+  const { item, width, image } = props;
   const [show, setShow] = useState(false);
 
   return (
@@ -51,13 +52,17 @@ const ProductItemComponent = (props: Props) => {
         style={{
           minWidth: 170,
           maxWidth: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          height: "100%",
         }}
         onClick={() => {
           navigate(ROUTE.PRODUCT_DETAIL, { state: { item: item } });
         }}
       >
         <img
-          src={R.images.img_product}
+          src={image ? image : R.images.img_product}
           alt=""
           className={className.image_banner}
         />
@@ -87,6 +92,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: "20%",
       display: "flex",
       flexDirection: "column",
+      padding: 2,
       alignItems: "center",
       "&:hover": {
         animation: `$spin-exist 1s ${theme.transitions.easing.sharp}`,
@@ -108,6 +114,8 @@ const useStyles = makeStyles((theme: Theme) =>
     image_banner: {
       minWidth: 170,
       minHeight: 300,
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
       maxWidth: "100%",
     },
     textDiscount: {

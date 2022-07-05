@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { getIdAccount } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil } from "../../utils/function";
+import { CreateOrderDto, requestPostCreateOrder } from "../order/OrderApi";
 import { getAddressInfo } from "../setting/address/slice/AddressSlice";
 import {
   requestDeleteCart,
@@ -97,6 +98,29 @@ const CartScreen = () => {
       ? (checkTotal() * selectedVoucher?.discountPersent) / 100
       : 0;
     return res;
+  };
+
+  const handlePayment = async () => {
+    const idAccount = getIdAccount();
+    const payload: CreateOrderDto = {
+      accountId: Number(idAccount),
+      addressDetail: address.dataSelected?.addressDetail,
+      addressId: address.dataSelected?.id,
+      cartItemIdList: selected.map((e) => Number(e)),
+      fullName: address.dataSelected?.fullName,
+      phoneNumber: address.dataSelected?.phoneNumber,
+      salePrice: checkDiscount(),
+      amountPrice: checkTotal(),
+      totalPrice: checkTotal() - checkDiscount(),
+    };
+    try {
+      dispatch(changeLoading(true));
+      await requestPostCreateOrder(payload);
+      navigate(ROUTE.ACCOUNT, { state: { type: TYPE_ACCOUNT.ORDER } });
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (
@@ -306,9 +330,7 @@ const CartScreen = () => {
             style={{
               width: "30%",
             }}
-            onClick={() => {
-              navigate(ROUTE.ACCOUNT, { state: TYPE_ACCOUNT.ORDER });
-            }}
+            onClick={handlePayment}
           >
             Thanh toán
           </Button>
