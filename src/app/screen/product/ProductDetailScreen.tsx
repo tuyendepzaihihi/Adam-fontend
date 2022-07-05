@@ -1,18 +1,36 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  CardHeader,
+  createStyles,
+  IconButton,
+  makeStyles,
+  Theme,
+  Typography,
+} from "@material-ui/core";
+import { MoreVert, Reply } from "@material-ui/icons";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import R from "../../assets/R";
 import LoadingProgress from "../../component/LoadingProccess";
-import { ProductSkeleton, TextSkeleton } from "../../component/Skeleton";
+import {
+  CommentSkeleton,
+  ProductSkeleton,
+  TextSkeleton,
+} from "../../component/Skeleton";
 import {
   data_detail,
   descriptionProduct,
   ItemCart,
 } from "../../contant/Contant";
-import { DetailProductAdmin, ResultApi } from "../../contant/IntefaceContaint";
+import {
+  DetailProductAdmin,
+  ProductAdmin,
+  ResultApi,
+} from "../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../hooks";
 import { getIdAccount, getToken } from "../../service/StorageService";
 import { colors } from "../../utils/color";
@@ -24,6 +42,13 @@ import {
   requestGetProductCustomerById,
   requestGetProductDetailByIdProduct,
 } from "./ProductCustomerApi";
+
+const EXAMPLE_COMMENT = [
+  { id: 1, value: "Đây là sản phẩm rất tuyệt vời" },
+  { id: 2, value: "Đây là sản phẩm rất tuyệt vời" },
+  { id: 3, value: "Đây là sản phẩm rất tuyệt vời" },
+  { id: 4, value: "Đây là sản phẩm rất tuyệt vời" },
+];
 
 export const sortPriceToMax = (array: DetailProductAdmin[]) => {
   for (let i = 0; i < array.length - 1; i++) {
@@ -71,6 +96,7 @@ const ProductDetailScreen = () => {
   const className = useStyles();
   const dispatch = useAppDispatch();
   const state: any = useLocation().state;
+  const item: ProductAdmin = state.item;
   const [count, setCount] = useState(1);
   const [selection, setSelection] = useState<Selection[]>([]);
   const [dataF, setDataF] = useState<DataFilter | null>(null);
@@ -93,12 +119,14 @@ const ProductDetailScreen = () => {
 
   const getDataFilterPrice = async () => {
     setIsLoading(true);
+    console.log({ item });
+
     try {
       const resultProductById: ResultApi<ProductById> =
-        await requestGetProductCustomerById({ id: 7 });
+        await requestGetProductCustomerById({ id: item.id });
       const res: ResultApi<DetailProductAdmin[]> =
         await requestGetProductDetailByIdProduct({
-          product_id: 7,
+          product_id: item.id,
         });
       setDataDetail(resultProductById.data);
       setListDataFilter(res.data);
@@ -211,22 +239,49 @@ const ProductDetailScreen = () => {
   };
 
   return (
-    <div className={className.container}>
-      <>
-        {isLoading ? <ProductSkeleton /> :<div className={className.containerImage}>
-          <img alt="" src={R.images.img_product} />
-        </div>}
-        <div style={{ width: "10%", padding: 10 }}>
-          {listDataFilter.map((e, index) => {
-            return (
-              <img
-                alt=""
-                src={e?.productImage ? e.productImage : R.images.img_product}
-                style={{ width: "100%", marginBottom: 10 }}
-                key={index}
-              />
-            );
-          })}
+    <div style={{ position: "relative" }}>
+      <div className={className.container}>
+        {isLoading ? (
+          <div className={className.containerImage}>
+            <ProductSkeleton width={"100%"} height={260} />
+          </div>
+        ) : (
+          <div className={className.containerImage}>
+            <img
+              alt=""
+              src={
+                dataF && listDataFilter.length > 0
+                  ? listDataFilter.find((e) => e.id === dataF.id)?.productImage
+                  : item?.image
+                  ? item.image
+                  : R.images.img_product
+              }
+              style={{ width: "100%" }}
+            />
+          </div>
+        )}
+        <div style={{ width: "8%" }}>
+          {!isLoading ? (
+            listDataFilter.map((e, index) => {
+              return (
+                <button key={index} style={{ width: "100%", marginBottom: 10 }}>
+                  <img
+                    alt=""
+                    src={
+                      e?.productImage ? e.productImage : R.images.img_product
+                    }
+                    style={{ width: "100%" }}
+                  />
+                </button>
+              );
+            })
+          ) : (
+            <div>
+              {[0].map((e) => {
+                return <ProductSkeleton width={"100%"} />;
+              })}
+            </div>
+          )}
         </div>
 
         <div className={className.containerInfo}>
@@ -253,41 +308,45 @@ const ProductDetailScreen = () => {
             </p>
           )}
 
-          {dataDetail?.options.map((option, index) => {
-            return (
-              <div key={index}>
-                <p className={className.containerUpdateQuantity}>
-                  {option.optionName}
-                </p>
-                <div className={className.containerUpdateQuantity}>
-                  {option.values_options.map((optionValue, idx) => {
-                    return (
-                      <button
-                        className={clsx(className.buttonInActive, {
-                          [className.buttonActive]: handleCheck({
-                            optionId: option.optionName,
-                            optionValueId: optionValue.id,
-                            value: optionValue.name,
-                          }),
-                          [className.marginLeft]: idx > 0,
-                        })}
-                        onClick={() =>
-                          handleOption({
-                            optionId: option.optionName,
-                            optionValueId: optionValue.id,
-                            value: optionValue.name,
-                          })
-                        }
-                        key={idx}
-                      >
-                        {optionValue.name}
-                      </button>
-                    );
-                  })}
+          {isLoading ? (
+            <TextSkeleton />
+          ) : (
+            dataDetail?.options.map((option, index) => {
+              return (
+                <div key={index}>
+                  <p className={className.containerUpdateQuantity}>
+                    {option.optionName}
+                  </p>
+                  <div className={className.containerUpdateQuantity}>
+                    {option.values_options.map((optionValue, idx) => {
+                      return (
+                        <button
+                          className={clsx(className.buttonInActive, {
+                            [className.buttonActive]: handleCheck({
+                              optionId: option.optionName,
+                              optionValueId: optionValue.id,
+                              value: optionValue.name,
+                            }),
+                            [className.marginLeft]: idx > 0,
+                          })}
+                          onClick={() =>
+                            handleOption({
+                              optionId: option.optionName,
+                              optionValueId: optionValue.id,
+                              value: optionValue.name,
+                            })
+                          }
+                          key={idx}
+                        >
+                          {optionValue.name}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
 
           {selection.length === data_detail.options.length && (
             <div className={className.containerDescription}>
@@ -344,7 +403,57 @@ const ProductDetailScreen = () => {
             <TextSkeleton />
           )}
         </div>
-      </>
+      </div>
+      <div style={{ width: "100%" }}>
+        <Typography
+          style={{
+            color: colors.gray59,
+            fontWeight: "bold",
+            fontSize: 18,
+            borderBottomColor: colors.grayC4,
+            borderBottomWidth: 1,
+          }}
+        >
+          Đánh giá
+        </Typography>
+        {isLoading ? (
+          <CommentSkeleton />
+        ) : (
+          <div>
+            {EXAMPLE_COMMENT.map((e) => {
+              return (
+                <div>
+                  <CardHeader
+                    avatar={
+                      <Avatar
+                        alt="Ted talk"
+                        src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
+                      />
+                    }
+                    action={
+                      <IconButton aria-label="settings">
+                        <MoreVert />
+                      </IconButton>
+                    }
+                    title={"Ted"}
+                    subheader={"Đây là sản phẩm rất tuyệt vời"}
+                  />
+                  <div
+                    style={{
+                      paddingLeft: 50,
+                    }}
+                  >
+                    <IconButton>
+                      <Reply />
+                      <Typography style={{ marginLeft: 5 }}>Trả lời</Typography>
+                    </IconButton>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
       {isLoading && <LoadingProgress />}
     </div>
   );
@@ -364,7 +473,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "40%",
     },
     containerInfo: {
-      width: "50%",
+      width: "45%",
     },
     img: {
       width: "100%",
