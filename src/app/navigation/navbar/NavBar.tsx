@@ -346,6 +346,11 @@ export default function NavBar() {
   );
   const isAdmin = getAdmin();
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ behavior: "smooth", top: 0 });
+  }, [location.pathname]);
+
   return (
     <div className={classes.grow}>
       {isAdmin ? (

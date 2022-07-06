@@ -129,6 +129,8 @@ export interface ProductAdmin {
   category: CategoryAdmin;
   isComplete: boolean;
   productImage: any;
+  minPrice: number;
+  maxPrice: number;
 }
 
 export interface DetailProductAdmin {

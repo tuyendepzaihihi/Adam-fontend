@@ -16,10 +16,7 @@ import {
   LIST_IMAGE_BANNER_SECOND,
 } from "../../contant/Contant";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { getIdAccount } from "../../service/StorageService";
 import { colors } from "../../utils/color";
-import { incrementAsyncCart } from "../cart/slice/CartSlice";
-import { incrementAsyncFilter } from "../product/slice/FilterValueSlice";
 import { incrementAsyncHome } from "./slice/HomeSlice";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,16 +73,9 @@ const HomeScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    dispatch(incrementAsyncFilter());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const getData = async () => {
     try {
       await dispatch(incrementAsyncHome());
-      const idAccount = getIdAccount();
-      if (idAccount) await dispatch(incrementAsyncCart());
     } catch (e) {}
   };
   return (
@@ -218,7 +208,7 @@ const HomeScreen = () => {
           ) : (
             <div className={className.listImage}>
               {[0, 1, 2, 3, 4].map((e) => {
-                return <ProductSkeleton />;
+                return <ProductSkeleton height={400} />;
               })}
             </div>
           )}

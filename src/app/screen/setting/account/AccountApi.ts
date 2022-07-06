@@ -1,3 +1,4 @@
-import { handleGet } from "../../../service/Services";
+import { ApiClient } from "../../../service/ApiService";
 
-export const requestGetUserInfo = () => handleGet("customer/profile");
+export const requestGetAccountById = (payload?: { id: number }) =>
+  ApiClient.get("/account/findById", { params: payload });

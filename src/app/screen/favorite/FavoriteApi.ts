@@ -13,8 +13,10 @@ export interface CreateDto {
 }
 
 // function favorite
-export const requestGetSizeAll = (payload: any) =>
-  ApiClient.get("/admin/favorite/findAll", payload);
+export const requestGetFavoritesByAccount = (payload: { account_id: number }) =>
+  ApiClient.get("/favorite/findProductFavoriteByAccountId", {
+    params: payload,
+  });
 
 export const requestPutUpdateSize = (payload: UpdateDto) =>
   ApiClient.put("/admin/favorite/update", payload);

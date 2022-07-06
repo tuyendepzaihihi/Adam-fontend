@@ -49,6 +49,9 @@ export const userAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -67,5 +70,6 @@ export const userAdminSlice = createSlice({
       });
   },
 });
-export const { createUser, updateUser, deleteUser } = userAdminSlice.actions;
+export const { createUser, updateUser, deleteUser, changeLoading } =
+  userAdminSlice.actions;
 export default userAdminSlice.reducer;

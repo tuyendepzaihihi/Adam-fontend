@@ -5,9 +5,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
 import { Formik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
+import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
 import {
   NAME_REGEX,
@@ -16,13 +23,14 @@ import {
   textValidate,
   TYPE_DIALOG,
 } from "../../../contant/Contant";
-import { UserAdmin } from "../../../contant/IntefaceContaint";
-import { useAppDispatch } from "../../../hooks";
-import { updateUser } from "../slice/UserAdminSlice";
+import { ResultApi, UserAdmin } from "../../../contant/IntefaceContaint";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { changeLoading, createUser } from "../slice/UserAdminSlice";
+import { CreateDto, requestPostCreateUser } from "../UserApi";
 interface Props {
   open: any;
   handleClose: any;
-  anchorElData: any;
+  anchorElData?: { item?: UserAdmin } | null;
   type: number;
   data: UserAdmin[];
 }
@@ -41,6 +49,12 @@ const validateUser = Yup.object({
     .required(textValidate.full_name.require)
     .matches(NAME_REGEX, textValidate.full_name.error_validate)
     .trim(),
+  password: Yup.string()
+    .min(6, textValidate.pass.short)
+    .max(25, textValidate.pass.long)
+    .required(textValidate.pass.require)
+    .trim(),
+  userName: Yup.string().required(textValidate.user_name.require).trim(),
 });
 
 interface PropsCreateUser {
@@ -48,45 +62,62 @@ interface PropsCreateUser {
   phone: string;
   fullname: string;
   position: string;
+  userName: string;
+  password: string;
 }
 const initialValues: PropsCreateUser = {
-  email: "",
-  phone: "",
-  fullname: "",
+  email: "1235name@gmail.com",
+  phone: "0955656521",
+  fullname: "le cu",
   position: "",
+  password: "123456",
+  userName: "lecu",
 };
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, type, data } = props;
-
+  const [position, setPosition] = useState("1");
+  const [showPass, setShowPass] = useState(true);
+  const { isLoading } = useAppSelector((state) => state.userAdmin);
   const onSubmit = (data: {
     email: string;
     phone: string;
     fullname: string;
   }) => {
     const { email, fullname, phone } = data;
-    const item: UserAdmin = {
-      ...anchorElData.item,
-      email: email,
-      fullname: fullname,
-      phone: phone,
-    };
-    dispatch(updateUser({ item: item }));
-    handleClose();
-  };
-
-  const onSubmitCreate = (dataCreate: PropsCreateUser) => {
-    const { email, fullname, phone, position } = dataCreate;
     // const item: UserAdmin = {
-    //   isActive: true,
+    //   ...anchorElData?.item,
     //   email: email,
     //   fullName: fullname,
     //   phoneNumber: phone,
-    //   role: position,
-    //   id: data[data.length - 1].id + 1,
     // };
-    // dispatch(createUser({ item: item }));
+    // dispatch(updateUser({ item: item }));
     handleClose();
+  };
+
+  const onSubmitCreate = async (dataCreate: PropsCreateUser) => {
+    const { email, fullname, phone, password, userName } = dataCreate;
+    try {
+      dispatch(changeLoading(true));
+      const payload: CreateDto = {
+        email: email,
+        fullName: fullname,
+        password: password,
+        phoneNumber: phone,
+        username: userName,
+        role: +position === 1 ? "Admin" : "User",
+      };
+      const res: ResultApi<UserAdmin> = await requestPostCreateUser(payload);
+      dispatch(createUser({ item: res.data }));
+      handleClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
+  const handleChangeRole = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPosition((event.target as HTMLInputElement).value);
   };
 
   return (
@@ -104,9 +135,11 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                email: anchorElData?.item.email ?? "",
-                phone: anchorElData?.item.phone ?? "",
-                fullname: anchorElData?.item.last_name ?? "",
+                email: anchorElData?.item?.email ?? "",
+                phone: anchorElData?.item?.phoneNumber ?? "",
+                fullname: anchorElData?.item?.fullName ?? "",
+                password: anchorElData?.item?.password ?? "",
+                userName: anchorElData?.item?.username ?? "",
               }
         }
         onSubmit={(data) => {
@@ -155,6 +188,45 @@ const FormDialog = (props: Props) => {
                 onChange={handleChange("fullname")}
                 onBlur={handleBlur("fullname")}
               />
+              <TextInputComponent
+                error={errors.userName}
+                touched={touched.userName}
+                value={values.userName}
+                label={"Tên đăng nhập"}
+                onChange={handleChange("userName")}
+                onBlur={handleBlur("userName")}
+              />
+              <TextInputComponent
+                error={errors.password}
+                touched={touched.password}
+                value={values.password}
+                label={"Mật khẩu"}
+                onChange={handleChange("password")}
+                onBlur={handleBlur("password")}
+                type={!showPass ? "text" : "password"}
+              />
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Role</FormLabel>
+                <RadioGroup
+                  aria-label="role"
+                  name="role1"
+                  value={position}
+                  onChange={handleChangeRole}
+                  row
+                  defaultValue={position}
+                >
+                  <FormControlLabel
+                    value="1"
+                    control={<Radio />}
+                    label="Admin"
+                  />
+                  <FormControlLabel
+                    value="2"
+                    control={<Radio />}
+                    label="Customer"
+                  />
+                </RadioGroup>
+              </FormControl>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
@@ -167,6 +239,7 @@ const FormDialog = (props: Props) => {
           </>
         )}
       </Formik>
+      {isLoading && <LoadingProgress />}
     </Dialog>
   );
 };

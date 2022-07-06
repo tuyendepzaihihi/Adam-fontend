@@ -48,6 +48,10 @@ export const textValidate = {
     require: "Please enter a email!",
     error_validate: "Email is error validate!",
   },
+  user_name: {
+    require: "Please enter a User name!",
+    error_validate: "User name is error validate!",
+  },
 };
 
 export const ROUTE = {

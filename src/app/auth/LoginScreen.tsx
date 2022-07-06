@@ -154,11 +154,11 @@ const LoginScreen = () => {
             label={"Password"}
             onChange={formik.handleChange("password")}
             onBlur={formik.handleBlur("password")}
-            rightIcon={showPass ? <Visibility /> : <VisibilityOff />}
+            // rightIcon={showPass ? <Visibility /> : <VisibilityOff />}
             type={!showPass ? "text" : "password"}
-            onRightIcon={() => {
-              setShowPass(!showPass);
-            }}
+            // onRightIcon={() => {
+            //   setShowPass(!showPass);
+            // }}
           />
 
           <p className={className.textForgotPass}>

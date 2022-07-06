@@ -1,21 +1,17 @@
-import React from "react";
+import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import FastfoodIcon from "@material-ui/icons/Fastfood";
 import Timeline from "@material-ui/lab/Timeline";
-import TimelineItem from "@material-ui/lab/TimelineItem";
-import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
 import TimelineConnector from "@material-ui/lab/TimelineConnector";
 import TimelineContent from "@material-ui/lab/TimelineContent";
-import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
-import FastfoodIcon from "@material-ui/icons/Fastfood";
-import LaptopMacIcon from "@material-ui/icons/LaptopMac";
-import HotelIcon from "@material-ui/icons/Hotel";
-import RepeatIcon from "@material-ui/icons/Repeat";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
+import TimelineItem from "@material-ui/lab/TimelineItem";
+import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
+import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
+import { colors } from "../../../utils/color";
 import { History } from "../slice/OrderSlice";
 import { DEFINE_ORDER } from "./ItemOrderComponent";
-import { colors } from "../../../utils/color";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,7 +35,7 @@ export default function TimeLineComponent(props: Props) {
           <TimelineItem key={index}>
             <TimelineOppositeContent>
               <Typography variant="body2" color="textSecondary">
-                {e.time}
+                {e.updateTime}
               </Typography>
             </TimelineOppositeContent>
             <TimelineSeparator>

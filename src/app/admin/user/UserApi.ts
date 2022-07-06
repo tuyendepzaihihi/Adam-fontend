@@ -9,7 +9,9 @@ export interface UpdateDto {
 
 export interface CreateDto {
   email: string;
+  fullName: string;
   password: string;
+  phoneNumber: string;
   role: string;
   username: string;
 }
@@ -25,4 +27,4 @@ export const requestGetUserAll = (payload?: any) =>
 //   ApiClient.delete("/admin/tag/delete", { params: payload });
 
 export const requestPostCreateUser = (payload: CreateDto) =>
-  ApiClient.post("/admin/account/createAccount", payload);
+  ApiClient.post("/admin/account/createAdminAccount", payload);

@@ -70,6 +70,8 @@ const CreateProductDetail = (props: Props) => {
   const handleSubmit = async () => {
     try {
       dispatch(changeLoading(true));
+      console.log({ type });
+
       if (type === TYPE_DIALOG.CREATE) {
         const payload: CreateDto = {
           colorIdList: optionValues.colors,
@@ -79,7 +81,6 @@ const CreateProductDetail = (props: Props) => {
           quantity: 0,
           sizeIdList: optionValues.sizes,
         };
-
         const res: ResultApi<DetailProductAdmin[]> =
           await requestPostCreateDetailProduct(payload);
         setListProductDetail(res.data);

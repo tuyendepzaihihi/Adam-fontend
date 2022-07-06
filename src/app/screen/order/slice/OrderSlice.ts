@@ -8,9 +8,12 @@ import { GetOrderDto, requestGetOrderAll } from "../OrderApi";
 import { ResultApi } from "./../../../contant/IntefaceContaint";
 
 export interface History {
+  description: string;
   id: number;
+  isActive: boolean;
   status: number;
-  time: string;
+  totalPrice: any;
+  updateTime: string;
 }
 
 export interface OrderDto {
@@ -35,6 +38,7 @@ export interface OrderDto {
     ward: DataAddress;
     isActive: boolean;
   };
+  historyOrders: History[];
 }
 export interface DataOrder {
   id: number;

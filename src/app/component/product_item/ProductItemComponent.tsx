@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import R from "../../assets/R";
 import { ROUTE } from "../../contant/Contant";
 import { ProductAdmin } from "../../contant/IntefaceContaint";
@@ -75,7 +75,9 @@ const ProductItemComponent = (props: Props) => {
           >
             {item.productName}
           </Typography>
-          <p className={className.textPrice}>{formatPrice(2500000)} đ</p>
+          <p className={className.textPrice}>
+            {formatPrice(item?.minPrice ?? 0)} đ
+          </p>
         </div>
       </button>
     </Paper>

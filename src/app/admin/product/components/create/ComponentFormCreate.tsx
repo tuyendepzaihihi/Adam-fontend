@@ -127,6 +127,8 @@ const ComponentFormCreate = (props: Props) => {
     let materialList: number[] = [];
     try {
       dispatch(changeLoading(true));
+      console.log({ type });
+
       if (type === TYPE_DIALOG.CREATE) {
         materials.forEach((e) => {
           let res = personMaterial?.find((m) =>

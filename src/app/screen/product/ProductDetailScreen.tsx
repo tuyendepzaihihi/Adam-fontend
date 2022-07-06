@@ -1,16 +1,13 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Avatar,
   Button,
-  CardHeader,
   createStyles,
-  IconButton,
   makeStyles,
+  TextField,
   Theme,
   Typography,
 } from "@material-ui/core";
-import { MoreVert, Reply } from "@material-ui/icons";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
@@ -38,16 +35,36 @@ import { formatPrice } from "../../utils/function";
 import { createNotification } from "../../utils/MessageUtil";
 import { CreateCartDto, requestPostCreateCart } from "../cart/CartApi";
 import { addProductToCart, incrementAsyncCart } from "../cart/slice/CartSlice";
+import CommentComponent, {
+  useCommentStyles,
+} from "./components/detail/CommentComponent";
 import {
   requestGetProductCustomerById,
   requestGetProductDetailByIdProduct,
 } from "./ProductCustomerApi";
 
-const EXAMPLE_COMMENT = [
-  { id: 1, value: "Đây là sản phẩm rất tuyệt vời" },
-  { id: 2, value: "Đây là sản phẩm rất tuyệt vời" },
-  { id: 3, value: "Đây là sản phẩm rất tuyệt vời" },
-  { id: 4, value: "Đây là sản phẩm rất tuyệt vời" },
+export interface ItemComment {
+  id: number;
+  value: string;
+  children?: ItemComment[];
+}
+
+const EXAMPLE_COMMENT: ItemComment[] = [
+  {
+    id: 1,
+    value: "Đây là sản phẩm rất tuyệt vời",
+    children: [{ id: 1, value: "Đây là sản phẩm rất tuyệt vời" }],
+  },
+  {
+    id: 2,
+    value: "Đây là sản phẩm rất tuyệt vời",
+    children: [{ id: 1, value: "Đây là sản phẩm rất tuyệt vời" }],
+  },
+  {
+    id: 3,
+    value: "Đây là sản phẩm rất tuyệt vời",
+    children: [{ id: 1, value: "Đây là sản phẩm rất tuyệt vời" }],
+  },
 ];
 
 export const sortPriceToMax = (array: DetailProductAdmin[]) => {
@@ -94,6 +111,7 @@ interface ProductById {
 
 const ProductDetailScreen = () => {
   const className = useStyles();
+  const classNameComment = useCommentStyles();
   const dispatch = useAppDispatch();
   const state: any = useLocation().state;
   const item: ProductAdmin = state.item;
@@ -103,9 +121,12 @@ const ProductDetailScreen = () => {
   const [listDataFilter, setListDataFilter] = useState<DetailProductAdmin[]>(
     []
   );
+  const [selectedReply, setSelectedReply] = useState<number>(0);
+  const [listComment, setListComment] = useState(EXAMPLE_COMMENT);
   const [dataDetail, setDataDetail] = useState<ProductById | undefined>(
     undefined
   );
+  const [textNewComment, setTextNewComment] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -216,21 +237,16 @@ const ProductDetailScreen = () => {
       });
       return;
     }
-
     try {
       setIsLoading(true);
-
       const idAccount = getIdAccount();
-
       const payload: CreateCartDto = {
         accountId: Number(idAccount),
         detailProductId: dataF?.id ?? 0,
         quantity: count,
         totalPrice: dataF?.price ? count * dataF?.price : 0,
       };
-
       const res: ResultApi<ItemCart> = await requestPostCreateCart(payload);
-
       dispatch(addProductToCart({ item: res.data }));
       setIsLoading(false);
     } catch (e) {
@@ -241,7 +257,7 @@ const ProductDetailScreen = () => {
   return (
     <div style={{ position: "relative" }}>
       <div className={className.container}>
-        {isLoading ? (
+        {!dataF && listDataFilter.length === 0 ? (
           <div className={className.containerImage}>
             <ProductSkeleton width={"100%"} height={260} />
           </div>
@@ -261,7 +277,7 @@ const ProductDetailScreen = () => {
           </div>
         )}
         <div style={{ width: "8%" }}>
-          {!isLoading ? (
+          {listDataFilter.length > 0 ? (
             listDataFilter.map((e, index) => {
               return (
                 <button key={index} style={{ width: "100%", marginBottom: 10 }}>
@@ -285,7 +301,7 @@ const ProductDetailScreen = () => {
         </div>
 
         <div className={className.containerInfo}>
-          {isLoading ? (
+          {!dataDetail ? (
             <TextSkeleton />
           ) : (
             <p className={className.title}>
@@ -295,7 +311,7 @@ const ProductDetailScreen = () => {
             </p>
           )}
 
-          {isLoading ? (
+          {!dataF && !dataDetail ? (
             <TextSkeleton />
           ) : (
             <p className={className.price}>
@@ -308,7 +324,7 @@ const ProductDetailScreen = () => {
             </p>
           )}
 
-          {isLoading ? (
+          {!dataDetail ? (
             <TextSkeleton />
           ) : (
             dataDetail?.options.map((option, index) => {
@@ -384,7 +400,7 @@ const ProductDetailScreen = () => {
             </Button>
           )}
 
-          {!isLoading ? (
+          {dataDetail ? (
             <div className={className.containerDescription}>
               <p
                 className={className.price}
@@ -412,43 +428,91 @@ const ProductDetailScreen = () => {
             fontSize: 18,
             borderBottomColor: colors.grayC4,
             borderBottomWidth: 1,
+            marginTop: 20,
           }}
         >
           Đánh giá
         </Typography>
-        {isLoading ? (
+        {listComment.length === 0 ? (
           <CommentSkeleton />
         ) : (
           <div>
-            {EXAMPLE_COMMENT.map((e) => {
-              return (
-                <div>
-                  <CardHeader
-                    avatar={
-                      <Avatar
-                        alt="Ted talk"
-                        src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
-                      />
-                    }
-                    action={
-                      <IconButton aria-label="settings">
-                        <MoreVert />
-                      </IconButton>
-                    }
-                    title={"Ted"}
-                    subheader={"Đây là sản phẩm rất tuyệt vời"}
-                  />
-                  <div
-                    style={{
-                      paddingLeft: 50,
+            <div className={classNameComment.containerComment}>
+              <p
+                style={{
+                  color: colors.gray59,
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              >
+                Hãy viết ra cảm nhận của bạn
+              </p>
+              <TextField
+                value={textNewComment}
+                onChange={(event) => setTextNewComment(event.target.value)}
+                placeholder={"Trả lời..."}
+                className={classNameComment.inputStyle}
+                variant="outlined"
+              />
+              {textNewComment.length > 0 && (
+                <div
+                  className={classNameComment.containerButton}
+                  style={{ marginTop: 10 }}
+                >
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => setTextNewComment("")}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={classNameComment.containerComment}
+                    onClick={() => {
+                      let newItem: ItemComment = {
+                        id: Math.random(),
+                        value: textNewComment,
+                        children: [],
+                      };
+
+                      setListComment(listComment.concat(newItem));
+                      setTextNewComment("");
                     }}
                   >
-                    <IconButton>
-                      <Reply />
-                      <Typography style={{ marginLeft: 5 }}>Trả lời</Typography>
-                    </IconButton>
-                  </div>
+                    Submit
+                  </Button>
                 </div>
+              )}
+            </div>
+            {listComment.map((e, index) => {
+              const isSelected = e.id === selectedReply;
+              return (
+                <CommentComponent
+                  item={e}
+                  key={index}
+                  isSelected={isSelected}
+                  onSelected={(id: number) => {
+                    setSelectedReply(id);
+                  }}
+                  onSubmit={(item: ItemComment, text: string) => {
+                    const newArray = listComment.map((e) => {
+                      if (e.id === item.id) {
+                        let newItem: ItemComment = {
+                          id: Math.random(),
+                          value: text,
+                        };
+                        return {
+                          ...e,
+                          children: [newItem].concat(e?.children ?? []),
+                        };
+                      } else return e;
+                    });
+                    setListComment(newArray);
+                    setSelectedReply(0);
+                  }}
+                />
               );
             })}
           </div>

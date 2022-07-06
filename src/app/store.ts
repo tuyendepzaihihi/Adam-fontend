@@ -17,6 +17,7 @@ import AddressSlice from "./screen/setting/address/slice/AddressSlice";
 import ProvinceSlice from "./screen/setting/address/slice/ProvinceSlice";
 import AccountSlice from "./screen/setting/account/slice/AccountSlice";
 import OrderAdminSlice from "./admin/order/slice/OrderAdminSlice";
+import FavoritesSlice from "./screen/favorite/slice/FavoritesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ export const store = configureStore({
     provinceSlice: ProvinceSlice,
     userSlice: AccountSlice,
     orderAdmin: OrderAdminSlice,
+    favoritesSlice: FavoritesSlice,
   },
 });
 

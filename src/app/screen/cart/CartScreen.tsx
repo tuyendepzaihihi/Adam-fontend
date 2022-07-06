@@ -110,8 +110,7 @@ const CartScreen = () => {
       fullName: address.dataSelected?.fullName,
       phoneNumber: address.dataSelected?.phoneNumber,
       salePrice: checkDiscount(),
-      amountPrice: checkTotal(),
-      totalPrice: checkTotal() - checkDiscount(),
+      totalPrice: checkTotal(),
     };
     try {
       dispatch(changeLoading(true));

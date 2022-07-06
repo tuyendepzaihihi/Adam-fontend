@@ -1,5 +1,7 @@
+import { ResultApi } from "./../../../../contant/IntefaceContaint";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UserAdmin } from "../../../../contant/IntefaceContaint";
+import { requestGetAccountById } from "../AccountApi";
 
 interface DataState<T> {
   data?: T;
@@ -12,8 +14,9 @@ const initialState: DataState<UserAdmin> = {
   isLoading: false,
 };
 
-export const getUserInfo = createAsyncThunk("account", async () => {
-  return true;
+export const getUserInfo = createAsyncThunk("account", async (id: number) => {
+  const res: ResultApi<UserAdmin> = await requestGetAccountById({ id: id });
+  return res;
 });
 
 export const accountSlice = createSlice({
@@ -33,6 +36,7 @@ export const accountSlice = createSlice({
       .addCase(getUserInfo.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
+        state.data = action.payload.data;
       })
       .addCase(getUserInfo.rejected, (state) => {
         state.isError = true;

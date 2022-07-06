@@ -9,7 +9,6 @@ export interface CreateOrderDto {
   accountId?: number;
   addressDetail?: string;
   addressId?: number;
-  amountPrice?: number;
   cartItemIdList?: number[];
   fullName?: string;
   phoneNumber?: string;

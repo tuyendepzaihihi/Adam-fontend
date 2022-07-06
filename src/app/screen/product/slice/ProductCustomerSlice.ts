@@ -21,9 +21,8 @@ const initialState: ProductCustomer = {
 export const incrementAsyncProduct = createAsyncThunk(
   "Product/getImage",
   async (params: FilterProductDto) => {
-    const res: ResultApi<ProductAdmin[]> = await requestGetProductCustomer(
-      params
-    );
+    const res: ResultApi<{ content: ProductAdmin[]; totalElements: number }> =
+      await requestGetProductCustomer(params);
     return res;
   }
 );
@@ -39,10 +38,10 @@ export const ProductSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(incrementAsyncProduct.fulfilled, (state, action) => {
-        state.data = action.payload.data;
+        state.data = action.payload.data.content;
         state.isError = false;
         state.isLoading = false;
-        state.count = action.payload.data.length;
+        state.count = action.payload.data.totalElements;
       })
       .addCase(incrementAsyncProduct.rejected, (state) => {
         state.isError = true;

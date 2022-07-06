@@ -245,7 +245,9 @@ export default function UserScreen() {
                         </TableCell>
                         <TableCell align="right">{row.email}</TableCell>
                         <TableCell align="right">{row.phoneNumber}</TableCell>
-                        <TableCell align="right">{row.role}</TableCell>
+                        <TableCell align="right">
+                          {Number(row.role) === 1 ? "Admin" : "User"}
+                        </TableCell>
                         <TableCell align="right">{row.fullName}</TableCell>
                         <TableCell align="right">
                           <Switch
@@ -298,13 +300,13 @@ export default function UserScreen() {
         />
       </Paper>
       {renderMenu}
-      {/* <FormDialog
+      <FormDialog
         open={open}
         handleClose={handleClose}
         anchorElData={anchorElData}
         type={typeDialog}
         data={data}
-      /> */}
+      />
       {isLoading && <LoadingProgress />}
     </div>
   );

@@ -12,6 +12,7 @@ import { ItemCart } from "../../../contant/Contant";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { OrderDto } from "../slice/OrderSlice";
+import TimeLineComponent from "./TimeLineComponent";
 
 interface Props {
   item: OrderDto;
@@ -183,7 +184,7 @@ export default function ItemOrderComponent(props: Props) {
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.detailInformation}>
-          {/* <TimeLineComponent list={item.history} /> */}
+          <TimeLineComponent list={item.historyOrders} />
           <div style={{ paddingTop: 10 }}>
             <div style={{ display: "flex", paddingTop: 5 }}>
               <LocationOn />

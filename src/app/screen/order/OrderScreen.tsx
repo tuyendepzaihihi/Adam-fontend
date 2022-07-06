@@ -97,69 +97,13 @@ export default function OrderScreen() {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab
-            label={
-              <div>
-                Chờ xác nhận
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(0)}
-          />
-          <Tab
-            label={
-              <div>
-                Đã xác nhận
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(1)}
-          />
-          <Tab
-            label={
-              <div>
-                Đang vận chuyển
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(2)}
-          />
-          <Tab
-            label={
-              <div>
-                Đã tới nơi
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(3)}
-          />
-          <Tab
-            label={
-              <div>
-                Thành công
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(4)}
-          />
-          <Tab
-            label={
-              <div>
-                Huỷ
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(5)}
-          />
-          <Tab
-            label={
-              <div>
-                Đơn hoàn lại
-                {/* <div className={classes.containerCountTab}>{5}</div> */}
-              </div>
-            }
-            {...a11yProps(6)}
-          />
+          <Tab label={<div>Chờ xác nhận</div>} {...a11yProps(0)} />
+          <Tab label={<div>Đã xác nhận</div>} {...a11yProps(1)} />
+          <Tab label={<div>Đang vận chuyển</div>} {...a11yProps(2)} />
+          <Tab label={<div>Đã tới nơi</div>} {...a11yProps(3)} />
+          <Tab label={<div>Thành công</div>} {...a11yProps(4)} />
+          <Tab label={<div>Huỷ</div>} {...a11yProps(5)} />
+          <Tab label={<div>Đơn hoàn lại</div>} {...a11yProps(6)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

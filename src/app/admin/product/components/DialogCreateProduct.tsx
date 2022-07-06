@@ -174,6 +174,7 @@ const FormDialogProductCreate = (props: Props) => {
             validateProduct={validateProduct}
             dataProduct={dataProduct}
             options={dataOption}
+            type={type}
           />
         );
       case 1:
@@ -185,6 +186,7 @@ const FormDialogProductCreate = (props: Props) => {
             option={option}
             setOption={setOption}
             setListProductDetail={setListProductDetail}
+            type={type}
           />
         );
       case 2:
