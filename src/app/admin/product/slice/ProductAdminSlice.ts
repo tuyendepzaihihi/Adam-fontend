@@ -41,14 +41,16 @@ export const productAdminSlice = createSlice({
     createProduct: (state, action) => {
       let item: ProductAdmin = action.payload?.item;
       state.data = [item].concat(state.data);
+      state.count = state.count + 1;
     },
     deleteProduct: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: ProductAdmin[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
+
       createNotification({
         type: "success",
         message: "Xoá thành công",

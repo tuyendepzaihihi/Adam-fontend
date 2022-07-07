@@ -24,13 +24,21 @@ import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsProduct } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { ProductAdmin } from "../../contant/IntefaceContaint";
+import { ProductAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
-import { deleteTag } from "../tag/slice/TagAdminSlice";
 import FormDialogProductCreate from "./components/DialogCreateProduct";
-import { GetProductDto } from "./ProductAdminApi";
-import { incrementAsyncProductAdmin } from "./slice/ProductAdminSlice";
+import {
+  GetProductDto,
+  requestDeleteProduct,
+  requestPutUpdateProduct,
+  UpdateProductDto,
+} from "./ProductAdminApi";
+import {
+  changeLoading,
+  deleteProduct,
+  incrementAsyncProductAdmin,
+} from "./slice/ProductAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -98,7 +106,25 @@ export default function ProductScreen() {
     setAnchorElData(null);
   };
 
-  const handleUpdate = (row: ProductAdmin) => {};
+  const handleUpdate = async (row: ProductAdmin) => {
+    const payload: UpdateProductDto = {
+      isActive: !row.isActive,
+      id: row.id,
+    };
+    const res: ResultApi<ProductAdmin> = await requestPutUpdateProduct(payload);
+  };
+
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteProduct({ listProductId: array });
+      dispatch(deleteProduct({ array: array.map((e) => e.toString()) }));
+      setSelected([]);
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
 
   const createSortHandler =
     (property: keyof ProductAdmin) => (event: React.MouseEvent<unknown>) => {
@@ -143,9 +169,7 @@ export default function ProductScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          console.log({ anchorElData });
-        }}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -180,10 +204,7 @@ export default function ProductScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteTag({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete(selected.map((e) => +e))}
           label={"Quản lý Product"}
         />
         <TableContainer>
@@ -243,15 +264,15 @@ export default function ProductScreen() {
                         scope="row"
                         padding="none"
                       >
-                        {row.id}
+                        {row?.id}
                       </TableCell>
-                      <TableCell align="right">{row.productName}</TableCell>
-                      <TableCell align="right">{row.createDate}</TableCell>
+                      <TableCell align="right">{row?.productName}</TableCell>
+                      <TableCell align="right">{row?.createDate}</TableCell>
 
                       <TableCell align="right">
                         <Switch
-                          checked={row.isActive ?? false}
-                          onChange={() => {}}
+                          checked={row?.isActive}
+                          onChange={() => handleUpdate(row)}
                           name={labelId}
                           inputProps={{ "aria-label": labelId }}
                           color="primary"
@@ -259,7 +280,7 @@ export default function ProductScreen() {
                       </TableCell>
                       <TableCell align="right">
                         <Switch
-                          checked={row.isComplete}
+                          checked={row?.isComplete}
                           name={labelId}
                           inputProps={{ "aria-label": labelId }}
                           color="primary"

@@ -23,8 +23,8 @@ export const requestGetUserAll = (payload?: any) =>
 // export const requestPutUpdateTag = (payload: UpdateDto) =>
 //   ApiClient.put("/admin/tag/update", payload);
 
-// export const requestDeleteTag = (payload: { tag_id: number }) =>
-//   ApiClient.delete("/admin/tag/delete", { params: payload });
+export const requestDeleteUser = (payload: { accountIdList: number[] }) =>
+  ApiClient.put("/admin/account/deleteByArrayId", payload);
 
 export const requestPostCreateUser = (payload: CreateDto) =>
   ApiClient.post("/admin/account/createAdminAccount", payload);

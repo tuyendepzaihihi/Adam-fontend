@@ -131,33 +131,32 @@ export default function TagScreen() {
     setAnchorElData({ item: item });
   };
 
-  const handleDelete = async (params: { array: string[] }) => {
-    const { array } = params;
+  const handleDelete = async (array: number[]) => {
     try {
-      dispatch(changeLoading({ statusLoading: true }));
-      array.map(async (e) => {
-        await requestDeleteTag({ tag_id: +e });
-      });
+      dispatch(changeLoading(true));
+
+      await requestDeleteTag({ tagIdList: array });
+
       dispatch(deleteTag({ array }));
       setSelected([]);
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     } catch (e) {
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     }
   };
 
   const handleUpdate = async (row: any) => {
     const payload: UpdateDto = {
       ...row,
-      isDelete: !row.isDelete,
+      isActive: !row.isActive,
     };
     try {
-      dispatch(changeLoading({ statusLoading: true }));
+      dispatch(changeLoading(true));
       const res: ResultApi<Tag> = await requestPutUpdateTag(payload);
       dispatch(updateTag({ item: res.data }));
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     } catch (e) {
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     }
   };
 
@@ -172,7 +171,7 @@ export default function TagScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => handleDelete({ array: [`${anchorElData?.item.id}`] })}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -207,7 +206,7 @@ export default function TagScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => handleDelete({ array: selected })}
+          onDelete={() => handleDelete(selected.map((e) => +e))}
           label={"Quản lý Tag"}
           isNonSearchTime={true}
         />
@@ -276,7 +275,7 @@ export default function TagScreen() {
 
                         <TableCell align="right">
                           <Switch
-                            checked={row.isDelete ? true : false}
+                            checked={row.isActive}
                             onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}

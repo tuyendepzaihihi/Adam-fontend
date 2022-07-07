@@ -29,10 +29,12 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
 import {
+  changeLoading,
   deleteUser,
   incrementAsyncUserAdmin,
   updateUser,
 } from "./slice/UserAdminSlice";
+import { requestDeleteUser } from "./UserApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -128,6 +130,18 @@ export default function UserScreen() {
     setAnchorElData({ item: item });
   };
 
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteUser({ accountIdList: array });
+      dispatch(deleteUser({ array: array.map((e) => e.toString()) }));
+      setSelected([]);
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -139,9 +153,7 @@ export default function UserScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          console.log({ anchorElData });
-        }}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -176,10 +188,7 @@ export default function UserScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteUser({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete(selected.map((e) => +e))}
           label={"Quản lý user"}
         />
         <TableContainer>

@@ -171,18 +171,15 @@ export default function OptionScreen() {
     setAnchorElDataSize({ item: item });
   };
 
-  const handleDeleteSize = async (params: { array: string[] }) => {
-    const { array } = params;
+  const handleDeleteSize = async (array: number[]) => {
     try {
-      dispatch(changeLoading({ statusLoading: true }));
-      array.map(async (e) => {
-        await requestDeleteSize({ size_id: +e });
-      });
-      dispatch(deleteSize({ array }));
+      dispatch(changeLoading(true));
+      await requestDeleteSize({ listSizeId: array });
+      dispatch(deleteSize({ array: array.map((e) => e.toString()) }));
       setSelectedSize([]);
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     } catch (e) {
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     }
   };
 
@@ -245,39 +242,48 @@ export default function OptionScreen() {
     setAnchorElDataColor({ item: item });
   };
 
-  const handleDeleteColor = async (params: { array: string[] }) => {
-    const { array } = params;
+  const handleDeleteColor = async (array: number[]) => {
     try {
-      array.map(async (e) => {
-        await requestDeleteColor({ color_id: +e });
-      });
-      dispatch(deleteColor({ array }));
+      dispatch(changeLoading(true));
+      await requestDeleteColor({ listColorId: array });
+      dispatch(deleteColor({ array: array.map((e) => e.toString()) }));
       setSelectedColor([]);
-    } catch (e) {}
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const handleUpdateColor = async (params: { row: OptionColor }) => {
     const { row } = params;
     try {
+      dispatch(changeLoading(true));
       const payload: UpdateColorDto = {
         ...row,
         isActive: !row.isActive,
       };
       const res: ResultApi<OptionColor> = await requestPutUpdateColor(payload);
       dispatch(updateColor({ item: res.data }));
-    } catch (e) {}
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const handleUpdateSize = async (params: { row: OptionSize }) => {
     const { row } = params;
     try {
+      dispatch(changeLoading(true));
       const payload: OptionSize = {
         ...row,
         isActive: !row.isActive,
       };
       const res: ResultApi<OptionSize> = await requestPutUpdateSize(payload);
       dispatch(updateSize({ item: res.data }));
-    } catch (e) {}
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const renderMenu = (
@@ -291,9 +297,7 @@ export default function OptionScreen() {
       onClose={handleMenuCloseSize}
     >
       <MenuItem
-        onClick={() =>
-          handleDeleteSize({ array: [`${anchorElDataSize?.item.id}`] })
-        }
+        onClick={() => handleDeleteSize([anchorElDataColor?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -330,9 +334,7 @@ export default function OptionScreen() {
       onClose={handleMenuCloseColor}
     >
       <MenuItem
-        onClick={() =>
-          handleDeleteColor({ array: [`${anchorElDataColor?.item.id}`] })
-        }
+        onClick={() => handleDeleteColor([anchorElDataColor?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -391,9 +393,22 @@ export default function OptionScreen() {
                   style={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
                   }}
                 >
+                  {selectedColor.length > 0 ? (
+                    <Tooltip title={"Xoá"}>
+                      <IconButton
+                        onClick={() =>
+                          handleDeleteColor(selectedColor.map((e) => +e))
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                    <div />
+                  )}
                   <Button
                     variant="contained"
                     color="primary"
@@ -560,12 +575,22 @@ export default function OptionScreen() {
                   style={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {/* <IconButton>
-                    <Delete />
-                  </IconButton> */}
+                  {selectedSize.length > 0 ? (
+                    <Tooltip title={"Xoá"}>
+                      <IconButton
+                        onClick={() =>
+                          handleDeleteSize(selectedSize.map((e) => +e))
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  ) : (
+                    <div />
+                  )}
                   <Button
                     variant="contained"
                     color="primary"

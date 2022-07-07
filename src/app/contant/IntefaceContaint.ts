@@ -79,11 +79,13 @@ export interface Material {
   id: any;
   materialName: string;
   isDelete: boolean;
+  isActive: boolean;
 }
 export interface Tag {
   id: any;
   tagName: string;
   isDelete: boolean;
+  isActive: boolean;
 }
 export interface Branch {
   id: any;

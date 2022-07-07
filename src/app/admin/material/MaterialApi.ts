@@ -2,9 +2,9 @@ import { ApiClient } from "../../service/ApiService";
 // interface
 export interface UpdateDto {
   id: number;
-  isDelete: boolean;
+  isActive: boolean;
   materialName: string;
-  status: boolean;
+  isDelete: boolean;
 }
 
 export interface CreateDto {
@@ -18,8 +18,8 @@ export const requestGetMaterialAll = (payload?: any) =>
 export const requestPutUpdateMaterial = (payload: UpdateDto) =>
   ApiClient.put("/admin/material/update", payload);
 
-export const requestDeleteMaterial = (payload: { material_id: number }) =>
-  ApiClient.delete("/admin/material/delete", { params: payload });
+export const requestDeleteMaterial = (payload: { listMaterialId: number[] }) =>
+  ApiClient.delete("/admin/material/deleteByListId", { data: payload });
 
 export const requestPostCreateMaterial = (payload: CreateDto) =>
   ApiClient.post("/admin/material/create", payload);

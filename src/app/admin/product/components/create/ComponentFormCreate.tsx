@@ -28,7 +28,7 @@ import {
   CreateProductDto,
   requestPostCreateProduct,
 } from "../../ProductAdminApi";
-import { changeLoading } from "../../slice/ProductAdminSlice";
+import { changeLoading, createProduct } from "../../slice/ProductAdminSlice";
 import { DataOptionProduct, PropsCreateProduct } from "../DialogCreateProduct";
 
 const ITEM_HEIGHT = 50;
@@ -127,7 +127,6 @@ const ComponentFormCreate = (props: Props) => {
     let materialList: number[] = [];
     try {
       dispatch(changeLoading(true));
-      console.log({ type });
 
       if (type === TYPE_DIALOG.CREATE) {
         materials.forEach((e) => {
@@ -142,6 +141,7 @@ const ComponentFormCreate = (props: Props) => {
           let res = personTag?.find((m) => m.includes(`${e.tagName}`));
           if (res !== undefined) tagsList = tagsList.concat([e.id]);
         });
+        console.log({ tagsList }, { materialList });
 
         const itemCreate: CreateProductDto = {
           categoryId: Number(categoryChildren) ?? 0,
@@ -155,6 +155,7 @@ const ComponentFormCreate = (props: Props) => {
           itemCreate
         );
         onSubmit(res.data);
+        dispatch(createProduct({ item: res.data }));
       } else if (type === TYPE_DIALOG.UPDATE) {
       }
       dispatch(changeLoading(false));
@@ -221,11 +222,18 @@ const ComponentFormCreate = (props: Props) => {
                   <option key={0} value={0}>
                     Chưa chọn
                   </option>
-                  {categories.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.categoryName}
-                    </option>
-                  ))}
+                  {categories
+                    .filter(
+                      (e) =>
+                        e.isActive === true &&
+                        e?.categoryChildren &&
+                        e?.categoryChildren?.length > 0
+                    )
+                    .map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.categoryName}
+                      </option>
+                    ))}
                 </>
               }
             />
@@ -243,11 +251,13 @@ const ComponentFormCreate = (props: Props) => {
                     <option key={0} value={0}>
                       Chưa chọn
                     </option>
-                    {categoriesChil.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.categoryName}
-                      </option>
-                    ))}
+                    {categoriesChil
+                      .filter((e) => e.isActive === true)
+                      .map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.categoryName}
+                        </option>
+                      ))}
                   </>
                 }
               />
@@ -275,24 +285,26 @@ const ComponentFormCreate = (props: Props) => {
                   )}
                   MenuProps={MenuProps}
                 >
-                  {tags.map((tag, index) => (
-                    <MenuItem
-                      key={index}
-                      value={tag.tagName}
-                      style={{
-                        marginTop: 5,
-                        marginRight: 5,
-                        marginLeft: 5,
-                        backgroundColor: personTag?.find(
-                          (e) => e === `${tag.tagName}`
-                        )
-                          ? colors.orange
-                          : colors.white,
-                      }}
-                    >
-                      {tag.tagName}
-                    </MenuItem>
-                  ))}
+                  {tags
+                    .filter((e) => e.isActive === true)
+                    .map((tag, index) => (
+                      <MenuItem
+                        key={index}
+                        value={tag.tagName}
+                        style={{
+                          marginTop: 5,
+                          marginRight: 5,
+                          marginLeft: 5,
+                          backgroundColor: personTag?.find(
+                            (e) => e === `${tag.tagName}`
+                          )
+                            ? colors.orange
+                            : colors.white,
+                        }}
+                      >
+                        {tag.tagName}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </div>
@@ -320,24 +332,26 @@ const ComponentFormCreate = (props: Props) => {
                   )}
                   MenuProps={MenuProps}
                 >
-                  {materials.map((material, index) => (
-                    <MenuItem
-                      key={index}
-                      value={material.materialName}
-                      style={{
-                        marginTop: 5,
-                        marginRight: 5,
-                        marginLeft: 5,
-                        backgroundColor: personMaterial?.find(
-                          (e) => e === `${material.materialName}`
-                        )
-                          ? colors.orange
-                          : colors.white,
-                      }}
-                    >
-                      {material.materialName}
-                    </MenuItem>
-                  ))}
+                  {materials
+                    .filter((e) => e.isActive === true)
+                    .map((material, index) => (
+                      <MenuItem
+                        key={index}
+                        value={material.materialName}
+                        style={{
+                          marginTop: 5,
+                          marginRight: 5,
+                          marginLeft: 5,
+                          backgroundColor: personMaterial?.find(
+                            (e) => e === `${material.materialName}`
+                          )
+                            ? colors.orange
+                            : colors.white,
+                        }}
+                      >
+                        {material.materialName}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </div>

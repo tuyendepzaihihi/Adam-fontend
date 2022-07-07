@@ -44,8 +44,8 @@ export const tagAdminSlice = createSlice({
     },
     deleteTag: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: Tag[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
@@ -55,10 +55,10 @@ export const tagAdminSlice = createSlice({
       });
     },
     changeLoading: (state, action) => {
-      state.isLoading = action.payload.statusLoading;
+      state.isLoading = action.payload;
     },
     changeError: (state, action) => {
-      state.isError = action.payload.statusError;
+      state.isError = action.payload;
     },
   },
   extraReducers: (builder) => {

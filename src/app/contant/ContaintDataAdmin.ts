@@ -257,21 +257,10 @@ export const headCellsMaterial: HeadCell<Material>[] = [
     disablePadding: false,
     label: "Material name",
   },
-  { id: "isDelete", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
 ];
 
-export const LIST_MATERIAL: Material[] = [
-  {
-    id: 1,
-    isDelete: true,
-    materialName: "Lụa mềm",
-  },
-  {
-    id: 2,
-    isDelete: true,
-    materialName: "Cotton",
-  },
-];
+export const LIST_MATERIAL: Material[] = [];
 
 export const LIST_BRANCH: Branch[] = [
   {
@@ -336,16 +325,16 @@ export const headCellsOrderAdmin: HeadCell<OrderDto>[] = [
 ];
 
 export const LIST_TAG: Tag[] = [
-  {
-    id: 1,
-    isDelete: false,
-    tagName: "Tag 1",
-  },
-  {
-    id: 2,
-    isDelete: false,
-    tagName: "Tag 2",
-  },
+  // {
+  //   id: 1,
+  //   isDelete: false,
+  //   tagName: "Tag 1",
+  // },
+  // {
+  //   id: 2,
+  //   isDelete: false,
+  //   tagName: "Tag 2",
+  // },
 ];
 
 export const headCellsTag: HeadCell<Tag>[] = [
@@ -361,7 +350,7 @@ export const headCellsTag: HeadCell<Tag>[] = [
     disablePadding: false,
     label: "Tag name",
   },
-  { id: "isDelete", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
 ];
 
 export const OPTIONS_DATA: DataStateOption = {

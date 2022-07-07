@@ -57,7 +57,8 @@ export interface PropsCreateProduct {
 }
 const initialValues: PropsCreateProduct = {
   product_name: "",
-  description: "",
+  description:
+    "Kiểu dáng: Anh Quốc hai khuy, ve notch, sang trọng cách tân dựa trên tỷ lệ hình thể người đàn ông Việt Nam giúp bộ đồ trông sang trọng nhưng vẫn giữ được sự trẻ trung và hạn chế khuyết điểm.",
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -160,6 +161,7 @@ const FormDialogProductCreate = (props: Props) => {
 
   const handleReset = () => {
     setActiveStep(0);
+    setDataProduct(null);
   };
 
   function getStepContent(stepIndex: number) {
@@ -196,6 +198,7 @@ const FormDialogProductCreate = (props: Props) => {
               onClose();
             }}
             listDetail={listProductDetail}
+            dataProduct={dataProduct}
           />
         );
       default:

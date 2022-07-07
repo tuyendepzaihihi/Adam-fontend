@@ -22,6 +22,7 @@ import {
 import { ResultApi } from "../contant/IntefaceContaint";
 import { setIdAccount, setToken } from "../service/StorageService";
 import { colors } from "../utils/color";
+import { createNotification } from "../utils/MessageUtil";
 import { RegisterDto, requestPostRegister, ResultLogin } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -139,6 +140,7 @@ const RegisterScreen = () => {
       setToken(res.data.token);
       setIdAccount(`${res.data.id}`);
       navigate(ROUTE.HOME);
+      createNotification({ message: "Đăng ký thành công", type: "success" });
       setLoading(false);
     } catch (e) {
       setLoading(false);

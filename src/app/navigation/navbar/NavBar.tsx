@@ -70,9 +70,11 @@ export default function NavBar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const getDataInit = async () => {
-    dispatch(incrementAsyncFilter());
-    if (getIdAccount()) {
-      await dispatch(incrementAsyncCart());
+    if (getAdmin() === null) {
+      dispatch(incrementAsyncFilter());
+      if (getIdAccount()) {
+        await dispatch(incrementAsyncCart());
+      }
     }
   };
 

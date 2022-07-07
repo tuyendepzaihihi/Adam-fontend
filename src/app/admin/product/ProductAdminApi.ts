@@ -67,17 +67,28 @@ export interface GetProductDto {
   size: number;
 }
 
+export interface UpdateProductDto {
+  // categoryId: number;
+  // description: string;
+  id: number;
+  // image: string;
+  isActive: boolean;
+  // materialProductIds: number[];
+  // productName: string;
+  // tagProductIds: number[];
+}
+
 // function product detail
 export const requestGetProductAll = (payload: GetProductDto) =>
   ApiClient.get("/admin/product/findAllByPageble", { params: payload });
 export const requestGetOptionById = (payload: { id: number }) =>
   ApiClient.get("/admin/product/findOptionProductById", { params: payload });
 
-export const requestPutUpdateProduct = (payload: UpdateDto) =>
+export const requestPutUpdateProduct = (payload: UpdateProductDto) =>
   ApiClient.put("/admin/product/update", payload);
 
-export const requestDeleteProduct = (payload?: any) =>
-  ApiClient.delete("/admin/product/delete", { params: payload });
+export const requestDeleteProduct = (payload?: { listProductId: number[] }) =>
+  ApiClient.delete("/admin/product/deleteByListId", { data: payload });
 
 export const requestPostCreateProduct = (payload: CreateProductDto) =>
   ApiClient.post("/admin/product/createArrayOptionValueProduct", payload);

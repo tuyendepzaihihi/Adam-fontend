@@ -20,8 +20,8 @@ export const requestGetCategoryAll = () =>
 export const requestPutUpdateCategory = (payload: UpdateDto) =>
   ApiClient.put("/admin/category/update", payload);
 
-export const requestDeleteCategory = (payload: { category_id: number }) =>
-  ApiClient.delete("/admin/category/delete", { params: payload });
+export const requestDeleteCategory = (payload: { listCategoryId: number[] }) =>
+  ApiClient.delete("/admin/category/deleteByListId", { data: payload });
 
 export const requestPostCreateCategory = (payload: CreateDto) =>
   ApiClient.post("/admin/category/create", payload);

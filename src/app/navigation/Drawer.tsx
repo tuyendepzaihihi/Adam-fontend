@@ -155,7 +155,9 @@ export default function MiniDrawer(props: Props) {
               </ListItem>
             );
           })}
-          <button
+
+          <ListItem
+            button
             onClick={() => {
               localStorage.clear();
               dispatch(updateSwitchRole(false));
@@ -163,28 +165,26 @@ export default function MiniDrawer(props: Props) {
               setDrawer(`${LIST_MENU_DRAWER.length + 1}`);
             }}
           >
-            <ListItem button>
-              <ListItemIcon>
-                <Logout
-                  style={{
-                    color:
-                      Number(selected) === LIST_MENU_DRAWER.length + 1
-                        ? "blue"
-                        : colors.grayC4,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText
-                primary={"Đăng xuất"}
+            <ListItemIcon>
+              <Logout
                 style={{
                   color:
                     Number(selected) === LIST_MENU_DRAWER.length + 1
-                      ? colors.black
+                      ? "blue"
                       : colors.grayC4,
                 }}
               />
-            </ListItem>
-          </button>
+            </ListItemIcon>
+            <ListItemText
+              primary={"Đăng xuất"}
+              style={{
+                color:
+                  Number(selected) === LIST_MENU_DRAWER.length + 1
+                    ? colors.black
+                    : colors.grayC4,
+              }}
+            />
+          </ListItem>
         </List>
       </Drawer>
     </div>

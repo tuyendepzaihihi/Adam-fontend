@@ -22,12 +22,15 @@ import React, { useState } from "react";
 import EmptyComponent from "../../../component/EmptyComponent";
 
 import EnhancedTableHead from "../../../component/EnhancedTableHead";
+import LoadingProgress from "../../../component/LoadingProccess";
 import { headCellsCategory } from "../../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { CategoryAdmin } from "../../../contant/IntefaceContaint";
-import { useAppDispatch } from "../../../hooks";
+import { CategoryAdmin, ResultApi } from "../../../contant/IntefaceContaint";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { FunctionUtil, Order } from "../../../utils/function";
+import { requestPutUpdateCategory, UpdateDto } from "../CategoryApi";
 import {
+  changeLoading,
   deleteCategoryChilden,
   updateCategoryChilden,
 } from "../slice/CategoryAdminSlice";
@@ -75,6 +78,7 @@ export default function CategoryChildrenComponent(props: Props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { isLoading } = useAppSelector((e) => e.categoryAdmin);
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: CategoryAdmin;
   }>(null);
@@ -125,12 +129,24 @@ export default function CategoryChildrenComponent(props: Props) {
     setAnchorElData({ item: item });
   };
 
-  const handleChangeStatus = (row: CategoryAdmin, id: number) => {
-    let item = {
-      ...row,
-      isDeleted: !row.isDeleted,
-    };
-    dispatch(updateCategoryChilden({ item: item, id: id }));
+  const handleChangeStatus = async (row: CategoryAdmin, parentId: number) => {
+    try {
+      const item: UpdateDto = {
+        id: row.id,
+        categoryName: row.categoryName,
+        isDelete: row.isDeleted,
+        categoryParentId: parentId,
+        isActive: !row.isActive,
+      };
+      dispatch(changeLoading(true));
+      const res: ResultApi<CategoryAdmin> = await requestPutUpdateCategory(
+        item
+      );
+      dispatch(updateCategoryChilden({ item: res.data, id: parentId }));
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const handleDelete = (array: any[]) => {
@@ -269,7 +285,7 @@ export default function CategoryChildrenComponent(props: Props) {
                           </TableCell>
                           <TableCell align="right">
                             <Switch
-                              checked={row.isDeleted ? row.isDeleted : false}
+                              checked={row.isActive}
                               onChange={() =>
                                 handleChangeStatus(row, category_parent_id)
                               }
@@ -324,6 +340,7 @@ export default function CategoryChildrenComponent(props: Props) {
         isParent={false}
         category_parent_id={category_parent_id}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

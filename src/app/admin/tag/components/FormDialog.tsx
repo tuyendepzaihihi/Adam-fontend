@@ -50,13 +50,13 @@ const FormDialog = (props: Props) => {
       tagName: tag_name,
     };
     try {
-      dispatch(changeLoading({ statusLoading: true }));
+      dispatch(changeLoading(true));
       const res: ResultApi<Tag> = await requestPutUpdateTag(item);
       dispatch(updateTag({ item: res.data }));
       handleClose();
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     } catch (e) {
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     }
   };
 
@@ -66,13 +66,13 @@ const FormDialog = (props: Props) => {
       tagName: tag_name,
     };
     try {
-      dispatch(changeLoading({ statusLoading: true }));
+      dispatch(changeLoading(true));
       const res: ResultApi<Tag> = await requestPostCreateTag(itemCreate);
       dispatch(createTag({ item: res.data }));
       handleClose();
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     } catch (e) {
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     }
   };
 

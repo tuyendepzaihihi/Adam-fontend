@@ -14,7 +14,7 @@ import { useState } from "react";
 import { LIST_PRODUCT_DETAIL } from "../../../../contant/ContaintDataAdmin";
 import {
   DetailProductAdmin,
-  ResultApi,
+  ProductAdmin,
 } from "../../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../../hooks";
 import { formatPrice, FunctionUtil } from "../../../../utils/function";
@@ -22,15 +22,16 @@ import {
   requestPutUpdateDetailProductList,
   UpdateListDetailProductDto,
 } from "../../ProductAdminApi";
-import { changeLoading } from "../../slice/ProductAdminSlice";
+import { changeLoading, updateProduct } from "../../slice/ProductAdminSlice";
 import FormEditProductDetail from "./components/FormEditProductDetail";
 
 interface Props {
   onSubmit: Function;
   listDetail?: DetailProductAdmin[];
+  dataProduct?: ProductAdmin | null;
 }
 const ListProductDetail = (props: Props) => {
-  const { onSubmit, listDetail } = props;
+  const { onSubmit, listDetail, dataProduct } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [listProductDetail, setListProductDetail] = useState(
@@ -83,6 +84,8 @@ const ListProductDetail = (props: Props) => {
       await requestPutUpdateDetailProductList({
         newDetailProductDTOList: listPayload,
       });
+      dataProduct &&
+        dispatch(updateProduct({ item: { ...dataProduct, isComplete: true } }));
       onSubmit();
       dispatch(changeLoading(false));
     } catch (e) {

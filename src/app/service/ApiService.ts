@@ -1,4 +1,3 @@
-import { data } from "./../admin/dashboard/DashboardScreen";
 import { useNavigate } from "react-router";
 import { createNotification } from "../utils/MessageUtil";
 import { ROUTE } from "./../contant/Contant";

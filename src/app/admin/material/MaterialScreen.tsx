@@ -28,7 +28,11 @@ import { Material, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { requestPutUpdateMaterial, UpdateDto } from "./MaterialApi";
+import {
+  requestDeleteMaterial,
+  requestPutUpdateMaterial,
+  UpdateDto,
+} from "./MaterialApi";
 import {
   changeLoading,
   deleteMaterial,
@@ -131,24 +135,31 @@ export default function MaterialScreen() {
     setAnchorElData({ item: item });
   };
 
-  const handleUpdate = async (row: any) => {
+  const handleUpdate = async (row: Material) => {
     const payload: UpdateDto = {
       ...row,
-      isDelete: !row.isDelete,
+      isActive: !row.isActive,
     };
     try {
-      dispatch(changeLoading({ statusLoading: true }));
+      dispatch(changeLoading(true));
       const res: ResultApi<Material> = await requestPutUpdateMaterial(payload);
       dispatch(updateMaterial({ item: res.data }));
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     } catch (e) {
-      dispatch(changeLoading({ statusLoading: false }));
+      dispatch(changeLoading(false));
     }
   };
 
-  const handleDelete = (params: { array: any[] }) => {
-    const { array } = params;
-    dispatch(deleteMaterial({ array: array }));
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteMaterial({ listMaterialId: array });
+      dispatch(deleteMaterial({ array: array.map((e) => e.toString()) }));
+      setSelected([]);
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const renderMenu = (
@@ -161,10 +172,7 @@ export default function MaterialScreen() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem
-        onClick={() => handleDelete({ array: [`${anchorElData?.item.id}`] })}
-        button
-      >
+      <MenuItem onClick={() => handleDelete([anchorElData?.item.id])} button>
         <Tooltip title="Delete">
           <IconButton aria-label="delete">
             <DeleteIcon color="secondary" />
@@ -197,10 +205,7 @@ export default function MaterialScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteMaterial({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete(selected.map((e) => Number(e)))}
           label={"Quản lý Material"}
           isNonSearchTime={true}
         />
@@ -269,7 +274,7 @@ export default function MaterialScreen() {
 
                         <TableCell align="right">
                           <Switch
-                            checked={row.isDelete ? true : false}
+                            checked={row.isActive}
                             onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}

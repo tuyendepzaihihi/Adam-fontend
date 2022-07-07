@@ -19,8 +19,8 @@ export const requestGetColorAll = (payload?: any) =>
 export const requestPutUpdateColor = (payload: UpdateColorDto) =>
   ApiClient.put("/admin/color/update", payload);
 
-export const requestDeleteColor = (payload: { color_id: number }) =>
-  ApiClient.delete("/admin/color/delete", { params: payload });
+export const requestDeleteColor = (payload: { listColorId: number[] }) =>
+  ApiClient.delete("/admin/color/deleteByListId", { data: payload });
 
 export const requestPostCreateColor = (payload: CreateColorDto) =>
   ApiClient.post("/admin/color/create", payload);
@@ -44,8 +44,8 @@ export const requestGetSizeAll = (payload?: any) =>
 export const requestPutUpdateSize = (payload: OptionSize) =>
   ApiClient.put("/admin/size/update", payload);
 
-export const requestDeleteSize = (payload: { size_id: number }) =>
-  ApiClient.delete("/admin/size/delete", { params: payload });
+export const requestDeleteSize = (payload: { listSizeId: number[] }) =>
+  ApiClient.delete("/admin/size/deleteByListId", { data: payload });
 
 export const requestPostCreateSize = (payload: CreateSizeDto) =>
   ApiClient.post("/admin/size/create", payload);

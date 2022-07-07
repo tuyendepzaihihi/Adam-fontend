@@ -34,7 +34,11 @@ import { TYPE_DIALOG } from "../../contant/Contant";
 import { CategoryAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
-import { requestPutUpdateCategory, UpdateDto } from "./CategoryApi";
+import {
+  requestDeleteCategory,
+  requestPutUpdateCategory,
+  UpdateDto,
+} from "./CategoryApi";
 import CategoryChildrenComponent from "./components/CategoryChildrenComponent";
 import FormDialog from "./components/FormDialog";
 import {
@@ -154,6 +158,18 @@ export default function CategoryScreen() {
     dispatch(changeLoading(false));
   };
 
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteCategory({ listCategoryId: array });
+      dispatch(deleteCategory({ array: array.map((e) => e.toString()) }));
+      setSelected([]);
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -165,10 +181,7 @@ export default function CategoryScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          dispatch(deleteCategory({ array: selected }));
-          setSelected([]);
-        }}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -203,10 +216,7 @@ export default function CategoryScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteCategory({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete(selected.map((e) => +e))}
           label={"Danh mục sản phẩm"}
         />
         <TableContainer>
@@ -278,7 +288,7 @@ export default function CategoryScreen() {
                           </TableCell>
                           <TableCell align="right">
                             <Switch
-                              checked={row.isActive ? row.isActive : false}
+                              checked={row.isActive}
                               onChange={() => handleChangeStatus({ row: row })}
                               name={labelId}
                               inputProps={{ "aria-label": labelId }}
