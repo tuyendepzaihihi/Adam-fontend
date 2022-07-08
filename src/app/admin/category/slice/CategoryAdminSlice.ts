@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LIST_CATEGORY } from "../../../contant/ContaintDataAdmin";
 import {
   CategoryAdmin,
   DataState,
@@ -40,12 +39,12 @@ export const categoryAdminSlice = createSlice({
     },
     createCategory: (state, action) => {
       let item: CategoryAdmin = action.payload?.item;
-      state.data = [item].concat(state.data);
+      state.data = state.data.concat([item]);
     },
     deleteCategory: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: any[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
@@ -122,10 +121,10 @@ export const categoryAdminSlice = createSlice({
     deleteCategoryChilden: (state, action) => {
       let idParent: number = action.payload.id;
       let itemChange = state.data.find((e) => e.id === idParent);
-      let deleteArray = action.payload?.array;
+      let deleteArray: any[] = action.payload?.array;
       if (itemChange) {
         let array = itemChange.categoryChildren;
-        deleteArray.map((e: any) => {
+        deleteArray.forEach((e: any) => {
           array = array?.filter((v) => e !== `${v.id}`);
         });
         console.log({ array });

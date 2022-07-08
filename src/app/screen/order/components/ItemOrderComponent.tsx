@@ -23,9 +23,11 @@ export const TYPE_ORDER = {
   CONFIRM: 2,
   DELIVETY: 7,
   RECEIVED: 3,
-  DONE: 5,
+  DONE: 6,
   CANCEL: 0,
   DELAY: 4,
+  CHECKING: 5,
+  PAYBACK: -1,
 };
 
 export const DEFINE_ORDER = {
@@ -70,6 +72,18 @@ export const DEFINE_ORDER = {
     icon: R.images.ic_voucher,
     description: "Đơn hàng của bạn đã đến nơi",
     color: colors.green,
+  },
+  [TYPE_ORDER.CHECKING]: {
+    title: "Kiểm tra đơn hàng",
+    icon: R.images.ic_voucher,
+    description: "Kiểm tra đơn hàng",
+    color: colors.red,
+  },
+  [TYPE_ORDER.PAYBACK]: {
+    title: "Đổi trả hàng",
+    icon: R.images.ic_voucher,
+    description: "Đổi trả hàng",
+    color: colors.red,
   },
 };
 

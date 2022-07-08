@@ -219,6 +219,7 @@ const ComponentFormCreate = (props: Props) => {
         );
         setDataProduct(null);
         dispatch(updateProduct({ item: res.data }));
+        handleClose();
       }
       dispatch(changeLoading(false));
     } catch (e) {
