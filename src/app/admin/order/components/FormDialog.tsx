@@ -151,6 +151,7 @@ const FormDialog = (props: Props) => {
       };
       setAnchorElData({ item });
       dispatch(updateOrderAdmin({ item }));
+      handleClose();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
