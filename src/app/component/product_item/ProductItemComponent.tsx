@@ -67,7 +67,7 @@ const ProductItemComponent = (props: Props) => {
           alt=""
           className={className.image_banner}
         />
-        <p className="description">{item?.description ?? ""}</p>
+        {/* <p className="description">{item?.description ?? ""}</p> */}
         <div className={className.containerInfo}>
           <Typography
             variant="body1"
