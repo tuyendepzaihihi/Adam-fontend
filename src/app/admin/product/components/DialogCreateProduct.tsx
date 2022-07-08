@@ -22,6 +22,7 @@ import {
   Tag,
 } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { requestGetProductDetailByIdProduct } from "../../../screen/product/ProductCustomerApi";
 import { incrementAsyncCategoryAdmin } from "../../category/slice/CategoryAdminSlice";
 import { incrementAsyncMaterialAdmin } from "../../material/slice/MaterialAdminSlice";
 import { incrementAsyncOptionColor } from "../../option/slice/OptionColorSlice";
@@ -30,13 +31,15 @@ import { incrementAsyncTagAdmin } from "../../tag/slice/TagAdminSlice";
 import { requestGetOptionById } from "../ProductAdminApi";
 import ComponentFormCreate from "./create/ComponentFormCreate";
 import CreateProductDetail from "./create/CreateProductDetail";
-import ListProductDetail from "./create/ListProductDeail";
+import ListProductDetail from "./create/ListProductDetail";
 interface Props {
   open: any;
   handleClose: any;
   anchorElData: { item: ProductAdmin | null };
   type: number;
   data: ProductAdmin[];
+  activeStep: number;
+  setActiveStep: any;
 }
 
 export interface DataOptionProduct {
@@ -65,6 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
+      position: "relative",
     },
     backButton: {
       marginRight: theme.spacing(1),
@@ -82,11 +86,13 @@ function getSteps() {
 
 const FormDialogProductCreate = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type } = props;
+  const { handleClose, open, anchorElData, type, activeStep, setActiveStep } =
+    props;
 
   const [dataOption, setDataOption] = useState<DataOptionProduct | undefined>(
     undefined
   );
+  const [loadingCurrent, setLoadingCurrent] = useState(false);
   const [dataProduct, setDataProduct] = useState<ProductAdmin | null>(
     anchorElData.item
   );
@@ -95,6 +101,7 @@ const FormDialogProductCreate = (props: Props) => {
   >([]);
 
   const [option, setOption] = useState<any[]>([]);
+
   useEffect(() => {
     setDataProduct(anchorElData.item);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,10 +126,21 @@ const FormDialogProductCreate = (props: Props) => {
 
   const getDataOption = async () => {
     if (dataProduct) {
-      const res: ResultApi<DataOptionProduct> = await requestGetOptionById({
-        id: dataProduct?.id,
-      });
-      setDataOption(res.data);
+      try {
+        setLoadingCurrent(true);
+        const res: ResultApi<DataOptionProduct> = await requestGetOptionById({
+          id: dataProduct?.id,
+        });
+        const resListDetail: ResultApi<DetailProductAdmin[]> =
+          await requestGetProductDetailByIdProduct({
+            product_id: dataProduct.id ?? 7,
+          });
+        setListProductDetail(resListDetail.data);
+        setDataOption(res.data);
+        setLoadingCurrent(false);
+      } catch (e) {
+        setLoadingCurrent(false);
+      }
     }
   };
 
@@ -148,15 +166,15 @@ const FormDialogProductCreate = (props: Props) => {
   };
 
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
+
   const steps = getSteps();
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep(activeStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(activeStep - 1);
   };
 
   const handleReset = () => {
@@ -177,6 +195,7 @@ const FormDialogProductCreate = (props: Props) => {
             dataProduct={dataProduct}
             options={dataOption}
             type={type}
+            setDataProduct={setDataProduct}
           />
         );
       case 1:
@@ -187,8 +206,10 @@ const FormDialogProductCreate = (props: Props) => {
             productItem={dataProduct}
             option={option}
             setOption={setOption}
+            options={dataOption}
             setListProductDetail={setListProductDetail}
             type={type}
+            handleClose={handleClose}
           />
         );
       case 2:
@@ -199,6 +220,10 @@ const FormDialogProductCreate = (props: Props) => {
             }}
             listDetail={listProductDetail}
             dataProduct={dataProduct}
+            type={type}
+            handleClose={() => {
+              onClose();
+            }}
           />
         );
       default:
@@ -221,11 +246,12 @@ const FormDialogProductCreate = (props: Props) => {
         <div style={{ width: 1200 }}>
           <div>{getStepContent(activeStep)}</div>
         </div>
+        {(loadingCategories ||
+          loadingMaterials ||
+          loadingTags ||
+          loadingProducts ||
+          loadingCurrent) && <LoadingProgress />}
       </div>
-      {(loadingCategories ||
-        loadingMaterials ||
-        loadingTags ||
-        loadingProducts) && <LoadingProgress />}
     </Dialog>
   );
 };

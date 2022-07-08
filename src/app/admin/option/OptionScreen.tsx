@@ -177,6 +177,7 @@ export default function OptionScreen() {
       await requestDeleteSize({ listSizeId: array });
       dispatch(deleteSize({ array: array.map((e) => e.toString()) }));
       setSelectedSize([]);
+      handleMenuCloseColor();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
@@ -248,6 +249,7 @@ export default function OptionScreen() {
       await requestDeleteColor({ listColorId: array });
       dispatch(deleteColor({ array: array.map((e) => e.toString()) }));
       setSelectedColor([]);
+      handleMenuCloseSize();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));

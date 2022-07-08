@@ -13,6 +13,7 @@ import { ROUTE } from "../../contant/Contant";
 import { ProductAdmin } from "../../contant/IntefaceContaint";
 import { colors } from "../../utils/color";
 import { formatPrice } from "../../utils/function";
+import "./product.css";
 export interface ItemProduct {
   id: number;
 
@@ -66,8 +67,8 @@ const ProductItemComponent = (props: Props) => {
           alt=""
           className={className.image_banner}
         />
+        <p className="description">{item?.description ?? ""}</p>
         <div className={className.containerInfo}>
-          <p className={className.textDiscount}>{item.description}</p>
           <Typography
             variant="body1"
             component={"p"}

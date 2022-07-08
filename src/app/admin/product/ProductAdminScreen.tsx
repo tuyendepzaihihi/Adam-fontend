@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   IconButton,
   Menu,
   MenuItem,
@@ -15,8 +16,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import { EditAttributesRounded } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
-import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
@@ -31,13 +32,13 @@ import FormDialogProductCreate from "./components/DialogCreateProduct";
 import {
   GetProductDto,
   requestDeleteProduct,
-  requestPutUpdateProduct,
-  UpdateProductDto,
+  requestPutUpdateProductStatus,
 } from "./ProductAdminApi";
 import {
   changeLoading,
   deleteProduct,
   incrementAsyncProductAdmin,
+  updateProduct,
 } from "./slice/ProductAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,6 +66,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+export const DEFINE_STEP = {
+  PRODUCT: 0,
+  CREATE_DETAIL: 1,
+  LIST_DETAIL: 2,
+};
 
 export default function ProductScreen() {
   const classes = useStyles();
@@ -75,6 +81,7 @@ export default function ProductScreen() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
+  const [activeStep, setActiveStep] = useState(DEFINE_STEP.PRODUCT);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: ProductAdmin;
@@ -107,11 +114,20 @@ export default function ProductScreen() {
   };
 
   const handleUpdate = async (row: ProductAdmin) => {
-    const payload: UpdateProductDto = {
-      isActive: !row.isActive,
-      id: row.id,
-    };
-    const res: ResultApi<ProductAdmin> = await requestPutUpdateProduct(payload);
+    try {
+      dispatch(changeLoading(true));
+      const payload = {
+        is_active: row.isActive ? 0 : 1,
+        id: row.id,
+      };
+      const res: ResultApi<ProductAdmin> = await requestPutUpdateProductStatus(
+        payload
+      );
+      dispatch(updateProduct({ item: res.data }));
+      dispatch(changeLoading(true));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const handleDelete = async (array: number[]) => {
@@ -120,6 +136,7 @@ export default function ProductScreen() {
       await requestDeleteProduct({ listProductId: array });
       dispatch(deleteProduct({ array: array.map((e) => e.toString()) }));
       setSelected([]);
+      handleMenuClose();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
@@ -181,16 +198,45 @@ export default function ProductScreen() {
       </MenuItem>
       <MenuItem
         onClick={() => {
+          setActiveStep(DEFINE_STEP.PRODUCT);
           setTypeDialog(TYPE_DIALOG.UPDATE);
           setOpen(!open);
         }}
       >
         <Tooltip title="Update">
           <IconButton aria-label="update">
-            <UpdateIcon color="primary" />
+            <EditAttributesRounded color="primary" />
           </IconButton>
         </Tooltip>
         <p>Cập nhật sản phẩm</p>
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          setActiveStep(DEFINE_STEP.CREATE_DETAIL);
+          setTypeDialog(TYPE_DIALOG.UPDATE);
+          setOpen(!open);
+        }}
+      >
+        <Tooltip title="Update">
+          <IconButton aria-label="update">
+            <EditAttributesRounded color="primary" />
+          </IconButton>
+        </Tooltip>
+        <p>Cập nhật phân loại</p>
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          setActiveStep(DEFINE_STEP.LIST_DETAIL);
+          setTypeDialog(TYPE_DIALOG.UPDATE);
+          setOpen(!open);
+        }}
+      >
+        <Tooltip title="Update">
+          <IconButton aria-label="update">
+            <EditAttributesRounded color="primary" />
+          </IconButton>
+        </Tooltip>
+        <p>Cập nhật danh sách phân loại</p>
       </MenuItem>
     </Menu>
   );
@@ -279,11 +325,14 @@ export default function ProductScreen() {
                         />
                       </TableCell>
                       <TableCell align="right">
-                        <Switch
-                          checked={row?.isComplete}
-                          name={labelId}
-                          inputProps={{ "aria-label": labelId }}
-                          color="primary"
+                        <Chip
+                          label={`${
+                            row?.isComplete
+                              ? "Đã hoàn thành"
+                              : "Chưa hoàn thành"
+                          }`}
+                          style={{ margin: 2 }}
+                          color={row?.isComplete ? "primary" : "default"}
                         />
                       </TableCell>
                       <TableCell align="right">
@@ -328,6 +377,8 @@ export default function ProductScreen() {
         anchorElData={{ item: anchorElData?.item ?? null }}
         type={typeDialog}
         data={data}
+        activeStep={activeStep}
+        setActiveStep={setActiveStep}
       />
       {isLoading && <LoadingProgress />}
     </div>

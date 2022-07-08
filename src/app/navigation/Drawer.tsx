@@ -80,6 +80,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    menuItem: {
+      "&:hover": {
+        backgroundColor: "rgba(0,0,0,0.5)",
+      },
+    },
   })
 );
 
@@ -132,7 +137,9 @@ export default function MiniDrawer(props: Props) {
                 }}
                 style={{
                   backgroundColor:
-                    Number(selected) === index ? "royalblue" : colors.white,
+                    Number(selected) === index
+                      ? "rgba(0, 153, 255, 0.1)"
+                      : colors.white,
                 }}
               >
                 <ListItemIcon>
@@ -140,7 +147,7 @@ export default function MiniDrawer(props: Props) {
                     style={{
                       color:
                         Number(selected) === index
-                          ? colors.white
+                          ? "rgb(0, 153, 255)"
                           : colors.gray59,
                     }}
                   />
@@ -149,7 +156,9 @@ export default function MiniDrawer(props: Props) {
                   primary={val.name}
                   style={{
                     color:
-                      Number(selected) === index ? colors.white : colors.gray59,
+                      Number(selected) === index
+                        ? "rgb(0, 153, 255)"
+                        : colors.gray59,
                   }}
                 />
               </ListItem>
@@ -170,7 +179,7 @@ export default function MiniDrawer(props: Props) {
                 style={{
                   color:
                     Number(selected) === LIST_MENU_DRAWER.length + 1
-                      ? "blue"
+                      ? "rgb(0, 153, 255)"
                       : colors.grayC4,
                 }}
               />

@@ -1,13 +1,19 @@
-import { createStyles, makeStyles, Typography } from "@material-ui/core";
+import { Chip, createStyles, makeStyles, Typography } from "@material-ui/core";
 import R from "../../../../../assets/R";
-import { LIST_TAG } from "../../../../../contant/ContaintDataAdmin";
-import { ProductAdmin } from "../../../../../contant/IntefaceContaint";
+import {
+  Material,
+  ProductAdmin,
+  Tag,
+} from "../../../../../contant/IntefaceContaint";
 import { colors } from "../../../../../utils/color";
 
-const ProductInfomation = (props: { item: ProductAdmin | null }) => {
-  const { item } = props;
-  // const renderTag = () => LIST_TAG.find((e) => e.id === item?.tag_id)?.tagName;
-  const renderCategory = () => item?.category.id;
+interface ProductAdminCustom extends ProductAdmin {
+  materialList?: Material[];
+  tagList?: Tag[];
+}
+
+const ProductInfomation = (props: { item: any | null }) => {
+  const item: ProductAdminCustom = props.item;
   const classes = useStylesInfo();
   return (
     <div style={{ display: "flex", justifyContent: "flex-start" }}>
@@ -24,17 +30,35 @@ const ProductInfomation = (props: { item: ProductAdmin | null }) => {
         </Typography>
         <Typography className={classes.containerItem}>
           Category:{" "}
-          <p className={classes.textValue}>
-            {renderCategory() ? renderCategory() : "..."}
-          </p>
+          <p className={classes.textValue}>{item?.category.categoryName}</p>
         </Typography>
 
-        {/* <Typography className={classes.containerItem}>
-          Tag:{" "}
-          <p className={classes.textValue}>
-            {renderTag() ? renderTag() : "..."}
-          </p>
-        </Typography> */}
+        {item?.tagList && (
+          <Typography className={classes.containerItem}>
+            Tag:{" "}
+            {item?.tagList?.length > 0 &&
+              item?.tagList?.map((e, index) => {
+                return (
+                  <Chip key={index} label={e.tagName} style={{ margin: 2 }} />
+                );
+              })}
+          </Typography>
+        )}
+        {item?.materialList && (
+          <Typography className={classes.containerItem}>
+            Material:{" "}
+            {item?.materialList?.length > 0 &&
+              item?.materialList?.map((e, index) => {
+                return (
+                  <Chip
+                    key={index}
+                    label={e.materialName}
+                    style={{ margin: 2 }}
+                  />
+                );
+              })}
+          </Typography>
+        )}
 
         <p style={{ color: colors.gray59 }}>{item?.description}</p>
       </div>

@@ -136,6 +136,7 @@ export default function UserScreen() {
       await requestDeleteUser({ accountIdList: array });
       dispatch(deleteUser({ array: array.map((e) => e.toString()) }));
       setSelected([]);
+      handleMenuClose();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));

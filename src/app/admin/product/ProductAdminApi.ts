@@ -44,6 +44,11 @@ export const requestPostCreateDetailProduct = (payload: CreateDto) =>
     "/admin/detailProduct/createArrayOptionValueDetailProduct",
     payload
   );
+export const requestPutUpdateOptioProductDetail = (payload: CreateDto) =>
+  ApiClient.put(
+    "/admin/detailProduct/updateArrayOptionValueDetailProduct",
+    payload
+  );
 export const requestPutUpdateDetailProductList = (payload: {
   newDetailProductDTOList: UpdateListDetailProductDto[];
 }) =>
@@ -68,14 +73,16 @@ export interface GetProductDto {
 }
 
 export interface UpdateProductDto {
-  // categoryId: number;
-  // description: string;
+  categoryId: number;
+  description: string;
   id: number;
-  // image: string;
+  image: string;
   isActive: boolean;
-  // materialProductIds: number[];
-  // productName: string;
-  // tagProductIds: number[];
+  materialProductIds: number[];
+  productName: string;
+  tagProductIds: number[];
+  voteAverage: number;
+  isDelete: boolean;
 }
 
 // function product detail
@@ -86,6 +93,10 @@ export const requestGetOptionById = (payload: { id: number }) =>
 
 export const requestPutUpdateProduct = (payload: UpdateProductDto) =>
   ApiClient.put("/admin/product/update", payload);
+export const requestPutUpdateProductStatus = (payload: {
+  id: number;
+  is_active: number;
+}) => ApiClient.put("/admin/product/updateIsActive", { params: payload });
 
 export const requestDeleteProduct = (payload?: { listProductId: number[] }) =>
   ApiClient.delete("/admin/product/deleteByListId", { data: payload });

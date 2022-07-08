@@ -54,6 +54,9 @@ export const textValidate = {
   },
 };
 
+export const URL_IMAGE =
+  "https://us.123rf.com/450wm/kiuikson/kiuikson1610/kiuikson161000021/63802708-man-posing.jpg?ver=6";
+
 export const ROUTE = {
   HOME: "/",
   PRODUCT: "/home/product",
@@ -86,7 +89,7 @@ export const ROUTE_ADMIN = {
 
 export const LIST_MENU_DRAWER = [
   {
-    name: "Dashboard",
+    name: "Thống kê",
     route: ROUTE_ADMIN.DASHBOARD,
     icon: Dashboard,
   },
@@ -116,17 +119,17 @@ export const LIST_MENU_DRAWER = [
     icon: PermMediaOutlined,
   },
   {
-    name: "Quản lý Order",
+    name: "Quản lý đơn hàng",
     route: ROUTE_ADMIN.ORDER,
     icon: BrandingWatermark,
   },
   {
-    name: "Quản lý Tag",
+    name: "Quản lý thẻ",
     route: ROUTE_ADMIN.TAG,
     icon: TagFaces,
   },
   {
-    name: "Quản lý Option",
+    name: "Quản lý phân loại",
     route: ROUTE_ADMIN.OPTION,
     icon: ColorLens,
   },

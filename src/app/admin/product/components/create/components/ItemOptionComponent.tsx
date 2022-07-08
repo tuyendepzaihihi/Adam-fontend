@@ -41,6 +41,7 @@ interface PropsRenderOption {
   valueOption: any;
   optionValues: { colors: number[]; sizes: number[] };
   setOptionValues: any;
+  listIdSelectedOptionValues: string[];
 }
 
 const RenderItemOption = (props: PropsRenderOption) => {
@@ -52,9 +53,10 @@ const RenderItemOption = (props: PropsRenderOption) => {
     valueOption,
     optionValues,
     setOptionValues,
+    listIdSelectedOptionValues,
   } = props;
   const classes = useStylesOption();
-  const [optionValue, setOptionValue] = useState<any[]>([]);
+
   const [listOption, setListOption] = useState<{ id: any; name: string }[]>([]);
   const colorData = useAppSelector((state) => state.colorAdmin).data;
   const sizesData = useAppSelector((state) => state.optionAdmin).data;
@@ -66,17 +68,19 @@ const RenderItemOption = (props: PropsRenderOption) => {
           return { id: e.id, name: e.colorName };
         })
       );
-      setOptionValue([]);
+
+      setOptionValues({ ...optionValues, colors: [] });
     } else if (Number(valueOption) === 2) {
       setListOption(
         sizesData.map((e) => {
           return { id: e.id, name: e.sizeName };
         })
       );
-      setOptionValue([]);
+
+      setOptionValues({ ...optionValues, sizes: [] });
     } else {
+      setOptionValues({ sizes: [], colors: [] });
       setListOption([]);
-      setOptionValue([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueOption]);
@@ -106,27 +110,27 @@ const RenderItemOption = (props: PropsRenderOption) => {
 
   const changeOptionValue = (event: any, index: number) => {
     const value = event.target.value;
-    if (checkExist({ item: value, option: optionValue })) {
-      const res = optionValue.map((val, ind) => {
+    if (checkExist({ item: value, option: listIdSelectedOptionValues })) {
+      const res = listIdSelectedOptionValues.map((val, ind) => {
         if (ind === index) {
           return value;
         } else return val;
       });
       addOptionValues(res);
-      setOptionValue(res);
     }
   };
   const deleteOptionValue = (index: number) => {
-    const newRes = optionValue.filter((e, idx) => idx !== index);
-    setOptionValue(newRes);
+    const newRes = listIdSelectedOptionValues.filter((e, idx) => idx !== index);
     addOptionValues(newRes);
   };
 
   const addOptionValue = () => {
     if (Number(valueOption) !== 0) {
-      let m = getDifferenValue({ initList: listOption, option: optionValue });
+      let m = getDifferenValue({
+        initList: listOption,
+        option: listIdSelectedOptionValues,
+      });
 
-      setOptionValue(optionValue.concat([`${m}`]));
       if (Number(valueOption) === 1) {
         setOptionValues({
           ...optionValues,
@@ -154,12 +158,12 @@ const RenderItemOption = (props: PropsRenderOption) => {
         Option value
       </Typography>
       <div style={{ paddingLeft: 15 }}>
-        {optionValue.map((e: any, index: number) => {
+        {listIdSelectedOptionValues.map((e: any, index: number) => {
           return (
             <div key={index} style={{ display: "flex", alignItems: "center" }}>
               <TextInputComponent
                 label={""}
-                value={optionValue[index]}
+                value={listIdSelectedOptionValues[index]}
                 onChange={(event: any) => changeOptionValue(event, index)}
                 isSelected={true}
                 childrentSeleted={

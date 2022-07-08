@@ -139,6 +139,7 @@ export default function TagScreen() {
 
       dispatch(deleteTag({ array }));
       setSelected([]);
+      handleMenuClose();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));

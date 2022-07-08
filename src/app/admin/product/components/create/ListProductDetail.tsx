@@ -10,8 +10,8 @@ import {
   TableRow,
   TextField,
 } from "@material-ui/core";
-import { useState } from "react";
-import { LIST_PRODUCT_DETAIL } from "../../../../contant/ContaintDataAdmin";
+import { useEffect, useState } from "react";
+import { TYPE_DIALOG, URL_IMAGE } from "../../../../contant/Contant";
 import {
   DetailProductAdmin,
   ProductAdmin,
@@ -27,16 +27,23 @@ import FormEditProductDetail from "./components/FormEditProductDetail";
 
 interface Props {
   onSubmit: Function;
-  listDetail?: DetailProductAdmin[];
+  listDetail: DetailProductAdmin[];
   dataProduct?: ProductAdmin | null;
+  type: number;
+  handleClose: () => void;
 }
 const ListProductDetail = (props: Props) => {
-  const { onSubmit, listDetail, dataProduct } = props;
+  const { onSubmit, listDetail, dataProduct, type, handleClose } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const [listProductDetail, setListProductDetail] = useState(
-    listDetail ? listDetail : LIST_PRODUCT_DETAIL
-  );
+  const [listProductDetail, setListProductDetail] = useState<
+    DetailProductAdmin[]
+  >([]);
+
+  useEffect(() => {
+    setListProductDetail(listDetail);
+  }, [listDetail]);
+
   const [priceExportTotal, setPriceExportTotal] = useState(0);
   const [priceImportTotal, setPriceImportTotal] = useState(0);
   const [quantityTotal, setQuantityTotal] = useState(0);
@@ -73,7 +80,7 @@ const ListProductDetail = (props: Props) => {
       const listPayload = listProductDetail.map((e) => {
         let res: UpdateListDetailProductDto = {
           id: e.id,
-          image: e.productImage,
+          image: e?.productImage ?? URL_IMAGE,
           isActive: e.isActive ?? false,
           priceExport: e.priceExport,
           priceImport: e.priceImport,
@@ -213,6 +220,11 @@ const ListProductDetail = (props: Props) => {
       <div
         style={{ display: "flex", justifyContent: "flex-end", paddingTop: 20 }}
       >
+        {type === TYPE_DIALOG.UPDATE && (
+          <Button color="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+        )}
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           Submit
         </Button>

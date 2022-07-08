@@ -28,7 +28,11 @@ import { TYPE_DIALOG } from "../../../contant/Contant";
 import { CategoryAdmin, ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { FunctionUtil, Order } from "../../../utils/function";
-import { requestPutUpdateCategory, UpdateDto } from "../CategoryApi";
+import {
+  requestDeleteCategory,
+  requestPutUpdateCategory,
+  UpdateDto,
+} from "../CategoryApi";
 import {
   changeLoading,
   deleteCategoryChilden,
@@ -149,9 +153,22 @@ export default function CategoryChildrenComponent(props: Props) {
     }
   };
 
-  const handleDelete = (array: any[]) => {
-    dispatch(deleteCategoryChilden({ array: array, id: category_parent_id }));
-    setSelected([]);
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteCategory({ listCategoryId: array });
+      dispatch(
+        deleteCategoryChilden({
+          array: array.map((e) => `${e}`),
+          id: category_parent_id,
+        })
+      );
+      setSelected([]);
+      handleMenuClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const renderMenu = (
@@ -165,7 +182,7 @@ export default function CategoryChildrenComponent(props: Props) {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => handleDelete([`${anchorElData?.item.id}`])}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -202,7 +219,7 @@ export default function CategoryChildrenComponent(props: Props) {
         }}
       >
         {selected.length > 0 ? (
-          <IconButton onClick={() => handleDelete(selected)}>
+          <IconButton onClick={() => handleDelete(selected.map((e) => +e))}>
             <Delete color="secondary" />
           </IconButton>
         ) : (

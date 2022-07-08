@@ -164,6 +164,7 @@ export default function CategoryScreen() {
       await requestDeleteCategory({ listCategoryId: array });
       dispatch(deleteCategory({ array: array.map((e) => e.toString()) }));
       setSelected([]);
+      handleMenuClose();
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));

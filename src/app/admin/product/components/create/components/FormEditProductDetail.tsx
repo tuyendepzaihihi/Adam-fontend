@@ -1,4 +1,5 @@
 import { Switch, TableCell, TableRow, TextField } from "@material-ui/core";
+import { URL_IMAGE } from "../../../../../contant/Contant";
 import { DetailProductAdmin } from "../../../../../contant/IntefaceContaint";
 import { formatPrice } from "../../../../../utils/function";
 import { createNotification } from "../../../../../utils/MessageUtil";
@@ -50,6 +51,7 @@ const FormEditProductDetail = (props: Props) => {
     });
     setListProductDetail(newProductDetail);
   };
+
   const changeStatus = () => {
     const newRes = listProductDetail.map((e) => {
       if (e.id === row.id) return { ...e, isActive: !e.isActive };
@@ -63,15 +65,17 @@ const FormEditProductDetail = (props: Props) => {
       <TableCell component="th" id={labelId} scope="row" padding="none">
         {row.id}
       </TableCell>
-      <TableCell align="right">{row.product.productName}</TableCell>
       <TableCell align="right">
-        {row.color.colorName ? row.color.colorName : ""}
-        {row.size.sizeName ? "/" + row.size.sizeName : ""}
+        {row?.product?.productName ?? row?.productName ?? "..."}
+      </TableCell>
+      <TableCell align="right">
+        {row.color.colorName ? row?.color?.colorName : ""}
+        {row.size.sizeName ? "/" + row?.size?.sizeName : ""}
       </TableCell>
 
       <TableCell align="right">
         <TextField
-          value={`${formatPrice(row.priceImport)}`}
+          value={`${formatPrice(row?.priceImport)}`}
           onChange={(event) =>
             handleChangePrice({
               keyString: "priceImport",
@@ -83,7 +87,7 @@ const FormEditProductDetail = (props: Props) => {
       </TableCell>
       <TableCell align="right">
         <TextField
-          value={`${formatPrice(row.priceExport)}`}
+          value={`${formatPrice(row?.priceExport)}`}
           onChange={(event) =>
             handleChangePrice({
               keyString: "priceExport",
@@ -93,10 +97,16 @@ const FormEditProductDetail = (props: Props) => {
           variant="outlined"
         />
       </TableCell>
-      <TableCell align="right">{row.productImage}</TableCell>
+      <TableCell align="right">
+        <img
+          alt=""
+          src={row?.productImage ?? URL_IMAGE}
+          style={{ width: 120 }}
+        />
+      </TableCell>
       <TableCell align="right">
         <TextField
-          value={`${formatPrice(row.quantity)}`}
+          value={`${formatPrice(row?.quantity)}`}
           onChange={(event) =>
             handleChangePrice({
               keyString: "quantity",
@@ -108,7 +118,7 @@ const FormEditProductDetail = (props: Props) => {
       </TableCell>
       <TableCell align="right">
         <Switch
-          checked={row.isActive ? true : false}
+          checked={row?.isActive ?? false}
           onChange={changeStatus}
           name={labelId}
           inputProps={{ "aria-label": labelId }}

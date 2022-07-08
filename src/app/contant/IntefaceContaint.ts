@@ -147,6 +147,7 @@ export interface DetailProductAdmin {
   size: OptionSize;
   isActive: boolean | null;
   createDate: string;
+  productName?: string;
 }
 
 export interface DetailOrderAdmin {
