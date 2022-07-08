@@ -140,8 +140,6 @@ const ProductDetailScreen = () => {
 
   const getDataFilterPrice = async () => {
     setIsLoading(true);
-    console.log({ item });
-
     try {
       const resultProductById: ResultApi<ProductById> =
         await requestGetProductCustomerById({ id: item.id });
@@ -327,14 +325,14 @@ const ProductDetailScreen = () => {
           {!dataDetail ? (
             <TextSkeleton />
           ) : (
-            dataDetail?.options.map((option, index) => {
+            dataDetail?.options?.map((option, index) => {
               return (
                 <div key={index}>
                   <p className={className.containerUpdateQuantity}>
                     {option.optionName}
                   </p>
                   <div className={className.containerUpdateQuantity}>
-                    {option.values_options.map((optionValue, idx) => {
+                    {option?.values_options?.map((optionValue, idx) => {
                       return (
                         <button
                           className={clsx(className.buttonInActive, {
@@ -433,7 +431,7 @@ const ProductDetailScreen = () => {
         >
           Đánh giá
         </Typography>
-        {listComment.length === 0 ? (
+        {listComment?.length === 0 ? (
           <CommentSkeleton />
         ) : (
           <div>
