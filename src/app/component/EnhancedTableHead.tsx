@@ -5,6 +5,7 @@ import {
   TableRow,
   TableSortLabel,
 } from "@material-ui/core";
+import { colors } from "../utils/color";
 import { Order } from "../utils/function";
 
 interface EnhancedTableProps {
@@ -35,11 +36,11 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
   } = props;
   return (
     <TableHead>
-      <TableRow style={{ borderColor: "rgba(0,165,255)", borderWidth: 0.5 }}>
+      <TableRow>
         <TableCell
           padding="checkbox"
           style={{
-            backgroundColor: `rgba(0,165,255,0.1)`,
+            backgroundColor: colors.gradiantBluePosition,
           }}
         >
           {!nonActivties && (
@@ -59,14 +60,14 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
             style={{
-              backgroundColor: `rgba(0,165,255,0.1)`,
+              backgroundColor: colors.gradiantBluePosition,
             }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
-              style={{ color: "rgba(0,165,255)" }}
+              style={{ color: colors.gradiantBlue }}
             >
               {headCell.label}
               {orderBy === headCell.id ? (

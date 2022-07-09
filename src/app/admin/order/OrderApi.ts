@@ -16,3 +16,5 @@ export const requestGetOrderAdminAll = (payload?: GetOrderAdminDto) =>
 
 export const requestPutUpdateOrder = (payload: UpdateDto) =>
   ApiClient.put("/admin/order/updateByIdAndStatus", { params: payload });
+export const requestGetOrderStatistic = (payload?: any) =>
+  ApiClient.get("/admin/order/orderSatistic", payload);

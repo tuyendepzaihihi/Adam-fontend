@@ -28,3 +28,6 @@ export const requestDeleteUser = (payload: { accountIdList: number[] }) =>
 
 export const requestPostCreateUser = (payload: CreateDto) =>
   ApiClient.post("/admin/account/createAdminAccount", payload);
+
+export const requestGetUserStatistic = (payload?: any) =>
+  ApiClient.get("/admin/account/accountSatistic", payload);

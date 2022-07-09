@@ -9,4 +9,6 @@ export const colors = {
   red: "red",
   green: "green",
   yellow: "yellow",
+  gradiantBluePosition: "rgba(0,165,255,0.1)",
+  gradiantBlue: "rgba(0,165,255)",
 };

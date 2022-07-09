@@ -96,7 +96,7 @@ export const headCells: HeadCell<UserAdmin>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   { id: "email", numeric: true, disablePadding: false, label: "Email" },
   { id: "phoneNumber", numeric: true, disablePadding: false, label: "Phone" },
@@ -115,7 +115,7 @@ export const headCellsCategory: HeadCell<CategoryAdmin>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   { id: "categoryName", numeric: true, disablePadding: false, label: "Name" },
 
@@ -184,7 +184,7 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   { id: "title", numeric: true, disablePadding: false, label: "Title" },
   {
@@ -249,7 +249,7 @@ export const headCellsMaterial: HeadCell<Material>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "materialName",
@@ -285,7 +285,7 @@ export const headCellsBranch: HeadCell<Branch>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "branch_name",
@@ -301,7 +301,7 @@ export const headCellsOrderAdmin: HeadCell<OrderDto>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "fullName",
@@ -342,7 +342,7 @@ export const headCellsTag: HeadCell<Tag>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "tagName",
@@ -373,7 +373,7 @@ export const headCellsOption: HeadCell<Option>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "option_name",
@@ -388,7 +388,7 @@ export const headCellsOptionColor: HeadCell<OptionColor>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "colorName",
@@ -404,7 +404,7 @@ export const headCellsOptionSize: HeadCell<OptionSize>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   {
     id: "sizeName",
@@ -420,7 +420,7 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
   { id: "productName", numeric: true, disablePadding: false, label: "Name" },
   {
@@ -474,7 +474,7 @@ export const headCellsProductDetail: HeadCell<DetailProductAdmin>[] = [
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "STT",
   },
 ];
 

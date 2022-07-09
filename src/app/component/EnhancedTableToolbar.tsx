@@ -1,13 +1,9 @@
 import {
   Button,
   createStyles,
-  FormControl,
   IconButton,
-  InputLabel,
   lighten,
   makeStyles,
-  MenuItem,
-  Select,
   TextField,
   Theme,
   Toolbar,
@@ -15,9 +11,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
-import moment from "moment";
 import { useState } from "react";
 import { colors } from "../utils/color";
 interface EnhancedTableToolbarProps {
@@ -30,13 +24,8 @@ interface EnhancedTableToolbarProps {
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, onCreate, onDelete, label, isNonSearchTime } = props;
+  const { numSelected, onCreate, onDelete, label } = props;
   const [textFilter, setTextFilter] = useState("");
-  const [status, setStatus] = useState(`0`);
-
-  const handleChangeStatus = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setStatus(event.target.value as string);
-  };
   return (
     <div>
       <Typography
@@ -59,106 +48,56 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
               setTextFilter(event.target.value);
             }}
           />
-          {/* {!isNonSearchTime && (
-            <div className={classes.containerDate}>
-              <div>
-                <p>Start date</p>
-                <input
-                  type={"date"}
-                  onChange={(date) => {
-                    console.log({
-                      time: date.timeStamp,
-                      date: moment.unix(date?.timeStamp).format("MM/DD/YYYY"),
-                    });
-                  }}
-                  className={classes.dateInput}
-                />
-              </div>
-              <div>
-                <p>End date</p>
-                <input
-                  type={"date"}
-                  onChange={(date) => {
-                    console.log({ date });
-                  }}
-                  className={classes.dateInput}
-                />
-              </div>
-            </div>
-          )} */}
-          {/* <FormControl className={classes.formControl}>
-            <InputLabel
-              id="demo-simple-select-label"
-              style={{ color: colors.gray59 }}
-            >
-              Status
-            </InputLabel>
-            <Select
-              value={status}
-              onChange={handleChangeStatus}
-              displayEmpty
-              className={classes.selectEmpty}
-              inputProps={{ "aria-label": "Without label" }}
-            >
-              <MenuItem value={0}>
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Active</MenuItem>
-              <MenuItem value={20}>InActive</MenuItem>
-            </Select>
-          </FormControl> */}
         </div>
         <div className={classes.containerButton}>
           <Button
             variant="contained"
-            color="primary"
-            style={{ marginLeft: 10 }}
+            style={{
+              marginLeft: 10,
+              backgroundColor: colors.gradiantBluePosition,
+              color: colors.gradiantBlue,
+            }}
             onClick={() => onCreate()}
           >
             Tạo mới thông tin
           </Button>
         </div>
       </div>
-      {numSelected > 0 && (
-        <Toolbar
-          className={clsx(classes.root, {
-            [classes.highlight]: numSelected > 0,
-          })}
-        >
-          {numSelected > 0 ? (
-            <Typography
-              className={classes.title}
-              color="inherit"
-              variant="subtitle1"
-              component="div"
-            >
-              {numSelected} Bản ghi
-            </Typography>
-          ) : (
-            <Typography
-              className={classes.title}
-              variant="h6"
-              id="tableTitle"
-              component="div"
-            >
-              Chưa chọn bản ghi nào
-            </Typography>
-          )}
-          {numSelected > 0 ? (
-            <Tooltip title="Delete">
-              <IconButton aria-label="delete" onClick={() => onDelete()}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <Tooltip title="Filter list">
-              <IconButton aria-label="filter list">
-                <FilterListIcon />
-              </IconButton>
-            </Tooltip>
-          )}
-        </Toolbar>
-      )}
+
+      <Toolbar
+        className={clsx(classes.root, {
+          [classes.highlight]: numSelected > 0,
+        })}
+      >
+        {numSelected > 0 ? (
+          <Typography
+            className={classes.title}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} bản ghi
+          </Typography>
+        ) : (
+          <Typography
+            className={classes.title}
+            variant="subtitle2"
+            id="tableTitle"
+            component="div"
+          >
+            Chưa chọn bản ghi nào
+          </Typography>
+        )}
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton aria-label="delete" onClick={() => onDelete()}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <div />
+        )}
+      </Toolbar>
     </div>
   );
 };
@@ -181,6 +120,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
           },
     title: {
       flex: "1 1 100%",
+      color: colors.grayC4,
     },
     containerFilter: {
       width: "60%",

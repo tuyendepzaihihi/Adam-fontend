@@ -1,17 +1,21 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
-import React from "react";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
+import { useEffect, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
+import LoadingProgress from "../../component/LoadingProccess";
+import { ResultApi } from "../../contant/IntefaceContaint";
+import { requestGetOrderStatistic } from "../order/OrderApi";
+import { requestGetUserStatistic } from "../user/UserApi";
 
 ChartJS.register(
   CategoryScale,
@@ -111,25 +115,95 @@ export const dataBarChartOrder = {
   ],
 };
 
+export const ColorData = [
+  "rgba(125, 200, 125, 0.5)",
+  "rgba(53, 162, 235, 0.5)",
+  "rgba(255, 99, 132, 0.5)",
+  "rgba(0, 165, 235, 0.5)",
+];
+
+interface DataSets {
+  label: string;
+  data: any[];
+  backgroundColor: string;
+  borderColor: string;
+}
+
+interface ChartDto {
+  labels: string[];
+  datasets: DataSets[];
+}
+
+interface ResultApiStatistic {
+  name: string;
+  labels: string[];
+  data: any[];
+}
+
 const DashboardScreen = () => {
   const className = useStyles();
+  const [loading, setLoading] = useState(false);
+  const [userStatistic, setUserStatistic] = useState<ChartDto>({
+    labels: [],
+    datasets: [],
+  });
+  const [orderStatistic, setOrderStatistic] = useState<ChartDto>({
+    labels: [],
+    datasets: [],
+  });
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const resultUser: ResultApi<ResultApiStatistic[]> =
+        await requestGetUserStatistic();
+      const resultOrder: ResultApi<ResultApiStatistic[]> =
+        await requestGetOrderStatistic();
+      let labelUser: string[] = resultUser.data[0].labels;
+      let dataSetsUser: DataSets[] = resultUser.data.map((e, index) => {
+        return {
+          data: e.data,
+          backgroundColor: ColorData[index],
+          label: e.name,
+          borderColor: ColorData[index],
+        };
+      });
+      setUserStatistic({ labels: labelUser, datasets: dataSetsUser });
+      let labelOrder: string[] = resultOrder.data[0].labels;
+      let dataSetsOrder: DataSets[] = resultOrder.data.map((e, index) => {
+        return {
+          data: e.data,
+          backgroundColor: ColorData[index],
+          label: e.name,
+          borderColor: ColorData[index],
+        };
+      });
+      setOrderStatistic({ labels: labelOrder, datasets: dataSetsOrder });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={className.root}>
       <Line
-        options={chartOption("Doanh số theo năm")}
-        data={data}
+        options={chartOption("Thống kê đơn hàng")}
+        data={orderStatistic}
         style={{ maxHeight: 400, width: "100%" }}
       />
+
       <Bar
-        options={chartOption("Số người dùng truy cập hàng tháng")}
-        data={dataBarChart}
+        options={chartOption("Thống kê tài khoản")}
+        data={userStatistic}
         style={{ maxHeight: 400, width: "100%" }}
       />
-      <Bar
-        options={chartOption("Số đơn hàng")}
-        data={dataBarChartOrder}
-        style={{ maxHeight: 400, width: "100%" }}
-      />
+
+      {loading && <LoadingProgress />}
     </div>
   );
 };
@@ -144,6 +218,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
       alignItems: "center",
       padding: 5,
+      position: "relative",
     },
   })
 );
