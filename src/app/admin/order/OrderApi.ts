@@ -1,7 +1,7 @@
 import { ApiClient } from "../../service/ApiService";
 // interface
 export interface UpdateDto {
-  id: number;
+  order_id: number;
   status: boolean;
 }
 
@@ -15,4 +15,4 @@ export const requestGetOrderAdminAll = (payload?: GetOrderAdminDto) =>
   ApiClient.get("/admin/order/findAllByPageble", { params: payload });
 
 export const requestPutUpdateOrder = (payload: UpdateDto) =>
-  ApiClient.put("/admin/order/update", payload);
+  ApiClient.put("/admin/order/updateByIdAndStatus", { params: payload });

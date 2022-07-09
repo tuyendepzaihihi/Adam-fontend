@@ -19,7 +19,7 @@ export interface History {
 export interface OrderDto {
   id: number;
   createDate: string;
-  status: string;
+  status: number;
   fullName: string;
   phoneNumber: string;
   amountPrice: number;

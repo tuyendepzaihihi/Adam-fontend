@@ -1,10 +1,8 @@
 import {
   Button,
-  FormControl,
   IconButton,
   Menu,
   MenuItem,
-  Select,
   Tooltip,
   Typography,
 } from "@material-ui/core";
@@ -24,20 +22,13 @@ import EnhancedTableHead from "../../component/EnhancedTableHead";
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsOrderAdmin } from "../../contant/ContaintDataAdmin";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import {
-  DEFINE_ORDER,
-  TYPE_ORDER,
-} from "../../screen/order/components/ItemOrderComponent";
+import { DEFINE_ORDER } from "../../screen/order/components/ItemOrderComponent";
 import { OrderDto } from "../../screen/order/slice/OrderSlice";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil, Order } from "../../utils/function";
 import EnhancedTableToolbarOrder from "./components/EnhancedTableToolbar";
 import FormDialog from "./components/FormDialog";
-import {
-  changeLoading,
-  incrementAsyncOrderAdminAdmin,
-  updateOrderAdmin,
-} from "./slice/OrderAdminSlice";
+import { incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -140,22 +131,6 @@ export default function OrderScreen() {
     setAnchorElData({ item: item });
   };
 
-  const handleChange = (params: { value: any; row: OrderDto }) => {
-    const { row, value } = params;
-    try {
-      dispatch(changeLoading(true));
-      const item = {
-        ...row,
-        status: value,
-      };
-
-      dispatch(updateOrderAdmin({ item }));
-      dispatch(changeLoading(false));
-    } catch (e) {
-      dispatch(changeLoading(false));
-    }
-  };
-
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -256,54 +231,6 @@ export default function OrderScreen() {
                         </TableCell>
 
                         <TableCell align="right">
-                          {/* <FormControl className={classes.formControl}>
-                            <Select
-                              value={row.status}
-                              onChange={(event) =>
-                                handleChange({
-                                  value: event.target.value,
-                                  row: row,
-                                })
-                              }
-                              style={{
-                                color: colors.white,
-                                height: 45,
-                              }}
-                            >
-                              {Object.values(TYPE_ORDER).map((e) => {
-                                if (e >= Number(row.status)) {
-                                  return (
-                                    <MenuItem
-                                      value={e}
-                                      style={{
-                                        marginTop: 5,
-                                        color: colors.white,
-                                        display: "flex",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          backgroundColor:
-                                            DEFINE_ORDER[e].color,
-                                          width: "100%",
-                                          borderRadius: 10,
-                                          alignSelf: "center",
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          padding: 5,
-                                          paddingRight: 0,
-                                        }}
-                                      >
-                                        <Typography>
-                                          {DEFINE_ORDER[e].title}
-                                        </Typography>
-                                      </div>
-                                    </MenuItem>
-                                  );
-                                } else return null;
-                              })}
-                            </Select>
-                          </FormControl> */}
                           <div
                             style={{
                               backgroundColor:

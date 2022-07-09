@@ -35,8 +35,13 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
   } = props;
   return (
     <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
+      <TableRow style={{ borderColor: "rgba(0,165,255)", borderWidth: 0.5 }}>
+        <TableCell
+          padding="checkbox"
+          style={{
+            backgroundColor: `rgba(0,165,255,0.1)`,
+          }}
+        >
           {!nonActivties && (
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -53,11 +58,15 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
+            style={{
+              backgroundColor: `rgba(0,165,255,0.1)`,
+            }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
+              style={{ color: "rgba(0,165,255)" }}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
@@ -69,7 +78,17 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
           </TableCell>
         ))}
         {childrenMore}
-        {!nonActivties && <TableCell align="right">Hoạt động</TableCell>}
+        {!nonActivties && (
+          <TableCell
+            align="right"
+            style={{
+              backgroundColor: `rgba(0,165,255,0.1)`,
+              color: "rgba(0,165,255)",
+            }}
+          >
+            Hoạt động
+          </TableCell>
+        )}
       </TableRow>
     </TableHead>
   );

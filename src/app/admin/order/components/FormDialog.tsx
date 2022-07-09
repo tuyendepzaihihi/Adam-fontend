@@ -21,6 +21,7 @@ import {
 import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
+import { createNotification } from "../../../utils/MessageUtil";
 import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
 interface Props {
   open: any;
@@ -86,39 +87,19 @@ const RenderInfoOrder = (params: {
                 row: item,
               })
             }
-            style={{
-              color: colors.white,
-              height: 45,
-            }}
+            className={classes.selectedStyle}
           >
             {Object.values(TYPE_ORDER).map((e) => {
-              if (e >= Number(item?.status)) {
-                return (
-                  <MenuItem
-                    value={e}
-                    style={{
-                      marginTop: 5,
-                      color: colors.white,
-                      display: "flex",
-                    }}
+              return (
+                <MenuItem value={e} className={classes.menuItem}>
+                  <div
+                    className={classes.itemStatus}
+                    style={{ backgroundColor: DEFINE_ORDER[e].color }}
                   >
-                    <div
-                      style={{
-                        backgroundColor: DEFINE_ORDER[e].color,
-                        width: "100%",
-                        borderRadius: 10,
-                        alignSelf: "center",
-                        display: "flex",
-                        justifyContent: "center",
-                        padding: 5,
-                        paddingRight: 0,
-                      }}
-                    >
-                      <Typography>{DEFINE_ORDER[e].title}</Typography>
-                    </div>
-                  </MenuItem>
-                );
-              } else return null;
+                    <Typography>{DEFINE_ORDER[e].title}</Typography>
+                  </div>
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>
@@ -141,8 +122,28 @@ const RenderInfoOrder = (params: {
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { handleClose, open, anchorElData, setAnchorElData } = props;
+
   const handleChange = (params: { value: any; row: OrderDto }) => {
     const { row, value } = params;
+    if (row.status === TYPE_ORDER.DONE && value !== TYPE_ORDER.CANCEL) {
+      createNotification({
+        type: "warning",
+        message: "Đơn hàng đã thành công và chỉ có thể huỷ đơn!!",
+      });
+      return;
+    }
+
+    if (
+      row.status === TYPE_ORDER.CANCEL &&
+      (value !== TYPE_ORDER.DONE || value !== TYPE_ORDER.DELAY)
+    ) {
+      createNotification({
+        type: "warning",
+        message: "Đơn hàng đã huỷ đơn!",
+      });
+      return;
+    }
+
     try {
       dispatch(changeLoading(true));
       const item = {
@@ -157,6 +158,7 @@ const FormDialog = (props: Props) => {
       dispatch(changeLoading(false));
     }
   };
+
   return (
     <Dialog
       open={open}
@@ -174,7 +176,9 @@ const FormDialog = (props: Props) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button color="primary">Subscribe</Button>
+        <Button color="primary" onClick={handleClose}>
+          Subscribe
+        </Button>
       </DialogActions>
     </Dialog>
   );
@@ -206,6 +210,24 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
+    },
+    menuItem: {
+      marginTop: 5,
+      color: colors.white,
+      display: "flex",
+    },
+    itemStatus: {
+      width: "100%",
+      borderRadius: 10,
+      alignSelf: "center",
+      display: "flex",
+      justifyContent: "center",
+      padding: 5,
+      paddingRight: 0,
+    },
+    selectedStyle: {
+      color: colors.white,
+      height: 45,
     },
   })
 );

@@ -51,7 +51,7 @@ const createAPI = () => {
         localStorage.clear();
         navigate(ROUTE.LOGIN);
       } else if (data && data?.status !== 200)
-        createNotification({ type: "warning", message: data.message });
+        createNotification({ type: "warning", message: data?.message });
     }
   );
   return APIInstant;
