@@ -2,10 +2,11 @@ import {
   createStyles,
   IconButton,
   lighten,
-  makeStyles, Theme,
+  makeStyles,
+  Theme,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import clsx from "clsx";
@@ -66,6 +67,8 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(1),
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
     },
     highlight:
       theme.palette.type === "light"

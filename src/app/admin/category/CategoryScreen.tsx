@@ -25,6 +25,7 @@ import React, { useEffect, useState } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 import LoadingProgress from "../../component/LoadingProccess";
 import {
   headCellsCategory,
@@ -33,6 +34,7 @@ import {
 import { TYPE_DIALOG } from "../../contant/Contant";
 import { CategoryAdmin, ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { colors } from "../../utils/color";
 import { FunctionUtil, Order } from "../../utils/function";
 import {
   requestDeleteCategory,
@@ -56,6 +58,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
+      marginTop: 10,
+      padding: 10,
     },
     table: {
       minWidth: 750,
@@ -81,7 +85,7 @@ export default function CategoryScreen() {
   const [orderBy, setOrderBy] = React.useState<keyof CategoryAdmin>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
@@ -210,6 +214,13 @@ export default function CategoryScreen() {
 
   return (
     <div className={classes.root} style={{ position: "relative" }}>
+      <EnhancedTableToolbarHeder
+        label={"Danh mục sản phẩm (cha)"}
+        onCreate={() => {
+          setTypeDialog(TYPE_DIALOG.CREATE);
+          setOpen(!open);
+        }}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -240,7 +251,16 @@ export default function CategoryScreen() {
               createSortHandler={createSortHandler}
               childrenMore={
                 <>
-                  <TableCell align="center">Category children</TableCell>
+                  <TableCell
+                    align="center"
+                    style={{
+                      backgroundColor: colors.gradiantBluePosition,
+                      borderBottomColor: colors.white,
+                      color: colors.gradiantBlue,
+                    }}
+                  >
+                    Category children
+                  </TableCell>
                 </>
               }
             />

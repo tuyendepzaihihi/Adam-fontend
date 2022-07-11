@@ -25,6 +25,8 @@ import UpdateIcon from "@material-ui/icons/UpdateOutlined";
 import React, { useEffect, useState } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
+import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 import LoadingProgress from "../../component/LoadingProccess";
 import {
   headCellsOptionColor,
@@ -64,14 +66,15 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      marginTop: 15,
+      marginTop: 5,
     },
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
+      marginTop: 10,
     },
     table: {
-      minWidth: 750,
+      minWidth: 700,
     },
     visuallyHidden: {
       border: 0,
@@ -364,13 +367,13 @@ export default function OptionScreen() {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Typography variant="h5">Option Manager</Typography>
+      <Paper>
         <div className={classes.root}>
           <Accordion
             square
             expanded={expanded === "panel1"}
             onChange={handleChange("panel1")}
+            style={{ borderRadius: 5 }}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -389,39 +392,25 @@ export default function OptionScreen() {
                 Color
               </Typography>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <EnhancedTableToolbarHeder
+                label=""
+                onCreate={() => {
+                  setTypeDialogColor(TYPE_DIALOG.CREATE);
+                  setOpenColor(!openColor);
+                }}
+              />
               <Paper className={classes.paper}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
+                <EnhancedTableToolbar
+                  label=""
+                  numSelected={selectedColor.length}
+                  onCreate={() => {}}
+                  onDelete={() => {
+                    handleDeleteColor(selectedColor.map((e) => +e));
                   }}
-                >
-                  {selectedColor.length > 0 ? (
-                    <Tooltip title={"Xoá"}>
-                      <IconButton
-                        onClick={() =>
-                          handleDeleteColor(selectedColor.map((e) => +e))
-                        }
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  ) : (
-                    <div />
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      setTypeDialogColor(TYPE_DIALOG.CREATE);
-                      setOpenColor(!openColor);
-                    }}
-                  >
-                    Tạo mới thông tin
-                  </Button>
-                </div>
+                />
                 <TableContainer>
                   <Table
                     className={classes.table}
@@ -547,12 +536,15 @@ export default function OptionScreen() {
             </AccordionDetails>
           </Accordion>
         </div>
+      </Paper>
 
+      <Paper>
         <div className={classes.root}>
           <Accordion
             square
             expanded={expanded === "panel2"}
             onChange={handleChange("panel2")}
+            style={{ borderRadius: 5 }}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -571,39 +563,25 @@ export default function OptionScreen() {
                 Size
               </Typography>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <EnhancedTableToolbarHeder
+                label=""
+                onCreate={() => {
+                  setTypeDialogSize(TYPE_DIALOG.CREATE);
+                  setOpenSize(!openSize);
+                }}
+              />
               <Paper className={classes.paper}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
+                <EnhancedTableToolbar
+                  label=""
+                  numSelected={selectedSize.length}
+                  onCreate={() => {}}
+                  onDelete={() => {
+                    handleDeleteSize(selectedSize.map((e) => +e));
                   }}
-                >
-                  {selectedSize.length > 0 ? (
-                    <Tooltip title={"Xoá"}>
-                      <IconButton
-                        onClick={() =>
-                          handleDeleteSize(selectedSize.map((e) => +e))
-                        }
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  ) : (
-                    <div />
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      setTypeDialogSize(TYPE_DIALOG.CREATE);
-                      setOpenSize(!openSize);
-                    }}
-                  >
-                    Tạo mới thông tin
-                  </Button>
-                </div>
+                />
                 <TableContainer>
                   <Table
                     className={classes.table}
@@ -730,6 +708,7 @@ export default function OptionScreen() {
           </Accordion>
         </div>
       </Paper>
+
       {renderMenu}
       {renderMenuColor}
       <FormDialogColor

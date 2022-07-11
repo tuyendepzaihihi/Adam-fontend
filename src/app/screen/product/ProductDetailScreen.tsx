@@ -117,6 +117,8 @@ interface ProductById {
       name: string;
     }[];
   }[];
+  voteAverage?: number;
+  isFavorite?: boolean;
 }
 
 const ProductDetailScreen = () => {
@@ -152,7 +154,10 @@ const ProductDetailScreen = () => {
     setIsLoading(true);
     try {
       const resultProductById: ResultApi<ProductById> =
-        await requestGetProductCustomerById({ id: item.id });
+        await requestGetProductCustomerById({
+          product_id: item.id,
+          account_id: null,
+        });
       const res: ResultApi<DetailProductAdmin[]> =
         await requestGetProductDetailByIdProduct({
           product_id: item.id,
@@ -235,6 +240,7 @@ const ProductDetailScreen = () => {
     if (dataExist) return true;
     else return false;
   };
+  console.log(dataDetail?.voteAverage);
 
   const handleBuyProduct = async () => {
     const token = getToken();
@@ -335,9 +341,9 @@ const ProductDetailScreen = () => {
           <Box component="fieldset" borderColor="transparent">
             <Rating
               name="customized-empty"
-              defaultValue={2}
               precision={0.5}
-              disabled
+              value={Number(dataDetail?.voteAverage ?? 0)}
+              readOnly
               emptyIcon={<StarBorderRounded fontSize="inherit" />}
             />
           </Box>

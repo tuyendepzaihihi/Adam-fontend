@@ -1,4 +1,4 @@
-import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import { colors } from "../../utils/color";
 
 const FooterComponent = () => {
@@ -18,7 +18,7 @@ const FooterComponent = () => {
           <p
             style={{ fontSize: 15, color: colors.gray59, fontWeight: "normal" }}
           >
-            01 Trịng Văn Bô, Xuân Phương, Nam Từ Liên, Hà Nội
+            01 Trịnh Văn Bô, Xuân Phương, Nam Từ Liên, Hà Nội
           </p>
         </p>
       </div>
@@ -30,19 +30,33 @@ const FooterComponent = () => {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ width: "45%" }}>
+        <div
+          style={{
+            width: "48%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
           <p className={className.textTitle}>Giới thiệu</p>
-          <Button className={className.button}>Giới thiệu</Button>
-          <Button className={className.button}>Hệ thống cửa hàng</Button>
-          <Button className={className.button}>Liên hệ</Button>
-          <Button className={className.button}>Chính sách bảo mật</Button>
+          <button className={className.button}>Giới thiệu</button>
+          <button className={className.button}>Hệ thống cửa hàng</button>
+          <button className={className.button}>Liên hệ</button>
+          <button className={className.button}>Chính sách bảo mật</button>
         </div>
-        <div style={{ width: "45%" }}>
+        <div
+          style={{
+            width: "48%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
           <p className={className.textTitle}>Chính sách</p>
-          <Button className={className.button}>Chính sách thành toán</Button>
-          <Button className={className.button}>Hướng dẫn chọn đồ</Button>
-          <Button className={className.button}>Hướng dẫn thanh toán</Button>
-          <Button className={className.button}>Chính sách vận chuyển</Button>
+          <button className={className.button}>Chính sách thành toán</button>
+          <button className={className.button}>Hướng dẫn chọn đồ</button>
+          <button className={className.button}>Hướng dẫn thanh toán</button>
+          <button className={className.button}>Chính sách vận chuyển</button>
         </div>
       </div>
       <div className={className.containerInfoCompany}>
@@ -56,7 +70,6 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      backgroundColor: colors.grayC4,
       padding: 10,
       marginTop: 100,
       paddingLeft: "10%",
@@ -66,6 +79,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
+      backgroundColor: "rgba(0,0,0,0.03)",
     },
     containerInfoCompany: {
       width: "30%",
@@ -87,7 +101,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight: "bold",
     },
     button: {
-      fontSize: 12,
+      fontSize: 14,
+      paddingTop: 5,
+      paddingBottom: 5,
+      paddingLeft: 5,
+      width: "100%",
+      borderRadius: 5,
+      "&:hover": {
+        backgroundColor: "rgba(0,0,0,0.1)",
+      },
+      textAlign: "left",
     },
   })
 );

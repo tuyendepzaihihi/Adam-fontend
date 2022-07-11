@@ -132,7 +132,7 @@ const LoginScreen = () => {
 
   return (
     <div className={className.root}>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} style={{ position: "relative" }}>
         <div style={{ width: "50%" }}>
           <p className={className.title}>Đăng nhập</p>
           <p className={className.descriptionText}>
@@ -154,11 +154,11 @@ const LoginScreen = () => {
             label={"Password"}
             onChange={formik.handleChange("password")}
             onBlur={formik.handleBlur("password")}
-            // rightIcon={showPass ? <Visibility /> : <VisibilityOff />}
+            rightIcon={showPass ? <Visibility /> : <VisibilityOff />}
             type={!showPass ? "text" : "password"}
-            // onRightIcon={() => {
-            //   setShowPass(!showPass);
-            // }}
+            onRightIcon={() => {
+              setShowPass(!showPass);
+            }}
           />
 
           <p className={className.textForgotPass}>
@@ -234,10 +234,14 @@ const LoginScreen = () => {
             width: "50%",
           }}
         >
-          <img style={{ width: "95%" }} src={R.images.img_banner_fashion} />
+          <img
+            alt=""
+            style={{ width: "95%" }}
+            src={R.images.img_banner_fashion}
+          />
         </div>
+        {loading && <LoadingProgress />}
       </Grid>
-      {loading && <LoadingProgress />}
     </div>
   );
 };

@@ -27,6 +27,7 @@ import { headCellsCategory } from "../../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { CategoryAdmin, ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { colors } from "../../../utils/color";
 import { FunctionUtil, Order } from "../../../utils/function";
 import {
   requestDeleteCategory,
@@ -218,19 +219,29 @@ export default function CategoryChildrenComponent(props: Props) {
           paddingBottom: 20,
         }}
       >
-        {selected.length > 0 ? (
-          <IconButton onClick={() => handleDelete(selected.map((e) => +e))}>
-            <Delete color="secondary" />
+        <Tooltip title="Xoá">
+          <IconButton
+            onClick={() => handleDelete(selected.map((e) => +e))}
+            disabled={selected.length > 0 ? false : true}
+          >
+            <Delete
+              color={selected.length > 0 ? "secondary" : "inherit"}
+              style={{ width: 20, height: 20 }}
+            />
           </IconButton>
-        ) : (
-          <div />
-        )}
+        </Tooltip>
+
         <Button
           variant="contained"
-          color="primary"
           onClick={() => {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
+          }}
+          style={{
+            color: colors.gradiantBlue,
+            backgroundColor: colors.gradiantBluePosition,
+            fontSize: 14,
+            height: 35,
           }}
         >
           Tạo mới

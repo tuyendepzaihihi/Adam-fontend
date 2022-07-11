@@ -27,6 +27,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
 import { deleteVoucher, updateVoucher } from "././slice/VoucherAdminSlice";
+import { colors } from "../../utils/color";
+import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,6 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
+      marginTop: 10,
+      padding: 10,
     },
     table: {
       minWidth: 750,
@@ -155,6 +159,13 @@ export default function VoucherScreen() {
 
   return (
     <div className={classes.root}>
+      <EnhancedTableToolbarHeder
+        onCreate={() => {
+          setTypeDialog(TYPE_DIALOG.CREATE);
+          setOpen(!open);
+        }}
+        label={"Quản lý khuyến mãi"}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -188,7 +199,16 @@ export default function VoucherScreen() {
               createSortHandler={createSortHandler}
               childrenMore={
                 <>
-                  <TableCell align="right">Ảnh</TableCell>
+                  <TableCell
+                    align="center"
+                    style={{
+                      backgroundColor: colors.gradiantBluePosition,
+                      borderBottomColor: colors.white,
+                      color: colors.gradiantBlue,
+                    }}
+                  >
+                    Ảnh
+                  </TableCell>
                 </>
               }
             />
@@ -211,7 +231,12 @@ export default function VoucherScreen() {
                         key={`${row.id}`}
                         selected={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
+                        <TableCell
+                          padding="checkbox"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
                           <Checkbox
                             checked={isItemSelected}
                             inputProps={{ "aria-labelledby": labelId }}
@@ -231,18 +256,66 @@ export default function VoucherScreen() {
                           id={labelId}
                           scope="row"
                           padding="none"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.title}</TableCell>
-                        <TableCell align="right">{row.description}</TableCell>
-                        <TableCell align="right">{row.startDate}</TableCell>
-                        <TableCell align="right">{row.endDate}</TableCell>
-                        <TableCell align="right">{row.create_date}</TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
+                          {row.title}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
+                          {row.description}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
+                          {row.startDate}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
+                          {row.endDate}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
+                          {row.create_date}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
                           {`${row.discountPersent}%`}
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
                           <Switch
                             checked={row.status === 1 ? true : false}
                             onChange={(data) => {
@@ -262,6 +335,7 @@ export default function VoucherScreen() {
                           style={{
                             alignItems: "center",
                             display: "flex",
+                            borderBottomColor: colors.white,
                           }}
                         >
                           <img
@@ -270,7 +344,12 @@ export default function VoucherScreen() {
                             style={{ width: 120 }}
                           />
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
                           <Button
                             onClick={(event) => {
                               handleProfileMenuOpen(event, row);

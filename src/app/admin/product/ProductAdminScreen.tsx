@@ -22,6 +22,7 @@ import React, { useEffect, useState } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsProduct } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
@@ -49,6 +50,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
+      padding: 10,
+      marginTop: 10,
     },
     table: {
       minWidth: 750,
@@ -243,6 +246,13 @@ export default function ProductScreen() {
 
   return (
     <div className={classes.root}>
+      <EnhancedTableToolbarHeder
+        label={"Quản lý Product"}
+        onCreate={() => {
+          setTypeDialog(TYPE_DIALOG.CREATE);
+          setOpen(!open);
+        }}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}

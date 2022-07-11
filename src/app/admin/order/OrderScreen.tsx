@@ -38,6 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
+      padding: 10,
+      marginTop: 10,
     },
     table: {
       minWidth: 750,
@@ -158,12 +160,9 @@ export default function OrderScreen() {
 
   return (
     <div className={classes.root}>
+      <EnhancedTableToolbarOrder label="Đơn hàng" />
       <Paper className={classes.paper}>
         <TableContainer>
-          <EnhancedTableToolbarOrder
-            label="Đơn hàng"
-            numSelected={selected.length}
-          />
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -201,7 +200,10 @@ export default function OrderScreen() {
                         key={`${row.id}`}
                         selected={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
+                        <TableCell
+                          padding="checkbox"
+                          style={{ borderBottomColor: colors.white }}
+                        >
                           <Checkbox
                             checked={isItemSelected}
                             inputProps={{ "aria-labelledby": labelId }}
@@ -221,34 +223,60 @@ export default function OrderScreen() {
                           id={labelId}
                           scope="row"
                           padding="none"
+                          style={{ borderBottomColor: colors.white }}
                         >
                           {row.id}
                         </TableCell>
-                        <TableCell align="right">{row.fullName}</TableCell>
-                        <TableCell align="right">{row.phoneNumber}</TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          style={{ borderBottomColor: colors.white }}
+                        >
+                          {row.fullName}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{ borderBottomColor: colors.white }}
+                        >
+                          {" "}
+                          {row.phoneNumber}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{ borderBottomColor: colors.white }}
+                        >
                           {formatPrice(row.totalPrice ?? 0)}đ
                         </TableCell>
 
-                        <TableCell align="right">
+                        <TableCell
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            borderBottomColor: colors.white,
+                          }}
+                        >
                           <div
                             style={{
                               backgroundColor:
                                 DEFINE_ORDER[Number(row.status)].color,
-                              width: "100%",
                               borderRadius: 10,
                               alignSelf: "center",
                               display: "flex",
                               justifyContent: "center",
                               padding: 5,
+                              width: "50%",
                             }}
                           >
-                            <Typography style={{ color: colors.white }}>
+                            <Typography
+                              style={{ color: colors.white, fontSize: 14 }}
+                            >
                               {DEFINE_ORDER[Number(row.status)].title}
                             </Typography>
                           </div>
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          style={{ borderBottomColor: colors.white }}
+                        >
                           <Button
                             onClick={(event) => {
                               handleProfileMenuOpen(event, row);

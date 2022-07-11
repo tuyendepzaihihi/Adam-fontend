@@ -17,6 +17,7 @@ import {
   ProductAdmin,
 } from "../../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../../hooks";
+import { colors } from "../../../../utils/color";
 import { formatPrice, FunctionUtil } from "../../../../utils/function";
 import {
   requestPutUpdateDetailProductList,
@@ -103,83 +104,99 @@ const ListProductDetail = (props: Props) => {
   return (
     <div className={classes.root}>
       <div className={classes.totalFilter}>
-        <div className={classes.itemAddAll}>
-          <TextField
-            value={`${formatPrice(priceImportTotal)}`}
-            onChange={(event) => {
-              const value = handleChane({
-                oldValue: priceImportTotal,
-                text: event.target.value,
-              });
-              setPriceImportTotal(value);
-            }}
-            variant="standard"
-            label="Price import(VNĐ)"
-          />
-          <Button
-            variant="contained"
-            style={{ marginLeft: 5 }}
-            onClick={() => {
-              handleChangePrice({
-                keyString: "priceImport",
-                value: priceImportTotal,
-              });
-            }}
-          >
-            Apply all
-          </Button>
+        <div>
+          <div className={classes.itemAddAll}>
+            <TextField
+              value={`${formatPrice(priceImportTotal)}`}
+              onChange={(event) => {
+                const value = handleChane({
+                  oldValue: priceImportTotal,
+                  text: event.target.value,
+                });
+                setPriceImportTotal(value);
+              }}
+              variant="standard"
+              label="Giá nhập(VNĐ)"
+            />
+            <Button
+              variant="contained"
+              style={{ marginLeft: 5 }}
+              onClick={() => {
+                handleChangePrice({
+                  keyString: "priceImport",
+                  value: priceImportTotal,
+                });
+              }}
+            >
+              Apply all
+            </Button>
+          </div>
+          <p className={classes.textDescription}>
+            Có thể nhập giá nhập và áp dụng cho toàn bộ phân loại
+          </p>
         </div>
-        <div className={classes.itemAddAll}>
-          <TextField
-            value={`${formatPrice(priceExportTotal)}`}
-            onChange={(event) => {
-              const value = handleChane({
-                oldValue: priceExportTotal,
-                text: event.target.value,
-              });
-              setPriceExportTotal(value);
-            }}
-            variant="standard"
-            label="Price export(VNĐ)"
-          />
-          <Button
-            variant="contained"
-            style={{ marginLeft: 5 }}
-            onClick={() => {
-              handleChangePrice({
-                keyString: "priceExport",
-                value: priceExportTotal,
-              });
-            }}
-          >
-            Apply all
-          </Button>
+
+        <div>
+          <div className={classes.itemAddAll}>
+            <TextField
+              value={`${formatPrice(priceExportTotal)}`}
+              onChange={(event) => {
+                const value = handleChane({
+                  oldValue: priceExportTotal,
+                  text: event.target.value,
+                });
+                setPriceExportTotal(value);
+              }}
+              variant="standard"
+              label="Giá xuất(VNĐ)"
+            />
+            <Button
+              variant="contained"
+              style={{ marginLeft: 5 }}
+              onClick={() => {
+                handleChangePrice({
+                  keyString: "priceExport",
+                  value: priceExportTotal,
+                });
+              }}
+            >
+              Apply all
+            </Button>
+          </div>
+          <p className={classes.textDescription}>
+            Có thể nhập giá xuất và áp dụng cho toàn bộ phân loại
+          </p>
         </div>
-        <div className={classes.itemAddAll}>
-          <TextField
-            value={`${formatPrice(quantityTotal)}`}
-            onChange={(event) => {
-              const value = handleChane({
-                oldValue: quantityTotal,
-                text: event.target.value,
-              });
-              setQuantityTotal(value);
-            }}
-            variant="standard"
-            label="Quantity(Cái)"
-          />
-          <Button
-            variant="contained"
-            style={{ marginLeft: 5 }}
-            onClick={() => {
-              handleChangePrice({
-                keyString: "quantity",
-                value: quantityTotal,
-              });
-            }}
-          >
-            Apply all
-          </Button>
+        <div>
+          <div className={classes.itemAddAll}>
+            <TextField
+              value={`${formatPrice(quantityTotal)}`}
+              onChange={(event) => {
+                const value = handleChane({
+                  oldValue: quantityTotal,
+                  text: event.target.value,
+                });
+                setQuantityTotal(value);
+              }}
+              variant="standard"
+              label="Số lượng"
+            />
+            <Button
+              variant="contained"
+              style={{ marginLeft: 5 }}
+              onClick={() => {
+                handleChangePrice({
+                  keyString: "quantity",
+                  value: quantityTotal,
+                });
+              }}
+            >
+              Apply all
+            </Button>
+          </div>
+          <p className={classes.textDescription}>
+            Có thể nhập số lượng và áp dụng cho toàn bộ phân loại
+          </p>
         </div>
       </div>
       <TableContainer>
@@ -191,14 +208,38 @@ const ListProductDetail = (props: Props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell align="right">id</TableCell>
-              <TableCell align="right">Tên sản phẩm</TableCell>
-              <TableCell align="right">Option</TableCell>
-              <TableCell align="right">Giá nhập(VNĐ)</TableCell>
-              <TableCell align="right">Giá xuất(VNĐ)</TableCell>
-              <TableCell align="right">Ảnh phân loại</TableCell>
-              <TableCell align="right">Số lượng(Cái)</TableCell>
-              <TableCell align="right">Ngưng hoạt động</TableCell>
+              <TableCell
+                align="right"
+                className={classes.rowHeader}
+                style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
+              >
+                STT
+              </TableCell>
+              <TableCell align="right" className={classes.rowHeader}>
+                Tên sản phẩm
+              </TableCell>
+              <TableCell align="right" className={classes.rowHeader}>
+                Phân loại
+              </TableCell>
+              <TableCell align="right" className={classes.rowHeader}>
+                Giá nhập(VNĐ)
+              </TableCell>
+              <TableCell align="right" className={classes.rowHeader}>
+                Giá xuất(VNĐ)
+              </TableCell>
+              <TableCell align="right" className={classes.rowHeader}>
+                Ảnh phân loại
+              </TableCell>
+              <TableCell align="right" className={classes.rowHeader}>
+                Số lượng(Cái)
+              </TableCell>
+              <TableCell
+                align="right"
+                className={classes.rowHeader}
+                style={{ borderTopRightRadius: 8, borderBottomRightRadius: 8 }}
+              >
+                Trạng thái
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -240,6 +281,7 @@ const useStyles = makeStyles(() =>
     },
     table: {
       minWidth: 750,
+      marginTop: 20,
     },
     totalFilter: {
       display: "flex",
@@ -249,6 +291,16 @@ const useStyles = makeStyles(() =>
     itemAddAll: {
       display: "flex",
       alignItems: "center",
+    },
+    rowHeader: {
+      backgroundColor: colors.gradiantBluePosition,
+      borderBottomColor: colors.white,
+      color: colors.gradiantBlue,
+    },
+    textDescription: {
+      fontSize: 12,
+      color: colors.grayC4,
+      marginTop: 5,
     },
   })
 );

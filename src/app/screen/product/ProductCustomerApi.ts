@@ -31,8 +31,10 @@ export const requestGetCategorylAllByParentId = () =>
 export const requestGetProductCustomer = (payload: FilterProductDto) =>
   ApiClient.post("/product/findByOpionalArrayValue", payload);
 
-export const requestGetProductCustomerById = (payload: { id: number }) =>
-  ApiClient.get("/product/findOptionProductById", { params: payload });
+export const requestGetProductCustomerById = (payload: {
+  product_id: number;
+  account_id?: number | null;
+}) => ApiClient.get("/product/findOptionProductById", { params: payload });
 export const requestGetProductDetailByIdProduct = (
   payload: ProductDetailByIdProduct
 ) => ApiClient.get("/productDetail/findByProductId", { params: payload });

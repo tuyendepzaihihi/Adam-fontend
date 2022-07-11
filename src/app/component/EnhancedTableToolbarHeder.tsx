@@ -4,9 +4,7 @@ import {
   lighten,
   makeStyles,
   Paper,
-  TextField,
   Theme,
-  Typography,
 } from "@material-ui/core";
 import { useState } from "react";
 import { colors } from "../utils/color";
@@ -16,30 +14,19 @@ interface EnhancedTableToolbarProps {
 }
 const EnhancedTableToolbarHeder = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { label, onCreate } = props;
+  const { onCreate } = props;
   const [textFilter, setTextFilter] = useState("");
   return (
-    <Paper>
-      <Typography
-        style={{
-          fontWeight: "bold",
-          fontSize: 20,
-          marginTop: 10,
-          marginLeft: 15,
-        }}
-      >
-        {label}
-      </Typography>
+    <Paper style={{ paddingTop: 10, paddingBottom: 15 }}>
       <div className={classes.filter}>
         <div className={classes.containerFilter}>
-          <TextField
+          <input
             value={textFilter}
             className={classes.textInput}
-            label={"Search"}
-            variant={"outlined"}
             onChange={(event) => {
               setTextFilter(event.target.value);
             }}
+            placeholder="Search..."
           />
         </div>
         <div className={classes.containerButton}>
@@ -81,8 +68,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       color: colors.grayC4,
     },
     containerFilter: {
-      width: "70%",
-      height: 100,
+      width: "100%",
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-between",
@@ -90,9 +76,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     },
     textInput: {
       width: "100%",
-      borderColor: colors.gradiantBluePosition,
+      borderColor: colors.grayC4,
       borderWidth: 0.5,
-      height: 40
+      height: 40,
+      borderRadius: 5,
+      marginTop: 10,
+      paddingLeft: 10,
+      paddingRight: 10,
     },
     formControl: {
       margin: theme.spacing(1),

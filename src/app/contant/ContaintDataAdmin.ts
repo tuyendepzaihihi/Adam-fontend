@@ -99,15 +99,20 @@ export const headCells: HeadCell<UserAdmin>[] = [
     label: "STT",
   },
   { id: "email", numeric: true, disablePadding: false, label: "Email" },
-  { id: "phoneNumber", numeric: true, disablePadding: false, label: "Phone" },
-  { id: "role", numeric: true, disablePadding: false, label: "Position" },
+  {
+    id: "phoneNumber",
+    numeric: true,
+    disablePadding: false,
+    label: "Số điện thoại",
+  },
+  { id: "role", numeric: true, disablePadding: false, label: "Vai trò" },
   {
     id: "fullName",
     numeric: true,
     disablePadding: false,
-    label: "Full Name",
+    label: "Tên đầy đủ",
   },
-  { id: "isActive", numeric: true, disablePadding: false, label: "Status" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const headCellsCategory: HeadCell<CategoryAdmin>[] = [
@@ -117,9 +122,14 @@ export const headCellsCategory: HeadCell<CategoryAdmin>[] = [
     disablePadding: true,
     label: "STT",
   },
-  { id: "categoryName", numeric: true, disablePadding: false, label: "Name" },
+  {
+    id: "categoryName",
+    numeric: true,
+    disablePadding: false,
+    label: "Tên danh mục",
+  },
 
-  { id: "isDeleted", numeric: true, disablePadding: false, label: "Status" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const LIST_CATEGORY: CategoryAdmin[] = [
@@ -186,33 +196,38 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     disablePadding: true,
     label: "STT",
   },
-  { id: "title", numeric: true, disablePadding: false, label: "Title" },
+  { id: "title", numeric: true, disablePadding: false, label: "Tiêu đề" },
   {
     id: "description",
     numeric: true,
     disablePadding: false,
-    label: "Description",
+    label: "Mô tả",
   },
   {
     id: "startDate",
     numeric: true,
     disablePadding: false,
-    label: "Start time",
+    label: "Thời gian bắt đầu",
   },
-  { id: "endDate", numeric: true, disablePadding: false, label: "End time" },
+  {
+    id: "endDate",
+    numeric: true,
+    disablePadding: false,
+    label: "Thời gian kết thúc",
+  },
   {
     id: "create_date",
     numeric: true,
     disablePadding: false,
-    label: " Create date",
+    label: "Thời gian tạo",
   },
   {
     id: "discountPersent",
     numeric: true,
     disablePadding: false,
-    label: "Discount persent",
+    label: "Giảm (% hoặc VND)",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Status" },
+  { id: "status", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const LIST_VOUCHER: VoucherAdmin[] = [
@@ -255,9 +270,9 @@ export const headCellsMaterial: HeadCell<Material>[] = [
     id: "materialName",
     numeric: true,
     disablePadding: false,
-    label: "Material name",
+    label: "Tên chất liệu",
   },
-  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const LIST_MATERIAL: Material[] = [];
@@ -293,7 +308,7 @@ export const headCellsBranch: HeadCell<Branch>[] = [
     disablePadding: false,
     label: "Branch name",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "status", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const headCellsOrderAdmin: HeadCell<OrderDto>[] = [
@@ -321,7 +336,7 @@ export const headCellsOrderAdmin: HeadCell<OrderDto>[] = [
     disablePadding: false,
     label: "Tổng tiền hàng",
   },
-  { id: "status", numeric: true, disablePadding: false, label: "Active" },
+  { id: "status", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const LIST_TAG: Tag[] = [
@@ -348,9 +363,9 @@ export const headCellsTag: HeadCell<Tag>[] = [
     id: "tagName",
     numeric: true,
     disablePadding: false,
-    label: "Tag name",
+    label: "Tên thẻ",
   },
-  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const OPTIONS_DATA: DataStateOption = {
@@ -394,9 +409,9 @@ export const headCellsOptionColor: HeadCell<OptionColor>[] = [
     id: "colorName",
     numeric: true,
     disablePadding: false,
-    label: "Color name",
+    label: "Tên màu",
   },
-  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const headCellsOptionSize: HeadCell<OptionSize>[] = [
@@ -410,9 +425,9 @@ export const headCellsOptionSize: HeadCell<OptionSize>[] = [
     id: "sizeName",
     numeric: true,
     disablePadding: false,
-    label: "Size name",
+    label: "Tên kích thước",
   },
-  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 // Product
 export const headCellsProduct: HeadCell<ProductAdmin>[] = [
@@ -422,15 +437,25 @@ export const headCellsProduct: HeadCell<ProductAdmin>[] = [
     disablePadding: true,
     label: "STT",
   },
-  { id: "productName", numeric: true, disablePadding: false, label: "Name" },
+  {
+    id: "productName",
+    numeric: true,
+    disablePadding: false,
+    label: "Tên sản phẩm",
+  },
   {
     id: "createDate",
     numeric: true,
     disablePadding: false,
-    label: "Create date",
+    label: "Ngày tạo",
   },
-  { id: "isActive", numeric: true, disablePadding: false, label: "Active" },
-  { id: "isComplete", numeric: true, disablePadding: false, label: "Complete" },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
+  {
+    id: "isComplete",
+    numeric: true,
+    disablePadding: false,
+    label: "Trạng thái hoàn thành",
+  },
 ];
 
 export const LIST_PRODUCT: ProductAdmin[] = [

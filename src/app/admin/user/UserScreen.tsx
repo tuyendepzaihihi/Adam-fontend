@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
+import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCells } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
@@ -44,6 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
+      padding: 10,
+      marginTop: 10,
     },
     table: {
       minWidth: 750,
@@ -69,7 +72,7 @@ export default function UserScreen() {
   const [orderBy, setOrderBy] = React.useState<keyof UserAdmin>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
@@ -182,6 +185,13 @@ export default function UserScreen() {
 
   return (
     <div className={classes.root}>
+      <EnhancedTableToolbarHeder
+        onCreate={() => {
+          setTypeDialog(TYPE_DIALOG.CREATE);
+          setOpen(!open);
+        }}
+        label={"Quản lý user"}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}

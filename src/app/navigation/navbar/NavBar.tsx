@@ -12,7 +12,6 @@ import Favorite from "@material-ui/icons/FavoriteBorder";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
-import { calc } from "@vechaiui/react";
 import clsx from "clsx";
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -363,20 +362,30 @@ export default function NavBar() {
   }, [location.pathname]);
 
   return (
-    <div className={classes.grow} >
+    <div className={classes.grow}>
       {isAdmin ? (
         <div className={classes.containerAdmin}>
           <MiniDrawer open={open} setOpen={setOpen} />
-          <div style={{flex: 1}}>
+          <div style={{ flex: 1 }}>
             <div
               style={{
                 height: 70,
                 width: "100%",
                 backgroundColor: colors.white,
-                padding: 10
+                padding: 10,
               }}
             >
-              khanh
+              <Typography style={{ fontWeight: "bold", color: colors.gray59 }}>
+                ADMIN MANAGEMENT
+              </Typography>
+              <Typography
+                style={{ fontSize: 13, color: colors.gray59, marginTop: 5 }}
+              >
+                {`${location.pathname}`
+                  .toUpperCase()
+                  .replace("/", "")
+                  .replace("_", " ")}
+              </Typography>
             </div>
             <div
               style={{

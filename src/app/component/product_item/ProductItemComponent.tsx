@@ -1,4 +1,5 @@
 import {
+  CardMedia,
   createStyles,
   makeStyles,
   Paper,
@@ -66,8 +67,11 @@ const ProductItemComponent = (props: Props) => {
           src={image ? image : R.images.img_product}
           alt=""
           className={className.image_banner}
+          style={{
+            objectFit: "contain",
+          }}
         />
-        {/* <p className="description">{item?.description ?? ""}</p> */}
+
         <div className={className.containerInfo}>
           <Typography
             variant="body1"

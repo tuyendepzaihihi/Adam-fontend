@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       marginBottom: theme.spacing(2),
       marginTop: 10,
+      padding: 10,
     },
     table: {
       minWidth: 750,

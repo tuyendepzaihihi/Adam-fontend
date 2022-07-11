@@ -62,7 +62,7 @@ const FormEditProductDetail = (props: Props) => {
 
   return (
     <TableRow hover tabIndex={-1} key={`${row.id}`}>
-      <TableCell component="th" id={labelId} scope="row" padding="none">
+      <TableCell align="center" id={labelId} scope="row" padding="none">
         {row.id}
       </TableCell>
       <TableCell align="right">

@@ -41,6 +41,9 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
           padding="checkbox"
           style={{
             backgroundColor: colors.gradiantBluePosition,
+            borderTopLeftRadius: 5,
+            borderBottomColor: colors.white,
+            borderBottomLeftRadius: 5,
           }}
         >
           {!nonActivties && (
@@ -61,6 +64,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             sortDirection={orderBy === headCell.id ? order : false}
             style={{
               backgroundColor: colors.gradiantBluePosition,
+              borderBottomColor: colors.white,
             }}
           >
             <TableSortLabel
@@ -83,8 +87,11 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
           <TableCell
             align="right"
             style={{
-              backgroundColor: `rgba(0,165,255,0.1)`,
-              color: "rgba(0,165,255)",
+              backgroundColor: colors.gradiantBluePosition,
+              color: colors.gradiantBlue,
+              borderBottomColor: colors.white,
+              borderTopRightRadius: 5,
+              borderBottomRightRadius: 5,
             }}
           >
             Hoạt động
