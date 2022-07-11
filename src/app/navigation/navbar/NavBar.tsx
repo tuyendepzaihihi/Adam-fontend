@@ -1,4 +1,4 @@
-import { Button, Typography } from "@material-ui/core";
+import { Button, Tooltip, Typography } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
@@ -333,16 +333,24 @@ export default function NavBar() {
         </IconButton>
         <p>Giỏ hàng</p>
       </MenuItem>
-      <MenuItem onClick={() => {}}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <Favorite />
-        </IconButton>
-        <p>Yêu thích</p>
+      <MenuItem
+        onClick={() => {
+          navigate(ROUTE.FAVORITE);
+        }}
+      >
+        <Tooltip title="Danh sách sản phẩm">
+          <div>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <Favorite />
+            </IconButton>
+            <p>Yêu thích</p>
+          </div>
+        </Tooltip>
       </MenuItem>
     </Menu>
   );
@@ -433,31 +441,37 @@ export default function NavBar() {
                 </div>
 
                 <div className={classes.sectionDesktop}>
-                  <IconButton
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={() => {}}
-                    color="default"
-                  >
-                    <Favorite />
-                  </IconButton>
+                  <Tooltip title="Sản phẩm yêu thích">
+                    <IconButton
+                      edge="end"
+                      aria-label="account of current user"
+                      aria-controls={menuId}
+                      aria-haspopup="true"
+                      onClick={() => {
+                        navigate(ROUTE.FAVORITE);
+                      }}
+                      color="default"
+                    >
+                      <Favorite />
+                    </IconButton>
+                  </Tooltip>
                 </div>
                 <div
                   className={classes.sectionDesktop}
                   style={{ position: "relative" }}
                 >
-                  <IconButton
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleCartOpen}
-                    color="default"
-                  >
-                    <Cart />
-                  </IconButton>
+                  <Tooltip title="Giỏ hàng">
+                    <IconButton
+                      edge="end"
+                      aria-label="account of current user"
+                      aria-controls={menuId}
+                      aria-haspopup="true"
+                      onClick={handleCartOpen}
+                      color="default"
+                    >
+                      <Cart />
+                    </IconButton>
+                  </Tooltip>
                   {token && data && data?.length > 0 && (
                     <div
                       style={{
@@ -478,16 +492,18 @@ export default function NavBar() {
                   )}
                 </div>
                 <div className={classes.sectionDesktop}>
-                  <IconButton
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleProfileMenuOpen}
-                    color="default"
-                  >
-                    <AccountCircle />
-                  </IconButton>
+                  <Tooltip title="Tài khoản">
+                    <IconButton
+                      edge="end"
+                      aria-label="account of current user"
+                      aria-controls={menuId}
+                      aria-haspopup="true"
+                      onClick={handleProfileMenuOpen}
+                      color="default"
+                    >
+                      <AccountCircle />
+                    </IconButton>
+                  </Tooltip>
                 </div>
 
                 <div className={classes.sectionMobile}>

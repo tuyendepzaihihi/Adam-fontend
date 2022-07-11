@@ -69,6 +69,7 @@ export const ROUTE = {
   ADDRESS: "/home/account/address",
   ORDER: "/home/account/order",
   ACCOUNT: "/account",
+  FAVORITE: "/account/favorite",
 };
 
 export const ROUTE_ADMIN = {

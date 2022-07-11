@@ -9,7 +9,8 @@ export interface UpdateDto {
 }
 
 export interface CreateDto {
-  favoriteName: string;
+  account_id: number;
+  product_id: number;
 }
 
 // function favorite
@@ -19,10 +20,10 @@ export const requestGetFavoritesByAccount = (payload: { account_id: number }) =>
   });
 
 export const requestPutUpdateSize = (payload: UpdateDto) =>
-  ApiClient.put("/admin/favorite/update", payload);
+  ApiClient.put("/favorite/update", payload);
 
 export const requestDeleteSize = (payload: any) =>
-  ApiClient.delete("/admin/favorite/delete", { params: payload });
+  ApiClient.delete("/favorite/delete", { params: payload });
 
 export const requestPostCreateSize = (payload: CreateDto) =>
-  ApiClient.post("/admin/favorite/create", payload);
+  ApiClient.post("/favorite/create", { params: payload });

@@ -50,19 +50,13 @@ export const data = {
   datasets: [
     {
       label: "Doanh thu",
-      data: [
-        1000000, 200000000, 500000000, 600000000, 500000000, 200000000,
-        150000000,
-      ],
+      data: [0, 0, 0, 0, 0, 0, 0],
       borderColor: "rgb(255, 99, 132)",
       backgroundColor: "rgba(255, 99, 132, 0.5)",
     },
     {
       label: "Doanh số",
-      data: [
-        2000000000, 500000000, 600000000, 800000000, 900000000, 600000000,
-        200000000, 95000000,
-      ],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
       borderColor: "rgb(53, 162, 235)",
       backgroundColor: "rgba(53, 162, 235, 0.5)",
     },
@@ -74,12 +68,12 @@ export const dataBarChart = {
   datasets: [
     {
       label: "Người dùng mua hàng",
-      data: [100, 200, 500, 600, 500, 200, 500, 200],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
       backgroundColor: "rgba(255, 99, 132, 0.5)",
     },
     {
       label: "Người dùng vào trang web",
-      data: [2000, 500, 600, 800, 900, 600, 200, 400],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
       backgroundColor: "rgba(53, 162, 235, 0.5)",
     },
   ],
@@ -90,26 +84,17 @@ export const dataBarChartOrder = {
   datasets: [
     {
       label: "Tổng đơn hàng",
-      data: [100, 200, 500, 600, 500, 200, 500, 200],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
       backgroundColor: "rgba(125, 200, 125, 0.5)",
     },
     {
       label: "Đơn hàng thành công",
-      data: [
-        90,
-        200 - 15,
-        500 - 16,
-        600 - 16,
-        500,
-        200 - 5,
-        500 - 12,
-        200 - 25,
-      ],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
       backgroundColor: "rgba(53, 162, 235, 0.5)",
     },
     {
       label: "Đơn hàng hoàn",
-      data: [10, 15, 16, 16, 0, 5, 12, 25],
+      data: [0, 0, 0, 0, 0, 0, 0, 0],
       backgroundColor: "rgba(255, 99, 132, 0.5)",
     },
   ],
@@ -193,13 +178,17 @@ const DashboardScreen = () => {
     <div className={className.root}>
       <Line
         options={chartOption("Thống kê đơn hàng")}
-        data={orderStatistic}
+        data={
+          orderStatistic.labels.length > 0 ? orderStatistic : dataBarChartOrder
+        }
         style={{ maxHeight: 400, width: "100%" }}
       />
 
       <Bar
         options={chartOption("Thống kê tài khoản")}
-        data={userStatistic}
+        data={
+          userStatistic.labels.length > 0 ? userStatistic : dataBarChartOrder
+        }
         style={{ maxHeight: 400, width: "100%" }}
       />
 

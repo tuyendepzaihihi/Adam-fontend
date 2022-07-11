@@ -12,6 +12,7 @@ import CartScreen from "../app/screen/cart/CartScreen";
 import AddressUser from "../app/screen/setting/address/AddressUser";
 import OrderScreen from "../app/screen/order/OrderScreen";
 import AccountScreen from "../app/screen/setting/account/AccountScreen";
+import FavoriteScreen from "../app/screen/favorite/FavoriteScreen";
 
 export const AUTH_ROUTE = [
   {
@@ -60,6 +61,10 @@ export const PRIVATE_ROUTE = [
   {
     route: ROUTE.ACCOUNT,
     screen: <AccountScreen />,
+  },
+  {
+    route: ROUTE.FAVORITE,
+    screen: <FavoriteScreen />,
   },
 ];
 

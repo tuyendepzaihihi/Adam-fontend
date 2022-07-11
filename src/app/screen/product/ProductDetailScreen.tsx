@@ -1,13 +1,23 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
+  Box,
   Button,
   createStyles,
+  IconButton,
   makeStyles,
   TextField,
   Theme,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
+import {
+  Favorite,
+  FavoriteBorderRounded,
+  FavoriteOutlined,
+  StarBorderRounded,
+} from "@material-ui/icons";
+import { Rating } from "@material-ui/lab";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
@@ -321,6 +331,24 @@ const ProductDetailScreen = () => {
               đ
             </p>
           )}
+
+          <Box component="fieldset" borderColor="transparent">
+            <Rating
+              name="customized-empty"
+              defaultValue={2}
+              precision={0.5}
+              disabled
+              emptyIcon={<StarBorderRounded fontSize="inherit" />}
+            />
+          </Box>
+          <Tooltip title="Yêu thích">
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <IconButton>
+                <FavoriteBorderRounded fontSize="large" />
+              </IconButton>
+              <p style={{ color: colors.grayC4, fontSize: 13 }}>Yêu thích</p>
+            </div>
+          </Tooltip>
 
           {!dataDetail ? (
             <TextSkeleton />
