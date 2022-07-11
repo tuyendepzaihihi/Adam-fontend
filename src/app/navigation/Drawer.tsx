@@ -85,6 +85,10 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0,0,0,0.5)",
       },
     },
+    borderCustome:{
+      borderRightWidth: 0,
+      borderRightColor:colors.white
+    }
   })
 );
 
@@ -104,7 +108,7 @@ export default function MiniDrawer(props: Props) {
   const selected = getDrawer();
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -116,15 +120,16 @@ export default function MiniDrawer(props: Props) {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
           }),
+          paperAnchorDockedLeft: clsx(classes.borderCustome)
         }}
+        
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
             {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
-        <Divider />
-        <List>
+        <List style={{ paddingLeft: 5, paddingRight: 5 }}>
           {LIST_MENU_DRAWER.map((val, index) => {
             const Icon = val.icon;
             return (
@@ -140,6 +145,7 @@ export default function MiniDrawer(props: Props) {
                     Number(selected) === index
                       ? "rgba(0, 153, 255, 0.1)"
                       : colors.white,
+                  borderRadius: 10,
                 }}
               >
                 <ListItemIcon>
@@ -172,6 +178,9 @@ export default function MiniDrawer(props: Props) {
               dispatch(updateSwitchRole(false));
               navigate(ROUTE.LOGIN);
               setDrawer(`${LIST_MENU_DRAWER.length + 1}`);
+            }}
+            style={{
+              borderRadius: 10,
             }}
           >
             <ListItemIcon>

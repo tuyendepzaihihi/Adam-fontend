@@ -12,6 +12,7 @@ import Favorite from "@material-ui/icons/FavoriteBorder";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
+import { calc } from "@vechaiui/react";
 import clsx from "clsx";
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -362,12 +363,32 @@ export default function NavBar() {
   }, [location.pathname]);
 
   return (
-    <div className={classes.grow}>
+    <div className={classes.grow} >
       {isAdmin ? (
         <div className={classes.containerAdmin}>
           <MiniDrawer open={open} setOpen={setOpen} />
-          <div style={{ padding: 10, flex: 1 }}>
-            <MainApp isAdmin={isAdmin ? true : false} />
+          <div style={{flex: 1}}>
+            <div
+              style={{
+                height: 70,
+                width: "100%",
+                backgroundColor: colors.white,
+                padding: 10
+              }}
+            >
+              khanh
+            </div>
+            <div
+              style={{
+                padding: 10,
+                flex: 1,
+                backgroundColor: colors.gradiantBluePosition,
+                borderTopLeftRadius: 10,
+                borderBottomLeftRadius: 10,
+              }}
+            >
+              <MainApp isAdmin={isAdmin ? true : false} />
+            </div>
           </div>
         </div>
       ) : (

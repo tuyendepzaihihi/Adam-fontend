@@ -1,66 +1,65 @@
 import {
+  Button,
   createStyles,
-  IconButton,
   lighten,
-  makeStyles, Theme,
-  Toolbar,
-  Tooltip,
-  Typography
+  makeStyles,
+  Paper,
+  TextField,
+  Theme,
+  Typography,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import clsx from "clsx";
+import { useState } from "react";
 import { colors } from "../utils/color";
 interface EnhancedTableToolbarProps {
-  numSelected: number;
   onCreate: Function;
-  onDelete: Function;
   label: string;
-  isNonSearchTime?: boolean;
 }
-
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+const EnhancedTableToolbarHeder = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, onDelete } = props;
+  const { label, onCreate } = props;
+  const [textFilter, setTextFilter] = useState("");
   return (
-    <div>
-      <Toolbar
-        className={clsx(classes.root, {
-          [classes.highlight]: numSelected > 0,
-        })}
+    <Paper>
+      <Typography
+        style={{
+          fontWeight: "bold",
+          fontSize: 20,
+          marginTop: 10,
+          marginLeft: 15,
+        }}
       >
-        {numSelected > 0 ? (
-          <Typography
-            className={classes.title}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
+        {label}
+      </Typography>
+      <div className={classes.filter}>
+        <div className={classes.containerFilter}>
+          <TextField
+            value={textFilter}
+            className={classes.textInput}
+            label={"Search"}
+            variant={"outlined"}
+            onChange={(event) => {
+              setTextFilter(event.target.value);
+            }}
+          />
+        </div>
+        <div className={classes.containerButton}>
+          <Button
+            variant="contained"
+            style={{
+              marginLeft: 10,
+              backgroundColor: colors.gradiantBluePosition,
+              color: colors.gradiantBlue,
+            }}
+            onClick={() => onCreate()}
           >
-            {numSelected} bản ghi
-          </Typography>
-        ) : (
-          <Typography
-            className={classes.title}
-            variant="subtitle2"
-            id="tableTitle"
-            component="div"
-          >
-            Chưa chọn bản ghi nào
-          </Typography>
-        )}
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="delete" onClick={() => onDelete()}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <div />
-        )}
-      </Toolbar>
-    </div>
+            Tạo mới thông tin
+          </Button>
+        </div>
+      </div>
+    </Paper>
   );
 };
-export default EnhancedTableToolbar;
+export default EnhancedTableToolbarHeder;
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -82,7 +81,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       color: colors.grayC4,
     },
     containerFilter: {
-      width: "60%",
+      width: "70%",
       height: 100,
       display: "flex",
       flexDirection: "row",
@@ -90,7 +89,10 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
     },
     textInput: {
-      width: "40%",
+      width: "100%",
+      borderColor: colors.gradiantBluePosition,
+      borderWidth: 0.5,
+      height: 40
     },
     formControl: {
       margin: theme.spacing(1),

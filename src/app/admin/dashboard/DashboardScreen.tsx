@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
 import {
   BarElement,
   CategoryScale,
@@ -176,22 +176,28 @@ const DashboardScreen = () => {
 
   return (
     <div className={className.root}>
-      <Line
-        options={chartOption("Thống kê đơn hàng")}
-        data={
-          orderStatistic.labels.length > 0 ? orderStatistic : dataBarChartOrder
-        }
-        style={{ maxHeight: 400, width: "100%" }}
-      />
-
-      <Bar
-        options={chartOption("Thống kê tài khoản")}
-        data={
-          userStatistic.labels.length > 0 ? userStatistic : dataBarChartOrder
-        }
-        style={{ maxHeight: 400, width: "100%" }}
-      />
-
+      <Paper className={className.root}>
+        <Bar
+          options={chartOption("Thống kê tài khoản")}
+          data={
+            userStatistic?.labels?.length > 0
+              ? userStatistic
+              : dataBarChartOrder
+          }
+          style={{ maxHeight: 400, width: "100%" }}
+        />
+      </Paper>
+      <Paper className={className.root} style={{marginTop: 10}}>
+        <Line
+          options={chartOption("Thống kê đơn hàng")}
+          data={
+            orderStatistic?.labels?.length > 0
+              ? orderStatistic
+              : dataBarChartOrder
+          }
+          style={{ maxHeight: 400, width: "100%" }}
+        />
+      </Paper>
       {loading && <LoadingProgress />}
     </div>
   );
@@ -202,7 +208,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flex: 1,
-      width: "90%",
+      width: "100%",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",

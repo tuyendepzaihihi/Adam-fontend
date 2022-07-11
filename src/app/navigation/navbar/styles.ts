@@ -173,6 +173,7 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
     containerAdmin: {
       display: "flex",
       flexDirection: "row",
+      
     },
   })
 );
