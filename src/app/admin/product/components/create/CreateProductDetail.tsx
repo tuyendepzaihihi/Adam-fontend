@@ -14,6 +14,7 @@ import {
 } from "../../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../../hooks";
 import { getDifferenValue } from "../../../../utils/function";
+import { createNotification } from "../../../../utils/MessageUtil";
 import {
   CreateDto,
   requestPostCreateDetailProduct,
@@ -108,6 +109,13 @@ const CreateProductDetail = (props: Props) => {
 
   const handleSubmit = async () => {
     try {
+      if (optionValues.colors.length === 0 || optionValues.sizes.length === 0) {
+        createNotification({
+          message: "Bạn cần chọn option cho sản phẩm",
+          type: "warning",
+        });
+        return;
+      }
       dispatch(changeLoading(true));
       if (type === TYPE_DIALOG.CREATE) {
         const payload: CreateDto = {

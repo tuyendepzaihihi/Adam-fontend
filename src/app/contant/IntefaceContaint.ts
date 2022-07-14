@@ -32,6 +32,7 @@ export interface DataState<T> {
   data: T;
   isLoading?: boolean;
   isError?: boolean;
+  count?: number;
 }
 
 export interface CategoryAdmin {

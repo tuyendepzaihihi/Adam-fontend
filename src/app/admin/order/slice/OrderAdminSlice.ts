@@ -8,13 +8,14 @@ const initialState: DataState<OrderDto[]> = {
   data: [],
   isError: false,
   isLoading: false,
+  count: 0,
 };
 
 export const incrementAsyncOrderAdminAdmin = createAsyncThunk(
   "order/admin",
   async (payload: GetOrderAdminDto) => {
     // call api here
-    const res: ResultApi<{ content: OrderDto[]; totalPages: number }> =
+    const res: ResultApi<{ content: OrderDto[]; totalElements: number }> =
       await requestGetOrderAdminAll(payload);
     return res;
   }
@@ -30,6 +31,10 @@ export const orderAdminSlice = createSlice({
       state.data = oldArray?.map((e) => {
         if (e.id === item.id) return item;
         else return e;
+      });
+      createNotification({
+        message: "Cập nhật đơn hàng thành công",
+        type: "success",
       });
     },
     createOrderAdmin: (state, action) => {
@@ -65,6 +70,7 @@ export const orderAdminSlice = createSlice({
         state.isError = false;
         state.isLoading = false;
         state.data = action.payload.data.content;
+        state.count = action.payload.data.totalElements;
       })
       .addCase(incrementAsyncOrderAdminAdmin.rejected, (state) => {
         state.isError = true;

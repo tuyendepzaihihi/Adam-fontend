@@ -12,7 +12,9 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
-import { useAppDispatch } from "../../../hooks";
+import LoadingProgress from "../../../component/LoadingProccess";
+import { ResultApi } from "../../../contant/IntefaceContaint";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   DEFINE_ORDER,
   ItemProduct,
@@ -22,10 +24,11 @@ import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { createNotification } from "../../../utils/MessageUtil";
+import { requestPutUpdateOrder } from "../OrderApi";
 import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
 interface Props {
   open: any;
-  handleClose: any;
+  handleClose: () => void;
   anchorElData: { item: OrderDto } | null;
   setAnchorElData: any;
 }
@@ -54,6 +57,7 @@ const RenderInfoOrder = (params: {
 }) => {
   const classes = useStyles();
   const { item, handleChange } = params;
+
   return (
     <div>
       <RenderLabel label={"Tên người nhận"} value={item?.fullName} />
@@ -121,9 +125,10 @@ const RenderInfoOrder = (params: {
 
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector((e) => e.orderAdmin);
   const { handleClose, open, anchorElData, setAnchorElData } = props;
 
-  const handleChange = (params: { value: any; row: OrderDto }) => {
+  const handleChange = async (params: { value: any; row: OrderDto }) => {
     const { row, value } = params;
     if (row.status === TYPE_ORDER.DONE && value !== TYPE_ORDER.CANCEL) {
       createNotification({
@@ -146,13 +151,12 @@ const FormDialog = (props: Props) => {
 
     try {
       dispatch(changeLoading(true));
-      const item = {
-        ...row,
+      const res: ResultApi<OrderDto> = await requestPutUpdateOrder({
+        order_id: row.id,
         status: value,
-      };
-      setAnchorElData({ item });
-      dispatch(updateOrderAdmin({ item }));
-      handleClose();
+      });
+      setAnchorElData({ item: res.data });
+      dispatch(updateOrderAdmin({ item: res.data }));
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
@@ -174,6 +178,7 @@ const FormDialog = (props: Props) => {
           item={anchorElData?.item}
           handleChange={handleChange}
         />
+        {isLoading && <LoadingProgress />}
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={handleClose}>

@@ -19,6 +19,7 @@ interface EnhancedTableProps {
   createSortHandler: any;
   childrenMore?: any;
   nonActivties?: boolean;
+  isNoSort?: boolean;
 }
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
@@ -33,6 +34,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
     createSortHandler,
     childrenMore,
     nonActivties,
+    isNoSort,
   } = props;
   return (
     <TableHead>
@@ -61,20 +63,20 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            sortDirection={!isNoSort && orderBy === headCell.id ? order : false}
             style={{
               backgroundColor: colors.gradiantBluePosition,
               borderBottomColor: colors.white,
             }}
           >
             <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
+              active={!isNoSort && orderBy === headCell.id}
+              direction={!isNoSort && orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
               style={{ color: colors.gradiantBlue }}
             >
               {headCell.label}
-              {orderBy === headCell.id ? (
+              {!isNoSort && orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>

@@ -281,6 +281,7 @@ export default function ProductScreen() {
               rowCount={data.length}
               headCells={headCellsProduct}
               createSortHandler={createSortHandler}
+              isNoSort={true}
             />
             <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&

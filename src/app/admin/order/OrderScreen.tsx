@@ -69,7 +69,7 @@ export default function OrderScreen() {
   const [orderBy, setOrderBy] = React.useState<keyof OrderDto>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
@@ -78,11 +78,13 @@ export default function OrderScreen() {
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data, isLoading } = useAppSelector((state) => state.orderAdmin);
+  const { data, isLoading, count } = useAppSelector(
+    (state) => state.orderAdmin
+  );
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page, rowsPerPage]);
 
   const getData = async () => {
     try {
@@ -180,119 +182,110 @@ export default function OrderScreen() {
               rowCount={data.length}
               headCells={headCellsOrderAdmin}
               createSortHandler={createSortHandler}
+              isNoSort={true}
             />
             <TableBody style={{ position: "relative" }}>
               {data.length > 0 &&
-                FunctionUtil.stableSort(
-                  data,
-                  FunctionUtil.getComparator(order, orderBy)
-                )
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(`${row.id}`);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={`${row.id}`}
-                        selected={isItemSelected}
+                data.map((row, index) => {
+                  const isItemSelected = isSelected(`${row.id}`);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={`${row.id}`}
+                      selected={isItemSelected}
+                    >
+                      <TableCell
+                        padding="checkbox"
+                        style={{ borderBottomColor: colors.white }}
                       >
-                        <TableCell
-                          padding="checkbox"
-                          style={{ borderBottomColor: colors.white }}
-                        >
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                            onClick={(event) => {
-                              setSelected(
-                                FunctionUtil.handleClick(
-                                  event,
-                                  `${row.id}`,
-                                  selected
-                                )
-                              );
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                          style={{ borderBottomColor: colors.white }}
-                        >
-                          {row.id}
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          style={{ borderBottomColor: colors.white }}
-                        >
-                          {row.fullName}
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          style={{ borderBottomColor: colors.white }}
-                        >
-                          {" "}
-                          {row.phoneNumber}
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          style={{ borderBottomColor: colors.white }}
-                        >
-                          {formatPrice(row.totalPrice ?? 0)}đ
-                        </TableCell>
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                          onClick={(event) => {
+                            setSelected(
+                              FunctionUtil.handleClick(
+                                event,
+                                `${row.id}`,
+                                selected
+                              )
+                            );
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                        style={{ borderBottomColor: colors.white }}
+                      >
+                        {row.id}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{ borderBottomColor: colors.white }}
+                      >
+                        {row.fullName}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{ borderBottomColor: colors.white }}
+                      >
+                        {" "}
+                        {row.phoneNumber}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{ borderBottomColor: colors.white }}
+                      >
+                        {formatPrice(row.totalPrice ?? 0)}đ
+                      </TableCell>
 
-                        <TableCell
+                      <TableCell
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          borderBottomColor: colors.white,
+                        }}
+                      >
+                        <div
                           style={{
+                            backgroundColor:
+                              DEFINE_ORDER[Number(row.status)].color,
+                            borderRadius: 10,
+                            alignSelf: "center",
                             display: "flex",
-                            justifyContent: "flex-end",
-                            borderBottomColor: colors.white,
+                            justifyContent: "center",
+                            padding: 5,
+                            width: "50%",
                           }}
                         >
-                          <div
-                            style={{
-                              backgroundColor:
-                                DEFINE_ORDER[Number(row.status)].color,
-                              borderRadius: 10,
-                              alignSelf: "center",
-                              display: "flex",
-                              justifyContent: "center",
-                              padding: 5,
-                              width: "50%",
-                            }}
+                          <Typography
+                            style={{ color: colors.white, fontSize: 14 }}
                           >
-                            <Typography
-                              style={{ color: colors.white, fontSize: 14 }}
-                            >
-                              {DEFINE_ORDER[Number(row.status)].title}
-                            </Typography>
-                          </div>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          style={{ borderBottomColor: colors.white }}
+                            {DEFINE_ORDER[Number(row.status)].title}
+                          </Typography>
+                        </div>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        style={{ borderBottomColor: colors.white }}
+                      >
+                        <Button
+                          onClick={(event) => {
+                            handleProfileMenuOpen(event, row);
+                          }}
                         >
-                          <Button
-                            onClick={(event) => {
-                              handleProfileMenuOpen(event, row);
-                            }}
-                          >
-                            ...
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
+                          ...
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               {data?.length === 0 && (
                 <div style={{ position: "absolute", top: 0, width: "100%" }}>
                   <EmptyComponent />
@@ -304,7 +297,7 @@ export default function OrderScreen() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={count ?? data.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

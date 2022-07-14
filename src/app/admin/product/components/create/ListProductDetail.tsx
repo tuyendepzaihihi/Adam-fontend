@@ -19,6 +19,7 @@ import {
 import { useAppDispatch } from "../../../../hooks";
 import { colors } from "../../../../utils/color";
 import { formatPrice, FunctionUtil } from "../../../../utils/function";
+import { createNotification } from "../../../../utils/MessageUtil";
 import {
   requestPutUpdateDetailProductList,
   UpdateListDetailProductDto,
@@ -77,6 +78,16 @@ const ListProductDetail = (props: Props) => {
 
   const handleSubmit = async () => {
     try {
+      const item = listProductDetail.find(
+        (e) => e.priceExport === 0 || e.priceImport === 0 || e.quantity
+      );
+      if (item) {
+        createNotification({
+          type: "warning",
+          message: "Bạn không được để giá trị nào bằng 0",
+        });
+        return;
+      }
       dispatch(changeLoading(true));
       const listPayload = listProductDetail.map((e) => {
         let res: UpdateListDetailProductDto = {
