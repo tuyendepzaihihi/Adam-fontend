@@ -29,6 +29,7 @@ interface Props {
   isSelected?: any;
   childrentSeleted?: any;
   helperText?: string;
+  disabled?: boolean
 }
 const TextInputComponent = (props: Props) => {
   const {
@@ -47,6 +48,7 @@ const TextInputComponent = (props: Props) => {
     isSelected,
     childrentSeleted,
     helperText,
+    disabled
   } = props;
   const className = useStyles();
   return (
@@ -66,6 +68,7 @@ const TextInputComponent = (props: Props) => {
           variant="outlined"
           style={{ height: 50 }}
           className={clsx(className.textField, classNameStyle)}
+          disabled={disabled}
         >
           {childrentSeleted}
         </TextField>
@@ -102,6 +105,7 @@ const TextInputComponent = (props: Props) => {
               </InputAdornment>
             }
             labelWidth={`${label}`.length * 8.5}
+            disabled={disabled}
           />
         </FormControl>
       )}

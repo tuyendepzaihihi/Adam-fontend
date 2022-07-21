@@ -1,12 +1,14 @@
-import { createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
+import { Button, createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
 import moment from "moment";
 import { useState } from "react";
 import { colors } from "../../../utils/color";
 interface EnhancedTableToolbarProps {
   label: string;
+  onCreate: ()=>void
 }
 
 const EnhancedTableToolbarOrder = (props: EnhancedTableToolbarProps) => {
+  const {onCreate} = props
   const classes = useToolbarStyles();
   const [textFilter, setTextFilter] = useState("");
   return (
@@ -46,6 +48,20 @@ const EnhancedTableToolbarOrder = (props: EnhancedTableToolbarProps) => {
               />
             </div>
           </div>
+          <div className={classes.containerButton}>
+            
+          <Button
+            variant="contained"
+            style={{
+              marginLeft: 10,
+              backgroundColor: colors.gradiantBluePosition,
+              color: colors.gradiantBlue,
+            }}
+            onClick={() => onCreate()}
+          >
+            Tạo mới đơn hàng
+          </Button>
+        </div>
         </div>
       </div>
     </Paper>
@@ -95,6 +111,14 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     textTitleDate: {
       fontSize: 12,
       color: colors.gray59,
+    },
+    containerButton: {
+      width: "40%",
+      height: "100%",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
     },
   })
 );

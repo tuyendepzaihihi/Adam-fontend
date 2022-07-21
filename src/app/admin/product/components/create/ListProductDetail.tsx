@@ -11,6 +11,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
+import EmptyComponent from "../../../../component/EmptyComponent";
 import { TYPE_DIALOG, URL_IMAGE } from "../../../../contant/Contant";
 import {
   DetailProductAdmin,
@@ -269,6 +270,11 @@ const ListProductDetail = (props: Props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {listProductDetail?.length === 0 && (
+        <div style={{ width: "100%" }}>
+          <EmptyComponent />
+        </div>
+      )}
       <div
         style={{ display: "flex", justifyContent: "flex-end", paddingTop: 20 }}
       >

@@ -9,13 +9,11 @@ import {
   TextField,
   Theme,
   Tooltip,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import {
-  Favorite,
-  FavoriteBorderRounded,
-  FavoriteOutlined,
-  StarBorderRounded,
+  FavoriteRounded,
+  StarBorderRounded
 } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import clsx from "clsx";
@@ -26,17 +24,17 @@ import LoadingProgress from "../../component/LoadingProccess";
 import {
   CommentSkeleton,
   ProductSkeleton,
-  TextSkeleton,
+  TextSkeleton
 } from "../../component/Skeleton";
 import {
   data_detail,
   descriptionProduct,
-  ItemCart,
+  ItemCart
 } from "../../contant/Contant";
 import {
   DetailProductAdmin,
   ProductAdmin,
-  ResultApi,
+  ResultApi
 } from "../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../hooks";
 import { getIdAccount, getToken } from "../../service/StorageService";
@@ -45,12 +43,13 @@ import { formatPrice } from "../../utils/function";
 import { createNotification } from "../../utils/MessageUtil";
 import { CreateCartDto, requestPostCreateCart } from "../cart/CartApi";
 import { addProductToCart, incrementAsyncCart } from "../cart/slice/CartSlice";
+import { CreateDto, requestPostCreateFavorite } from "../favorite/FavoriteApi";
 import CommentComponent, {
-  useCommentStyles,
+  useCommentStyles
 } from "./components/detail/CommentComponent";
 import {
   requestGetProductCustomerById,
-  requestGetProductDetailByIdProduct,
+  requestGetProductDetailByIdProduct
 } from "./ProductCustomerApi";
 
 export interface ItemComment {
@@ -118,7 +117,7 @@ interface ProductById {
     }[];
   }[];
   voteAverage?: number;
-  isFavorite?: boolean;
+  isFavorite: boolean;
 }
 
 const ProductDetailScreen = () => {
@@ -152,11 +151,12 @@ const ProductDetailScreen = () => {
 
   const getDataFilterPrice = async () => {
     setIsLoading(true);
+    const id_account = getIdAccount()
     try {
       const resultProductById: ResultApi<ProductById> =
         await requestGetProductCustomerById({
           product_id: item.id,
-          account_id: null,
+          account_id: id_account ? Number(id_account) : null,
         });
       const res: ResultApi<DetailProductAdmin[]> =
         await requestGetProductDetailByIdProduct({
@@ -240,7 +240,6 @@ const ProductDetailScreen = () => {
     if (dataExist) return true;
     else return false;
   };
-  console.log(dataDetail?.voteAverage);
 
   const handleBuyProduct = async () => {
     const token = getToken();
@@ -267,6 +266,32 @@ const ProductDetailScreen = () => {
       setIsLoading(false);
     }
   };
+
+  const handleFavoriteProduct = async() =>{
+    try {
+      setIsLoading(true);
+      const account_id = getIdAccount()
+      if(!account_id){
+        createNotification({
+          type:"warning",
+          message:"Bạn cần đăng nhập để thực hiện chức năng này"
+        })
+      }
+      const payload: CreateDto ={
+        account_id: Number(account_id),
+        product_id: item.id
+      }
+      await requestPostCreateFavorite(payload)
+      dataDetail && setDataDetail({...dataDetail,isFavorite: !dataDetail.isFavorite})
+      createNotification({
+        type:"success",
+        message:"Thành công"
+      })
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div style={{ position: "relative" }}>
@@ -347,10 +372,11 @@ const ProductDetailScreen = () => {
               emptyIcon={<StarBorderRounded fontSize="inherit" />}
             />
           </Box>
+
           <Tooltip title="Yêu thích">
             <div style={{ display: "flex", alignItems: "center" }}>
-              <IconButton>
-                <FavoriteBorderRounded fontSize="large" />
+              <IconButton onClick={handleFavoriteProduct}>
+                {dataDetail?.isFavorite  ? <FavoriteRounded color="secondary"/>:<FavoriteRounded color="inherit"/>} 
               </IconButton>
               <p style={{ color: colors.grayC4, fontSize: 13 }}>Yêu thích</p>
             </div>

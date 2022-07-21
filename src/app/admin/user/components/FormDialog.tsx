@@ -25,8 +25,13 @@ import {
 } from "../../../contant/Contant";
 import { ResultApi, UserAdmin } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { changeLoading, createUser } from "../slice/UserAdminSlice";
-import { CreateDto, requestPostCreateUser } from "../UserApi";
+import { changeLoading, createUser, updateUser } from "../slice/UserAdminSlice";
+import {
+  CreateDto,
+  requestPostCreateUser,
+  requestPutUpdateUser,
+  UpdateDto,
+} from "../UserApi";
 interface Props {
   open: any;
   handleClose: any;
@@ -79,20 +84,30 @@ const FormDialog = (props: Props) => {
   const [position, setPosition] = useState("1");
   const [showPass, setShowPass] = useState(true);
   const { isLoading } = useAppSelector((state) => state.userAdmin);
-  const onSubmit = (data: {
+  const onSubmit = async (data: {
     email: string;
-    phone: string;
+    password: string;
     fullname: string;
   }) => {
-    const { email, fullname, phone } = data;
-    // const item: UserAdmin = {
-    //   ...anchorElData?.item,
-    //   email: email,
-    //   fullName: fullname,
-    //   phoneNumber: phone,
-    // };
-    // dispatch(updateUser({ item: item }));
-    handleClose();
+    const { email, fullname, password } = data;
+    if (anchorElData) {
+      try {
+        dispatch(changeLoading(true));
+        const payload: UpdateDto = {
+          email: email,
+          fullName: fullname,
+          id: anchorElData?.item?.id,
+          isActive: anchorElData?.item?.isActive,
+          password: password,
+        };
+        const res: ResultApi<UserAdmin> = await requestPutUpdateUser(payload);
+        dispatch(updateUser({ item: res.data }));
+        dispatch(changeLoading(true));
+        handleClose();
+      } catch (e) {
+        dispatch(changeLoading(false));
+      }
+    }
   };
 
   const onSubmitCreate = async (dataCreate: PropsCreateUser) => {
@@ -138,7 +153,7 @@ const FormDialog = (props: Props) => {
                 email: anchorElData?.item?.email ?? "",
                 phone: anchorElData?.item?.phoneNumber ?? "",
                 fullname: anchorElData?.item?.fullName ?? "",
-                password: anchorElData?.item?.password ?? "",
+                password: "",
                 userName: anchorElData?.item?.username ?? "",
               }
         }
@@ -179,6 +194,7 @@ const FormDialog = (props: Props) => {
                 label={"Số điện thoại"}
                 onChange={handleChange("phone")}
                 onBlur={handleBlur("phone")}
+                disabled={TYPE_DIALOG.CREATE === type ? false : true}
               />
               <TextInputComponent
                 error={errors.fullname}
@@ -195,17 +211,18 @@ const FormDialog = (props: Props) => {
                 label={"Tên đăng nhập"}
                 onChange={handleChange("userName")}
                 onBlur={handleBlur("userName")}
+                disabled={TYPE_DIALOG.CREATE === type ? false : true}
               />
               <TextInputComponent
                 error={errors.password}
                 touched={touched.password}
                 value={values.password}
-                label={"Mật khẩu"}
+                label={"Mật khẩu mới"}
                 onChange={handleChange("password")}
                 onBlur={handleBlur("password")}
                 type={!showPass ? "text" : "password"}
               />
-              <FormControl component="fieldset">
+             <FormControl component="fieldset">
                 <FormLabel component="legend">Role</FormLabel>
                 <RadioGroup
                   aria-label="role"
@@ -214,16 +231,19 @@ const FormDialog = (props: Props) => {
                   onChange={handleChangeRole}
                   row
                   defaultValue={position}
+                  
                 >
                   <FormControlLabel
                     value="1"
                     control={<Radio />}
                     label="Admin"
+                    disabled={TYPE_DIALOG.CREATE === type ? false : true}
                   />
                   <FormControlLabel
                     value="2"
                     control={<Radio />}
                     label="Customer"
+                    disabled={TYPE_DIALOG.CREATE === type ? false : true}
                   />
                 </RadioGroup>
               </FormControl>

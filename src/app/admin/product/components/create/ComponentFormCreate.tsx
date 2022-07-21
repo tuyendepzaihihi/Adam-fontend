@@ -16,7 +16,7 @@ import {
 import { Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import TextInputComponent from "../../../../component/TextInputComponent";
-import { TYPE_DIALOG } from "../../../../contant/Contant";
+import { IMAGE_URL_DEFAULT, TYPE_DIALOG } from "../../../../contant/Contant";
 import {
   CategoryAdmin,
   ProductAdmin,
@@ -89,7 +89,7 @@ const ComponentFormCreate = (props: Props) => {
   const [categoryChildren, setCategoryChilren] = useState<string | null>(null);
 
   const [selectedFile, setSelectedFile] = useState();
-  const [preview, setPreview] = useState<any>();
+  const [preview, setPreview] = useState<any>(IMAGE_URL_DEFAULT);
 
   // create a preview as a side effect, whenever selected file is changed
   useEffect(() => {
@@ -97,10 +97,8 @@ const ComponentFormCreate = (props: Props) => {
       setPreview(undefined);
       return;
     }
-
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreview(objectUrl);
-
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
@@ -110,7 +108,6 @@ const ComponentFormCreate = (props: Props) => {
       setSelectedFile(undefined);
       return;
     }
-
     // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files[0]);
   };

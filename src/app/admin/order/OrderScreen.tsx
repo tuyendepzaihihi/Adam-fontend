@@ -28,6 +28,7 @@ import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil, Order } from "../../utils/function";
 import EnhancedTableToolbarOrder from "./components/EnhancedTableToolbar";
 import FormDialog from "./components/FormDialog";
+import FormDialogCreate from "./components/FormDialogCreate";
 import { incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -71,6 +72,7 @@ export default function OrderScreen() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [open, setOpen] = React.useState(false);
+  const [openCreateForm, setOpenCreateForm] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: OrderDto;
@@ -100,6 +102,10 @@ export default function OrderScreen() {
     setAnchorElData(null);
   };
 
+  const handleCloseCreateForm = () => {
+    setOpenCreateForm(false);
+  };
+
   const createSortHandler =
     (property: keyof OrderDto) => (event: React.MouseEvent<unknown>) => {
       const isAsc = orderBy === property && order === "asc";
@@ -119,9 +125,6 @@ export default function OrderScreen() {
   };
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
-
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -162,7 +165,12 @@ export default function OrderScreen() {
 
   return (
     <div className={classes.root}>
-      <EnhancedTableToolbarOrder label="Đơn hàng" />
+      <EnhancedTableToolbarOrder
+        label="Đơn hàng"
+        onCreate={() => {
+          setOpenCreateForm(true);
+        }}
+      />
       <Paper className={classes.paper}>
         <TableContainer>
           <Table
@@ -310,6 +318,10 @@ export default function OrderScreen() {
         handleClose={handleClose}
         anchorElData={anchorElData}
         setAnchorElData={setAnchorElData}
+      />
+      <FormDialogCreate
+        open={openCreateForm}
+        handleClose={handleCloseCreateForm}
       />
       {isLoading && <LoadingProgress />}
     </div>

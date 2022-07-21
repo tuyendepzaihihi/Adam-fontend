@@ -57,6 +57,8 @@ export const textValidate = {
 export const URL_IMAGE =
   "https://us.123rf.com/450wm/kiuikson/kiuikson1610/kiuikson161000021/63802708-man-posing.jpg?ver=6";
 
+  export const IMAGE_URL_DEFAULT = "https://adam-store.herokuapp.com/downloadFile/292798654_571644561221609_3963627227934195443_n.jpg" 
+
 export const ROUTE = {
   HOME: "/",
   PRODUCT: "/home/product",

@@ -1,10 +1,11 @@
 import { ApiClient } from "../../service/ApiService";
 // interface
 export interface UpdateDto {
-  id: number;
-  isDelete: boolean;
-  tagName: string;
-  status: boolean;
+  email?: string,
+  fullName?: string,
+  id?: number,
+  isActive?: boolean,
+  password?: string,
 }
 
 export interface CreateDto {
@@ -20,8 +21,8 @@ export interface CreateDto {
 export const requestGetUserAll = (payload?: any) =>
   ApiClient.get("/admin/account/findAll", payload);
 
-// export const requestPutUpdateTag = (payload: UpdateDto) =>
-//   ApiClient.put("/admin/tag/update", payload);
+export const requestPutUpdateUser = (payload: UpdateDto) =>
+  ApiClient.put("/admin/account/update", payload);
 
 export const requestDeleteUser = (payload: { accountIdList: number[] }) =>
   ApiClient.put("/admin/account/deleteByArrayId", payload);
