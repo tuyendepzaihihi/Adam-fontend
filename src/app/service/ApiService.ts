@@ -14,7 +14,7 @@ export interface ResponseType<T> {
 const createAPI = () => {
   const APIInstant = require("axios").default.create();
   APIInstant.defaults.baseURL = BASE_URL_DEV;
-  APIInstant.defaults.timeout = 50000;
+  APIInstant.defaults.timeout = 100000;
   APIInstant.defaults.headers = { "Content-Type": "application/json" };
   APIInstant.interceptors.request.use(async (config: any) => {
     config.headers.token = getToken() || "";

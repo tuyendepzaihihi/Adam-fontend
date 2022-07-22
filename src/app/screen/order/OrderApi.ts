@@ -13,7 +13,6 @@ export interface CreateOrderDto {
   fullName?: string;
   phoneNumber?: string;
   salePrice?: number;
-  totalPrice?: number;
 }
 // function
 export const requestGetOrderAll = (payload: GetOrderDto) =>

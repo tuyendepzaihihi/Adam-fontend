@@ -100,7 +100,7 @@ const RenderInfoOrder = (params: {
                     className={classes.itemStatus}
                     style={{ backgroundColor: DEFINE_ORDER[e].color }}
                   >
-                    <Typography>{DEFINE_ORDER[e].title}</Typography>
+                    <Typography style={{fontSize: 14}}>{DEFINE_ORDER[e].title}</Typography>
                   </div>
                 </MenuItem>
               );

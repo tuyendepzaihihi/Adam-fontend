@@ -8,6 +8,7 @@ export interface UpdateDto {
 export interface GetOrderAdminDto {
   size: number;
   page: number;
+  status?: number | null 
 }
 
 // function

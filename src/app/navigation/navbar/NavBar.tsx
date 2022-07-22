@@ -396,7 +396,7 @@ export default function NavBar() {
                 borderBottomLeftRadius: 10,
               }}
             >
-              <MainApp isAdmin={isAdmin ? true : false} />
+              <MainApp />
             </div>
           </div>
         </div>
@@ -569,7 +569,7 @@ export default function NavBar() {
               >
                 {`${location.pathname}`.toUpperCase().replace("/", "")}
               </Typography>
-              <MainApp isAdmin={isAdmin ? true : false} />
+              <MainApp />
             </div>
             {renderMobileMenu}
             {renderMenu}

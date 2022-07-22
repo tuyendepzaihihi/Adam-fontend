@@ -29,6 +29,7 @@ import { formatPrice, FunctionUtil, Order } from "../../utils/function";
 import EnhancedTableToolbarOrder from "./components/EnhancedTableToolbar";
 import FormDialog from "./components/FormDialog";
 import FormDialogCreate from "./components/FormDialogCreate";
+import { GetOrderAdminDto } from "./OrderApi";
 import { incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,6 +75,7 @@ export default function OrderScreen() {
   const [open, setOpen] = React.useState(false);
   const [openCreateForm, setOpenCreateForm] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [statusSearch, setStatusSearch] = React.useState(10);
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: OrderDto;
   }>(null);
@@ -84,16 +86,28 @@ export default function OrderScreen() {
     (state) => state.orderAdmin
   );
   useEffect(() => {
-    getData();
+    const timer= setTimeout(()=>{
+      getData();
+    },1000)
+    return ()=> clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage,statusSearch]);
 
   const getData = async () => {
-    try {
-      await dispatch(
-        incrementAsyncOrderAdminAdmin({ page: page, size: rowsPerPage })
-      );
-    } catch (e) {}
+    
+      let payload:GetOrderAdminDto = {
+        page: page,
+        size: rowsPerPage,
+        
+      };
+      if(statusSearch!==10){
+        payload ={
+          ...payload,
+          status: statusSearch
+        }
+      }
+      await dispatch(incrementAsyncOrderAdminAdmin(payload));
+   
   };
 
   const handleClose = () => {
@@ -170,6 +184,8 @@ export default function OrderScreen() {
         onCreate={() => {
           setOpenCreateForm(true);
         }}
+        setStatus={setStatusSearch}
+        status={statusSearch}
       />
       <Paper className={classes.paper}>
         <TableContainer>
@@ -243,7 +259,6 @@ export default function OrderScreen() {
                         align="right"
                         style={{ borderBottomColor: colors.white }}
                       >
-                        {" "}
                         {row.phoneNumber}
                       </TableCell>
                       <TableCell
@@ -269,7 +284,7 @@ export default function OrderScreen() {
                             display: "flex",
                             justifyContent: "center",
                             padding: 5,
-                            width: "50%",
+                            width: "65%"
                           }}
                         >
                           <Typography
@@ -302,6 +317,11 @@ export default function OrderScreen() {
             </TableBody>
           </Table>
         </TableContainer>
+        {data?.length === 0 && (
+          <div style={{ width: "100%" }}>
+            <EmptyComponent />
+          </div>
+        )}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

@@ -1,14 +1,29 @@
-import { Button, createStyles, makeStyles, Paper, Theme } from "@material-ui/core";
-import moment from "moment";
+import {
+  Button,
+  createStyles,
+  FormControl,
+  makeStyles,
+  MenuItem,
+  Paper,
+  Select,
+  Theme,
+  Typography,
+} from "@material-ui/core";
 import { useState } from "react";
+import {
+  DEFINE_ORDER,
+  TYPE_ORDER,
+} from "../../../screen/order/components/ItemOrderComponent";
 import { colors } from "../../../utils/color";
 interface EnhancedTableToolbarProps {
   label: string;
-  onCreate: ()=>void
+  onCreate: () => void;
+  setStatus?: any;
+  status?: number;
 }
 
 const EnhancedTableToolbarOrder = (props: EnhancedTableToolbarProps) => {
-  const {onCreate} = props
+  const { onCreate, setStatus, status } = props;
   const classes = useToolbarStyles();
   const [textFilter, setTextFilter] = useState("");
   return (
@@ -24,44 +39,57 @@ const EnhancedTableToolbarOrder = (props: EnhancedTableToolbarProps) => {
             placeholder="Search..."
           />
           <div className={classes.containerDate}>
-            <div style={{ marginLeft: 10 }}>
-              <p className={classes.textTitleDate}>Start date</p>
-              <input
-                type={"date"}
-                onChange={(date) => {
-                  console.log({
-                    time: date.timeStamp,
-                    date: moment.unix(date?.timeStamp).format("MM/DD/YYYY"),
-                  });
-                }}
-                className={classes.dateInput}
-              />
-            </div>
-            <div style={{ marginLeft: 10 }}>
-              <p className={classes.textTitleDate}>End date</p>
-              <input
-                type={"date"}
-                onChange={(date) => {
-                  console.log({ date });
-                }}
-                className={classes.dateInput}
-              />
+            <div style={{ display: "flex", alignItems: "center"}}>
+              <Typography style={{ color: colors.gray59,fontSize: 14 }}>
+                {"Trạng thái: "}
+              </Typography>
+              <FormControl className={classes.formControl}>
+                <Select
+                  value={status}
+                  onChange={(event) => {
+                    setStatus(Number(event?.target?.value));
+                  }}
+                  className={classes.selectedStyle}
+                >
+                  <MenuItem value={10} className={classes.menuItem}>
+                    <div
+                      className={classes.itemStatus}
+                      style={{ backgroundColor: colors.gradiantBlue }}
+                    >
+                      <Typography style={{ fontSize: 13 }}>Tất cả</Typography>
+                    </div>
+                  </MenuItem>
+                  {Object.values(TYPE_ORDER).map((e) => {
+                    return (
+                      <MenuItem value={e} className={classes.menuItem}>
+                        <div
+                          className={classes.itemStatus}
+                          style={{ backgroundColor: DEFINE_ORDER[e].color }}
+                        >
+                          <Typography style={{ fontSize: 13 }}>
+                            {DEFINE_ORDER[e].title}
+                          </Typography>
+                        </div>
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             </div>
           </div>
           <div className={classes.containerButton}>
-            
-          <Button
-            variant="contained"
-            style={{
-              marginLeft: 10,
-              backgroundColor: colors.gradiantBluePosition,
-              color: colors.gradiantBlue,
-            }}
-            onClick={() => onCreate()}
-          >
-            Tạo mới đơn hàng
-          </Button>
-        </div>
+            <Button
+              variant="contained"
+              style={{
+                marginLeft: 10,
+                backgroundColor: colors.gradiantBluePosition,
+                color: colors.gradiantBlue,
+              }}
+              onClick={() => onCreate()}
+            >
+              Tạo mới đơn hàng
+            </Button>
+          </div>
         </div>
       </div>
     </Paper>
@@ -92,6 +120,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       marginLeft: 20,
+      height:"100%",
     },
     dateInput: {
       borderColor: colors.grayC4,
@@ -119,6 +148,31 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       flexDirection: "row",
       justifyContent: "flex-end",
       alignItems: "center",
+    },
+    formControl: {
+      minWidth: 120,
+      '& .MuiInput-underline:before':{
+        borderBottomWidth: 0
+      },
+      marginLeft: 10
+    },
+    menuItem: {
+      marginTop: 5,
+      color: colors.white,
+      display: "flex",
+    },
+    itemStatus: {
+      width: "100%",
+      borderRadius: 10,
+      alignSelf: "center",
+      display: "flex",
+      justifyContent: "center",
+      padding: 5,
+      paddingRight: 0,
+    },
+    selectedStyle: {
+      color: colors.white,
+      height: 45,
     },
   })
 );

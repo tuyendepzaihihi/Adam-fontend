@@ -8,7 +8,7 @@ import {
 } from "../../route/DefineRoute";
 import { useAppSelector } from "../hooks";
 
-const MainApp = (props: { isAdmin: boolean }) => {
+const MainApp = () => {
   const { data } = useAppSelector((state) => state.swicth);
   return (
     <Routes>
