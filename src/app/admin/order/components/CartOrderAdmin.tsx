@@ -11,8 +11,8 @@ import Delete from "@material-ui/icons/Delete";
 import React, { useEffect, useState } from "react";
 import LoadingProgress from "../../../component/LoadingProccess";
 import { LIST_VOUCHER } from "../../../contant/ContaintDataAdmin";
-import { ItemCart } from "../../../contant/Contant";
-import { VoucherAdmin } from "../../../contant/IntefaceContaint";
+import { DEFAULT_ADDRESS_ORDER, ItemCart } from "../../../contant/Contant";
+import { ResultApi, VoucherAdmin } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   requestDeleteCart,
@@ -27,9 +27,15 @@ import {
   incrementAsyncCart,
   updateQuantity,
 } from "../../../screen/cart/slice/CartSlice";
+import {
+  CreateOrderDto,
+  requestPostCreateOrder,
+} from "../../../screen/order/OrderApi";
+import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { getIdAccount } from "../../../service/StorageService";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
+import { createOrderAdmin } from "../slice/OrderAdminSlice";
 
 const useStyles = makeStyles({
   table: {
@@ -84,23 +90,24 @@ const CartOrderAdmin = () => {
   };
 
   const handlePayment = async () => {
-    // const payload: CreateOrderDto = {
-    //   accountId: Number(accountId),
-    //   addressDetail: address.dataSelected?.addressDetail,
-    //   addressId: address.dataSelected?.id,
-    //   cartItemIdList: selected.map((e) => Number(e)),
-    //   fullName: address.dataSelected?.fullName,
-    //   phoneNumber: address.dataSelected?.phoneNumber,
-    //   salePrice: checkDiscount(),
-    //   totalPrice: checkTotal(),
-    // };
-    // try {
-    //   dispatch(changeLoading(true));
-    //   await requestPostCreateOrder(payload);
-    //   dispatch(changeLoading(false));
-    // } catch (e) {
-    //   dispatch(changeLoading(false));
-    // }
+    try {
+      dispatch(changeLoading(true));
+      const payload: CreateOrderDto = {
+        accountId: Number(accountId),
+        addressDetail: DEFAULT_ADDRESS_ORDER.addressDetail,
+        addressId: DEFAULT_ADDRESS_ORDER.addressId,
+        cartItemIdList: data.map((e) => Number(e)),
+        fullName: DEFAULT_ADDRESS_ORDER.fullName,
+        phoneNumber: DEFAULT_ADDRESS_ORDER.phoneNumber,
+        salePrice: checkDiscount(),
+        totalPrice: checkTotal(),
+      };
+      const res: ResultApi<OrderDto> = await requestPostCreateOrder(payload);
+      dispatch(createOrderAdmin({ item: res.data }));
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   return (
