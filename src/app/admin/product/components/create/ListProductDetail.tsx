@@ -80,7 +80,7 @@ const ListProductDetail = (props: Props) => {
   const handleSubmit = async () => {
     try {
       const item = listProductDetail.find(
-        (e) => e.priceExport === 0 || e.priceImport === 0 || e.quantity
+        (e) => e.priceExport === 0 || e.priceImport === 0
       );
       if (item) {
         createNotification({
