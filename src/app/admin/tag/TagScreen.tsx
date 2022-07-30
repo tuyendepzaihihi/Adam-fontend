@@ -83,14 +83,18 @@ export default function TagScreen() {
 
   const { data, isLoading } = useAppSelector((state) => state.tagAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+  const [textFilter, setTextFilter] = useState("");
 
   useEffect(() => {
-    getDataTag();
+    const timer = setTimeout(() => {
+      getDataTag();
+    }, 500);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [textFilter]);
 
   const getDataTag = async () => {
-    await dispatch(incrementAsyncTagAdmin());
+    await dispatch(incrementAsyncTagAdmin({ name: textFilter }));
   };
 
   const handleClose = () => {
@@ -209,6 +213,8 @@ export default function TagScreen() {
           setOpen(!open);
         }}
         label={"Quản lý Tag"}
+        setTextFilter={setTextFilter}
+        textFilter={textFilter}
       />
 
       <Paper className={classes.paper}>

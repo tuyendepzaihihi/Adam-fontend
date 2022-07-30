@@ -185,7 +185,8 @@ const FormDialogCreate = (props: Props) => {
           >
             <HeaderTable />
             <TableBody style={{ position: "relative" }}>
-              {data.length > 0 &&
+              {data?.length &&
+                data?.length > 0 &&
                 data.map((row, index) => {
                   return (
                     <RowTable
@@ -222,10 +223,16 @@ const FormDialogCreate = (props: Props) => {
           handleClose={handleCloseDetail}
         />
       </DialogContent>
-      <div style={{ padding: 10, borderTopColor: colors.grayC4 ,borderTopWidth: 0.5}}>
+      <div
+        style={{
+          padding: 10,
+          borderTopColor: colors.grayC4,
+          borderTopWidth: 0.5,
+        }}
+      >
         <Accordion square style={{ borderRadius: 5 }}>
           <AccordionSummary
-            expandIcon={<ExpandMore color="primary"/>}
+            expandIcon={<ExpandMore color="primary" />}
             aria-label="Expand"
             aria-controls="additional-actions3-content"
             id="additional-actions3-header"
@@ -241,7 +248,7 @@ const FormDialogCreate = (props: Props) => {
               Danh sách sản phẩm đã mua
             </Typography>
           </AccordionSummary>
-          <AccordionDetails >
+          <AccordionDetails>
             <CartOrderAdmin />
           </AccordionDetails>
         </Accordion>

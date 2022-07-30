@@ -11,9 +11,9 @@ const initialState: DataState<Tag[]> = {
 
 export const incrementAsyncTagAdmin = createAsyncThunk(
   "tag/admin",
-  async () => {
+  async (params?: { name: string }) => {
     // call api here
-    const result: ResultApi<Tag[]> = await requestGetTagAll();
+    const result: ResultApi<Tag[]> = await requestGetTagAll({ params });
     return result;
   }
 );

@@ -86,6 +86,7 @@ export default function ProductScreen() {
   const [open, setOpen] = React.useState(false);
   const [activeStep, setActiveStep] = useState(DEFINE_STEP.PRODUCT);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [textFilter, setTextFilter] = React.useState<string>("");
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: ProductAdmin;
   }>(null);
@@ -98,14 +99,18 @@ export default function ProductScreen() {
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
 
   useEffect(() => {
-    getData();
+    const timer = setTimeout(() => {
+      getData();
+    }, 1000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, textFilter]);
 
   const getData = async () => {
     const payload: GetProductDto = {
       size: rowsPerPage,
       page: page,
+      name: textFilter,
     };
     await dispatch(incrementAsyncProductAdmin(payload));
   };
@@ -252,6 +257,8 @@ export default function ProductScreen() {
           setTypeDialog(TYPE_DIALOG.CREATE);
           setOpen(!open);
         }}
+        setTextFilter={setTextFilter}
+        textFilter={textFilter}
       />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
@@ -272,19 +279,19 @@ export default function ProductScreen() {
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
+              numSelected={selected?.length ?? 0}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={(event) => {
                 setSelected(FunctionUtil.handleSelectAllClick(event, data));
               }}
-              rowCount={data.length}
+              rowCount={data?.length ?? 0}
               headCells={headCellsProduct}
               createSortHandler={createSortHandler}
               isNoSort={true}
             />
             <TableBody style={{ position: "relative" }}>
-              {data.length > 0 &&
+              {data?.length > 0 &&
                 FunctionUtil.stableSort(
                   data,
                   FunctionUtil.getComparator(order, orderBy)

@@ -15,8 +15,8 @@ const initialState: DataState<Material[]> = {
 
 export const incrementAsyncMaterialAdmin = createAsyncThunk(
   "material/admin",
-  async () => {
-    const res: ResultApi<Material[]> = await requestGetMaterialAll();
+  async (params?: { name: string }) => {
+    const res: ResultApi<Material[]> = await requestGetMaterialAll(params);
     return res;
   }
 );

@@ -12,8 +12,8 @@ export interface CreateDto {
 }
 
 // function
-export const requestGetMaterialAll = (payload?: any) =>
-  ApiClient.get("/admin/material/findAll", payload);
+export const requestGetMaterialAll = (payload?: { name: string }) =>
+  ApiClient.get("/admin/material/findAll", { params: payload });
 
 export const requestPutUpdateMaterial = (payload: UpdateDto) =>
   ApiClient.put("/admin/material/update", payload);

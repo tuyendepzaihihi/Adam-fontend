@@ -105,6 +105,8 @@ export default function OptionScreen() {
   const [pageSize, setPageSize] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [openSize, setOpenSize] = React.useState(false);
+  const [textFilterSize, setTextFilterSize] = useState("");
+  const [textFilterColor, setTextFilterColor] = useState("");
   const [anchorElSize, setAnchorElSize] = React.useState<null | HTMLElement>(
     null
   );
@@ -126,17 +128,27 @@ export default function OptionScreen() {
   };
 
   useEffect(() => {
-    getDataColor();
-    getDataSize();
+    const timer = setTimeout(() => {
+      getDataSize();
+    }, 1000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [textFilterSize]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getDataColor();
+    }, 1000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textFilterColor]);
 
   const getDataColor = async () => {
-    await dispatch(incrementAsyncOptionColor());
+    await dispatch(incrementAsyncOptionColor({ name: textFilterColor }));
   };
 
   const getDataSize = async () => {
-    await dispatch(incrementAsyncOptionSize());
+    await dispatch(incrementAsyncOptionSize({ name: textFilterSize }));
   };
 
   const createSortHandlerSize =
@@ -401,6 +413,8 @@ export default function OptionScreen() {
                   setTypeDialogColor(TYPE_DIALOG.CREATE);
                   setOpenColor(!openColor);
                 }}
+                setTextFilter={setTextFilterColor}
+                textFilter={textFilterColor}
               />
               <Paper className={classes.paper}>
                 <EnhancedTableToolbar
@@ -572,6 +586,8 @@ export default function OptionScreen() {
                   setTypeDialogSize(TYPE_DIALOG.CREATE);
                   setOpenSize(!openSize);
                 }}
+                setTextFilter={setTextFilterSize}
+                textFilter={textFilterSize}
               />
               <Paper className={classes.paper}>
                 <EnhancedTableToolbar

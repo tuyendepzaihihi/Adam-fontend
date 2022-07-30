@@ -6,25 +6,25 @@ import {
   Paper,
   Theme,
 } from "@material-ui/core";
-import { useState } from "react";
 import { colors } from "../utils/color";
 interface EnhancedTableToolbarProps {
   onCreate: Function;
   label: string;
+  textFilter?: string;
+  setTextFilter?: any;
 }
 const EnhancedTableToolbarHeder = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { onCreate } = props;
-  const [textFilter, setTextFilter] = useState("");
+  const { onCreate, setTextFilter, textFilter } = props;
   return (
     <Paper style={{ paddingTop: 10, paddingBottom: 15 }}>
       <div className={classes.filter}>
         <div className={classes.containerFilter}>
           <input
-            value={textFilter}
+            value={textFilter ?? ""}
             className={classes.textInput}
             onChange={(event) => {
-              setTextFilter(event.target.value);
+              setTextFilter && setTextFilter(event.target.value);
             }}
             placeholder="Search..."
           />

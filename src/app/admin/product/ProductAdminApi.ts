@@ -70,6 +70,7 @@ export interface CreateProductDto {
 export interface GetProductDto {
   page: number;
   size: number;
+  name?: string;
 }
 
 export interface UpdateProductDto {

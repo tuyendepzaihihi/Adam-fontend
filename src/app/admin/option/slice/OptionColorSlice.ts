@@ -15,9 +15,8 @@ const initialState: DataState<OptionColor[]> = {
 
 export const incrementAsyncOptionColor = createAsyncThunk(
   "option/Color",
-  async () => {
-    // call api here
-    const res: ResultApi<OptionColor[]> = await requestGetColorAll();
+  async (params?: { name?: string }) => {
+    const res: ResultApi<OptionColor[]> = await requestGetColorAll({ params });
     return res;
   }
 );
@@ -42,8 +41,8 @@ export const optionColorSlice = createSlice({
     },
     deleteColor: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: any[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;

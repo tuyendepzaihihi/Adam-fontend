@@ -87,14 +87,18 @@ export default function MaterialScreen() {
 
   const { data, isLoading } = useAppSelector((state) => state.materialAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
+  const [textFilter, setTextFilter] = useState("");
 
   useEffect(() => {
-    getData();
+    const timer = setTimeout(() => {
+      getData();
+    }, 1000);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [textFilter]);
 
   const getData = async () => {
-    await dispatch(incrementAsyncMaterialAdmin());
+    await dispatch(incrementAsyncMaterialAdmin({ name: textFilter }));
   };
 
   const handleClose = () => {
@@ -208,6 +212,8 @@ export default function MaterialScreen() {
           setOpen(!open);
         }}
         label={"Quản lý Material"}
+        setTextFilter={setTextFilter}
+        textFilter={textFilter}
       />
 
       <Paper className={classes.paper}>

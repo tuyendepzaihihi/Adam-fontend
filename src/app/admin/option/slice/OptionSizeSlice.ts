@@ -15,8 +15,8 @@ const initialState: DataState<OptionSize[]> = {
 
 export const incrementAsyncOptionSize = createAsyncThunk(
   "option/Size",
-  async () => {
-    const res: ResultApi<OptionSize[]> = await requestGetSizeAll();
+  async (params?: { name?: string }) => {
+    const res: ResultApi<OptionSize[]> = await requestGetSizeAll({ params });
     return res;
   }
 );
@@ -41,8 +41,8 @@ export const optionSizeSlice = createSlice({
     },
     deleteSize: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: any[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
