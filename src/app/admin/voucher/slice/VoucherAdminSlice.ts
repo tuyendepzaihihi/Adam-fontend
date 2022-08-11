@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LIST_VOUCHER } from "../../../contant/ContaintDataAdmin";
-import { DataState, VoucherAdmin } from "../../../contant/IntefaceContaint";
+import {
+  DataState,
+  ResultApi,
+  VoucherAdmin,
+} from "../../../contant/IntefaceContaint";
 import { createNotification } from "../../../utils/MessageUtil";
+import { requestGetEventAll } from "../VoucherApi";
 
 const initialState: DataState<VoucherAdmin[]> = {
   data: LIST_VOUCHER,
@@ -11,9 +16,12 @@ const initialState: DataState<VoucherAdmin[]> = {
 
 export const incrementAsyncVoucherAdmin = createAsyncThunk(
   "voucher/admin",
-  async () => {
+  async (payload?: string) => {
     // call api here
-    return true;
+    const res: ResultApi<VoucherAdmin> = await requestGetEventAll({
+      name: payload,
+    });
+    return res.data;
   }
 );
 
@@ -35,8 +43,8 @@ export const voucherAdminSlice = createSlice({
     },
     deleteVoucher: (state, action) => {
       let array = state.data;
-      let deleteArray = action.payload?.array;
-      deleteArray.map((e: any) => {
+      let deleteArray: any[] = action.payload?.array;
+      deleteArray.forEach((e: any) => {
         array = array.filter((v) => e !== `${v.id}`);
       });
       state.data = array;
