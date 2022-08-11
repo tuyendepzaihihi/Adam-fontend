@@ -146,6 +146,7 @@ const LoginScreen = () => {
             label={"user name"}
             onChange={formik.handleChange("user_name")}
             onBlur={formik.handleBlur("user_name")}
+            isRequire
           />
           <TextInputComponent
             error={formik.errors.password}
@@ -159,6 +160,7 @@ const LoginScreen = () => {
             onRightIcon={() => {
               setShowPass(!showPass);
             }}
+            isRequire
           />
 
           <p className={className.textForgotPass}>

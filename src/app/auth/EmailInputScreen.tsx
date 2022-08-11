@@ -100,6 +100,7 @@ const EmailInputScreen = () => {
             label={"Email"}
             onChange={formik.handleChange("email")}
             onBlur={formik.handleBlur("email")}
+            isRequire
           />
 
           <Grid container>

@@ -97,6 +97,7 @@ const CartScreen = () => {
     let res: number = !!selectedVoucher?.discountPersent
       ? (checkTotal() * selectedVoucher?.discountPersent) / 100
       : 0;
+      
     return res;
   };
 
@@ -109,8 +110,6 @@ const CartScreen = () => {
       cartItemIdList: selected.map((e) => Number(e)),
       fullName: address.dataSelected?.fullName,
       phoneNumber: address.dataSelected?.phoneNumber,
-      salePrice: checkDiscount(),
-      // totalPrice: checkTotal(),
     };
     try {
       dispatch(changeLoading(true));

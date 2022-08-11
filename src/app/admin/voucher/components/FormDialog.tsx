@@ -292,6 +292,7 @@ const FormDialog = (props: Props) => {
                 label={"Title Voucher"}
                 onChange={handleChange("title")}
                 onBlur={handleBlur("title")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.description}
@@ -300,6 +301,7 @@ const FormDialog = (props: Props) => {
                 label={"Description Voucher"}
                 onChange={handleChange("description")}
                 onBlur={handleBlur("description")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.discount_min}
@@ -308,6 +310,7 @@ const FormDialog = (props: Props) => {
                 label={"Discount Min Voucher"}
                 onChange={handleChange("discount_min")}
                 onBlur={handleBlur("discount_min")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.discount_max}
@@ -316,6 +319,7 @@ const FormDialog = (props: Props) => {
                 label={"Discount Max Voucher"}
                 onChange={handleChange("discount_max")}
                 onBlur={handleBlur("discount_max")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.discount_persent}
@@ -324,6 +328,7 @@ const FormDialog = (props: Props) => {
                 label={"Discount Persent Voucher"}
                 onChange={handleChange("discount_persent")}
                 onBlur={handleBlur("discount_persent")}
+                isRequire
               />
               <div>
                 <div>

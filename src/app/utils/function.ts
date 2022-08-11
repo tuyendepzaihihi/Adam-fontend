@@ -1,7 +1,7 @@
 import { createNotification } from "./MessageUtil";
 
 export const formatPrice = (num: number) => {
-  return num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+  return num ? num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") : 0;
 };
 const handleClick = (
   event: React.MouseEvent<unknown>,

@@ -296,6 +296,7 @@ const FormDialog = (props: Props) => {
                 label={"Tên người nhận"}
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.phone}
@@ -304,6 +305,7 @@ const FormDialog = (props: Props) => {
                 label={"Số điện thoại người nhận"}
                 onChange={handleChange("phone")}
                 onBlur={handleBlur("phone")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.address_detail}
@@ -312,10 +314,12 @@ const FormDialog = (props: Props) => {
                 label={"Địa chỉ chi tiết"}
                 onChange={handleChange("address_detail")}
                 onBlur={handleBlur("address_detail")}
+                isRequire
               />
 
               <TextInputComponent
                 label="province"
+                isRequire
                 value={
                   type === TYPE_DIALOG.UPDATE &&
                   selectedAddress.province === null
@@ -348,6 +352,7 @@ const FormDialog = (props: Props) => {
               {dataAddress.district.length > 0 && (
                 <TextInputComponent
                   label="district"
+                  isRequire
                   value={
                     type === TYPE_DIALOG.UPDATE &&
                     selectedAddress.district === null
@@ -381,6 +386,7 @@ const FormDialog = (props: Props) => {
               {dataAddress.ward.length > 0 && (
                 <TextInputComponent
                   label="ward"
+                  isRequire
                   value={
                     type === TYPE_DIALOG.UPDATE && selectedAddress.ward === null
                       ? `${anchorElData?.item.ward?.id}`

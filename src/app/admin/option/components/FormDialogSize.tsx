@@ -128,6 +128,7 @@ const FormDialogSize = (props: Props) => {
                 label={"Size name"}
                 onChange={handleChange("Size_name")}
                 onBlur={handleBlur("Size_name")}
+                isRequire={true}
               />
             </DialogContent>
             <DialogActions>

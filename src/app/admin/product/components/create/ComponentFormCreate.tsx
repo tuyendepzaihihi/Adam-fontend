@@ -301,6 +301,7 @@ const ComponentFormCreate = (props: Props) => {
               label={"product name"}
               onChange={handleChange("product_name")}
               onBlur={handleBlur("product_name")}
+              isRequire
             />
             <TextInputComponent
               error={errors.description}
@@ -309,6 +310,7 @@ const ComponentFormCreate = (props: Props) => {
               label={"description"}
               onChange={handleChange("description")}
               onBlur={handleBlur("description")}
+              isRequire
             />
             <TextInputComponent
               label="Category"
@@ -317,6 +319,7 @@ const ComponentFormCreate = (props: Props) => {
                 const value = event.target.value;
                 setCategory(value);
               }}
+              isRequire
               isSelected={true}
               childrentSeleted={
                 <>
@@ -347,6 +350,7 @@ const ComponentFormCreate = (props: Props) => {
                   setCategoryChilren(value);
                 }}
                 isSelected={true}
+                isRequire
                 childrentSeleted={
                   <>
                     <option key={0} value={0}>

@@ -99,7 +99,6 @@ const CartOrderAdmin = () => {
         cartItemIdList: data.map((e) => Number(e.id)),
         fullName: DEFAULT_ADDRESS_ORDER.fullName,
         phoneNumber: DEFAULT_ADDRESS_ORDER.phoneNumber,
-        salePrice: checkDiscount(),
       };
       const res: ResultApi<OrderDto> = await requestPostCreateOrder(payload);
       dispatch(createOrderAdmin({ item: res.data }));

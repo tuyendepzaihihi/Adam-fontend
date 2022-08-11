@@ -167,6 +167,7 @@ const FormDialog = (props: Props) => {
                 label={"Name Category"}
                 onChange={handleChange("name")}
                 onBlur={handleBlur("name")}
+                isRequire={true}
               />
               {!isParent && (
                 <TextInputComponent
@@ -177,6 +178,7 @@ const FormDialog = (props: Props) => {
                     setCategory(value);
                   }}
                   isSelected={true}
+                  isRequire={true}
                   childrentSeleted={
                     <>
                       <option key={0} value={0}>
