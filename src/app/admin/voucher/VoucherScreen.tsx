@@ -17,7 +17,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCellsVoucher } from "../../contant/ContaintDataAdmin";
@@ -26,9 +26,10 @@ import { VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteVoucher, updateVoucher } from "././slice/VoucherAdminSlice";
+import { deleteVoucher, incrementAsyncVoucherAdmin, updateVoucher } from "././slice/VoucherAdminSlice";
 import { colors } from "../../utils/color";
 import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
+import LoadingProgress from "../../component/LoadingProccess";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,13 +69,31 @@ export default function VoucherScreen() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [textFilter,setTextFilter] = useState('')
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: VoucherAdmin;
   }>(null);
+
+  useEffect(()=>{
+    const timer = setTimeout(()=>{
+      getData()
+    },500)
+    return ()=>clearTimeout(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[textFilter])
+
+  const getData = async() =>{
+    try {
+      await dispatch(incrementAsyncVoucherAdmin(textFilter))
+    } catch (e) {
+      
+    }
+  }
+
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.voucherAdmin);
+  const { data,isLoading } = useAppSelector((state) => state.voucherAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const handleClose = () => {
     setOpen(false);
@@ -165,6 +184,8 @@ export default function VoucherScreen() {
           setOpen(!open);
         }}
         label={"Quản lý khuyến mãi"}
+        textFilter={textFilter}
+        setTextFilter={setTextFilter}
       />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
@@ -268,7 +289,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.title}
+                          {row.eventName}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -284,7 +305,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.startDate}
+                          {row.startTime}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -292,7 +313,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.endDate}
+                          {row.endTime}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -300,15 +321,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.create_date}
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          style={{
-                            borderBottomColor: colors.white,
-                          }}
-                        >
-                          {`${row.discountPersent}%`}
+                          {row.createDate}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -317,11 +330,11 @@ export default function VoucherScreen() {
                           }}
                         >
                           <Switch
-                            checked={row.status === 1 ? true : false}
+                            checked={row.isActive}
                             onChange={(data) => {
                               let item = {
                                 ...row,
-                                status: row.status === 1 ? 0 : 1,
+                                isActive: !row.isActive,
                               };
                               dispatch(updateVoucher({ item: item }));
                             }}
@@ -340,7 +353,7 @@ export default function VoucherScreen() {
                         >
                           <img
                             alt=""
-                            src={`${row.url}`}
+                            src={row.image}
                             style={{ width: 120 }}
                           />
                         </TableCell>
@@ -387,6 +400,7 @@ export default function VoucherScreen() {
         type={typeDialog}
         data={data}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

@@ -18,7 +18,7 @@ export const incrementAsyncVoucherAdmin = createAsyncThunk(
   "voucher/admin",
   async (payload?: string) => {
     // call api here
-    const res: ResultApi<VoucherAdmin> = await requestGetEventAll({
+    const res: ResultApi<VoucherAdmin[]> = await requestGetEventAll({
       name: payload,
     });
     return res.data;
@@ -63,7 +63,7 @@ export const voucherAdminSlice = createSlice({
       .addCase(incrementAsyncVoucherAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = [];
+        state.data = action.payload;
       })
       .addCase(incrementAsyncVoucherAdmin.rejected, (state) => {
         state.isError = true;

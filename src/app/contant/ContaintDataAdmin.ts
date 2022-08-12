@@ -196,7 +196,7 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     disablePadding: true,
     label: "STT",
   },
-  { id: "title", numeric: true, disablePadding: false, label: "Tiêu đề" },
+  { id: "eventName", numeric: true, disablePadding: false, label: "Tiêu đề" },
   {
     id: "description",
     numeric: true,
@@ -204,59 +204,33 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     label: "Mô tả",
   },
   {
-    id: "startDate",
+    id: "startTime",
     numeric: true,
     disablePadding: false,
     label: "Thời gian bắt đầu",
   },
   {
-    id: "endDate",
+    id: "endTime",
     numeric: true,
     disablePadding: false,
     label: "Thời gian kết thúc",
   },
   {
-    id: "create_date",
+    id: "createDate",
     numeric: true,
     disablePadding: false,
     label: "Thời gian tạo",
   },
-  {
-    id: "discountPersent",
-    numeric: true,
-    disablePadding: false,
-    label: "Giảm (% hoặc VND)",
-  },
-  { id: "status", numeric: true, disablePadding: false, label: "Trạng thái" },
+  // {
+  //   id: "discountPersent",
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: "Giảm (% hoặc VND)",
+  // },
+  { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
 export const LIST_VOUCHER: VoucherAdmin[] = [
-  {
-    id: 1,
-    title: "Hè đỏ lửa",
-    status: 1,
-    url: R.images.img_banner1,
-    startDate: "10/08/2022 18:00",
-    endDate: "15/10/2022 16:00",
-    create_date: "04/06/2022",
-    description: "Hưởng ứng mùa hè sôi động",
-    discountPersent: 10,
-    discountMinValue: 10000,
-    discountMaxValue: 25000000,
-  },
-  {
-    id: 2,
-    title: "Mùa hè đỏ lửa 1972",
-    status: 1,
-    url: R.images.img_banner2,
-    startDate: "10/08/2022 18:00",
-    endDate: "18/10/2022 18:00",
-    create_date: "04/06/2022",
-    description: "Hưởng ứng mùa hè sôi động của quân giải phóng",
-    discountPersent: 5,
-    discountMinValue: 10000,
-    discountMaxValue: 25000000,
-  },
 ];
 
 export const headCellsMaterial: HeadCell<Material>[] = [

@@ -48,16 +48,15 @@ export interface CategoryAdmin {
 
 export interface VoucherAdmin {
   id: number;
-  title: string;
   description: string;
-  status: number;
-  url: string;
-  startDate: any;
-  endDate: any;
-  create_date: any;
-  discountMinValue: number;
-  discountMaxValue: number;
-  discountPersent: number;
+  createDate: string
+  endTime: string
+  eventName: string
+  image: string
+  isActive: boolean
+  isDelete: boolean
+  startTime: string
+  type: boolean
 }
 
 export interface AddressOrderInterface {

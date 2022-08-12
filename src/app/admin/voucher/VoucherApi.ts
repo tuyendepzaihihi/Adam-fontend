@@ -1,18 +1,18 @@
 import { ApiClient } from "../../service/ApiService";
 
   export interface CreateDto {
-    description: string,
-    endTime: string,
-    eventName: string,
-    image: string,
-    startTime: string,
-    type: boolean
+    description?: string,
+    endTime?: string,
+    eventName?: string,
+    image?: string,
+    startTime?: string,
+    type?: boolean
   }
   export interface UpdateDto{
-    eventName: string,
-    id: number,
-    image: string,
-    isActive: boolean
+    eventName?: string,
+    id?: number,
+    image?: string,
+    isActive?: boolean
   }
   
   // function

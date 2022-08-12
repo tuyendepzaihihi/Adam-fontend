@@ -12,11 +12,18 @@ import { useState } from "react";
 import * as Yup from "yup";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
-import { VoucherAdmin } from "../../../contant/IntefaceContaint";
+import { ResultApi, VoucherAdmin } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
+import { handleUploadImage } from "../../../service/Services";
 import { colors } from "../../../utils/color";
 import { createNotification } from "../../../utils/MessageUtil";
 import { createVoucher, updateVoucher } from "../slice/VoucherAdminSlice";
+import {
+  CreateDto,
+  requestPostCreateEvent,
+  requestPutUpdateEvent,
+  UpdateDto,
+} from "../VoucherApi";
 interface Props {
   open: any;
   handleClose: any;
@@ -31,25 +38,21 @@ const validateVoucher = Yup.object({
     .min(1, "Tối thiểu 1%")
     .max(100, "Tối đa 100%")
     .required("Vui lòng nhập"),
-  discount_min: Yup.number().min(0, "min 1").required("Vui lòng nhập"),
-  discount_max: Yup.number()
-    .min(0, "min 1")
-    .moreThan(Yup.ref("discount_min"), "Giá max lớn hơn giá min")
-    .required("Vui lòng nhập"),
+  // discount_min: Yup.number().min(0, "min 1").required("Vui lòng nhập"),
+  // discount_max: Yup.number()
+  //   .min(0, "min 1")
+  //   .moreThan(Yup.ref("discount_min"), "Giá max lớn hơn giá min")
+  //   .required("Vui lòng nhập"),
 });
 
 interface PropsCreateVoucher {
   title: string;
   description: string;
   discount_persent: number;
-  discount_max: number;
-  discount_min: number;
 }
 const initialValues: PropsCreateVoucher = {
   title: "",
   description: "",
-  discount_max: 0,
-  discount_min: 0,
   discount_persent: 0,
 };
 const initDataDate = {
@@ -64,29 +67,25 @@ const initDataDate = {
 };
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { handleClose, open, anchorElData, type, data } = props;
+  const { handleClose, open, anchorElData, type } = props;
   const [image, setImage] = useState<any>(null);
   const [time, setTime] = useState(initDataDate);
 
-  const onSubmit = (data: PropsCreateVoucher) => {
-    const { title, description, discount_max, discount_min, discount_persent } =
-      data;
-    checkTime();
+  const onSubmit = async (data: PropsCreateVoucher) => {
+    const { title } = data;
+    if (!checkTime()) {
+      return;
+    }
     if (anchorElData) {
-      const item: VoucherAdmin = {
-        ...anchorElData.item,
-        title: title,
-        url: image ? image : anchorElData.item.url,
-        description: description,
-        status: 1,
-        discountMaxValue: discount_max,
-        discountMinValue: discount_min,
-        discountPersent: discount_persent,
-        endDate: checkTime()?.endDate,
-        startDate: checkTime()?.startDate,
+      const payload: UpdateDto = {
+        eventName: title,
+        id: anchorElData.item.id,
+        image: image ? image : anchorElData.item.image,
+        isActive: anchorElData.item.isActive,
       };
+      const res: ResultApi<VoucherAdmin> = await requestPutUpdateEvent(payload);
       setImage(null);
-      dispatch(updateVoucher({ item: item }));
+      dispatch(updateVoucher({ item: res.data }));
       handleClose();
     }
   };
@@ -97,20 +96,20 @@ const FormDialog = (props: Props) => {
       checkRenderEndTime({ isDate: true }) &&
       checkRenderEndTime({ isDate: false })
     ) {
-      const startDate = `${
+      const startTime = `${
         checkRenderStartTime({ isDate: true }) +
         " " +
         checkRenderStartTime({ isDate: false }) +
         ":00"
       }`;
-      const endDate = `${
+      const endTime = `${
         checkRenderEndTime({ isDate: true }) +
         " " +
         checkRenderEndTime({ isDate: false }) +
         ":00"
       }`;
-      let startValue = moment(startDate, "YYYY-MM-DD HH:mm:ss", true);
-      let endValue = moment(endDate, "YYYY-MM-DD HH:mm:ss", true);
+      let startValue = moment(startTime, "YYYY-MM-DD HH:mm:ss", true);
+      let endValue = moment(endTime, "YYYY-MM-DD HH:mm:ss", true);
       if (startValue > endValue) {
         createNotification({
           type: "warning",
@@ -120,8 +119,8 @@ const FormDialog = (props: Props) => {
         return;
       }
       return {
-        startDate: startValue.format("DD/MM/YYYY HH:mm"),
-        endDate: endValue.format("DD/MM/YYYY HH:mm"),
+        startTime: startValue.toISOString(),
+        endTime: endValue.toISOString(),
       };
     } else {
       createNotification({
@@ -132,10 +131,11 @@ const FormDialog = (props: Props) => {
     }
   };
 
-  const onSubmitCreate = (dataCreate: PropsCreateVoucher) => {
-    const { title, description, discount_max, discount_min, discount_persent } =
-      dataCreate;
-    checkTime();
+  const onSubmitCreate = async (dataCreate: PropsCreateVoucher) => {
+    const { title, description, discount_persent } = dataCreate;
+    if (!checkTime()) {
+      return;
+    }
     if (!image) {
       createNotification({
         type: "warning",
@@ -143,21 +143,18 @@ const FormDialog = (props: Props) => {
       });
       return;
     }
-    const item: VoucherAdmin = {
-      status: 1,
-      create_date: moment(new Date()).format("DD/MM/YYYY"),
-      description: description,
-      discountMaxValue: discount_max,
-      discountMinValue: discount_min,
-      discountPersent: discount_persent,
-      title: title,
-      url: image,
-      endDate: checkTime()?.endDate,
-      startDate: checkTime()?.startDate,
-      id: Math.random() * 1000,
-    };
+    const urlImage = await handleUploadImage(image);
 
-    dispatch(createVoucher({ item: item }));
+    const payload: CreateDto = {
+      description: description,
+      endTime: checkTime()?.endTime,
+      startTime: checkTime()?.startTime,
+      eventName: title,
+      image: urlImage,
+      type: false,
+    };
+    const res: ResultApi<VoucherAdmin> = await requestPostCreateEvent(payload);
+    dispatch(createVoucher({ item: res.data }));
     setImage(null);
     handleClose();
   };
@@ -165,8 +162,8 @@ const FormDialog = (props: Props) => {
   const onImageChange = (event: any) => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
-      console.log({ img });
-      setImage(URL.createObjectURL(img));
+      if (!img || !img.type.match(/image.*/)) return;
+      setImage(img);
     }
   };
   const checkRenderStartTime = (params: { isDate?: boolean }) => {
@@ -175,17 +172,17 @@ const FormDialog = (props: Props) => {
       return time?.start?.date
         ? time?.start?.date
         : convertDate(
-            `${anchorElData?.item.startDate}`.substring(
+            `${anchorElData?.item.startTime}`.substring(
               0,
-              `${anchorElData?.item.startDate}`.lastIndexOf(" ")
+              `${anchorElData?.item.startTime}`.lastIndexOf(" ")
             )
           );
     } else {
       return time?.start?.time
         ? time?.start?.time
-        : `${anchorElData?.item.startDate}`.substring(
-            `${anchorElData?.item.startDate}`.lastIndexOf(" ") + 1,
-            `${anchorElData?.item.startDate}`.length
+        : `${anchorElData?.item.startTime}`.substring(
+            `${anchorElData?.item.startTime}`.lastIndexOf(" ") + 1,
+            `${anchorElData?.item.startTime}`.length
           );
     }
   };
@@ -196,17 +193,17 @@ const FormDialog = (props: Props) => {
       return time?.end?.date
         ? time?.end?.date
         : convertDate(
-            `${anchorElData?.item.endDate}`.substring(
+            `${anchorElData?.item.endTime}`.substring(
               0,
-              `${anchorElData?.item.endDate}`.lastIndexOf(" ")
+              `${anchorElData?.item.endTime}`.lastIndexOf(" ")
             )
           );
     } else {
       return time?.end?.time
         ? time?.end?.time
-        : `${anchorElData?.item.endDate}`.substring(
-            `${anchorElData?.item.endDate}`.lastIndexOf(" ") + 1,
-            `${anchorElData?.item.endDate}`.length
+        : `${anchorElData?.item.endTime}`.substring(
+            `${anchorElData?.item.endTime}`.lastIndexOf(" ") + 1,
+            `${anchorElData?.item.endTime}`.length
           );
     }
   };
@@ -247,11 +244,9 @@ const FormDialog = (props: Props) => {
           type === TYPE_DIALOG.CREATE
             ? initialValues
             : {
-                title: anchorElData?.item.title ?? "",
-                description: anchorElData?.item.title ?? "",
-                discount_min: anchorElData?.item.discountMinValue ?? 0,
-                discount_max: anchorElData?.item.discountMaxValue ?? 0,
-                discount_persent: anchorElData?.item.discountPersent ?? 0,
+                title: anchorElData?.item.eventName ?? "",
+                description: anchorElData?.item.description ?? "",
+                discount_persent: 0,
               }
         }
         onSubmit={(data) => {
@@ -278,7 +273,7 @@ const FormDialog = (props: Props) => {
               </DialogContentText>
               <div>
                 <img
-                  src={image ? image : anchorElData?.item.url}
+                  src={image ? URL.createObjectURL(image) : anchorElData?.item.image}
                   alt=""
                   style={{ width: 300 }}
                 />
@@ -301,24 +296,6 @@ const FormDialog = (props: Props) => {
                 label={"Description Voucher"}
                 onChange={handleChange("description")}
                 onBlur={handleBlur("description")}
-                isRequire
-              />
-              <TextInputComponent
-                error={errors.discount_min}
-                touched={touched.discount_min}
-                value={`${values.discount_min}`}
-                label={"Discount Min Voucher"}
-                onChange={handleChange("discount_min")}
-                onBlur={handleBlur("discount_min")}
-                isRequire
-              />
-              <TextInputComponent
-                error={errors.discount_max}
-                touched={touched.discount_max}
-                value={`${values.discount_max}`}
-                label={"Discount Max Voucher"}
-                onChange={handleChange("discount_max")}
-                onBlur={handleBlur("discount_max")}
                 isRequire
               />
               <TextInputComponent

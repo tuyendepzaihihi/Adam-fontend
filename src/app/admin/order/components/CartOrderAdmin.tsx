@@ -83,10 +83,10 @@ const CartOrderAdmin = () => {
   };
 
   const checkDiscount = () => {
-    let res: number = !!selectedVoucher?.discountPersent
-      ? (checkTotal() * selectedVoucher?.discountPersent) / 100
-      : 0;
-    return res;
+    // let res: number = !!selectedVoucher?.discountPersent
+    //   ? (checkTotal() * selectedVoucher?.discountPersent) / 100
+    //   : 0;
+    return 0;
   };
 
   const handlePayment = async () => {
