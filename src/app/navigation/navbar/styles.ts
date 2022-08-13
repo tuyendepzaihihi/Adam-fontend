@@ -37,8 +37,10 @@ export const useNavBarStyles = makeStyles((theme: Theme) =>
       fontSize: 13,
     },
     button: {
-      // width: "5%",
       marginLeft: "2%",
+      "&:hover": {
+        backgroundColor: alpha(theme.palette.common.black, 0.1),
+      },
     },
     optionView: {
       flexDirection: "row",

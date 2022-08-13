@@ -3,7 +3,7 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import { useEffect } from "react";
@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { getIdAccount } from "../../../service/StorageService";
 import { colors } from "../../../utils/color";
 import { getFavoritesInfo } from "../../favorite/slice/FavoritesSlice";
-import { ItemProduct } from "../../order/components/ItemOrderComponent";
 import { getUserInfo } from "../account/slice/AccountSlice";
 
 const InformationScreen = () => {
@@ -77,7 +76,7 @@ const InformationScreen = () => {
               return (
                 <ProductItemComponent item={e} key={index} image={image} />
               );
-            else return <></>;
+            else return <div key={index}></div>;
           })}
         </div>
       </div>
@@ -92,7 +91,7 @@ const InformationScreen = () => {
               return (
                 <ProductItemComponent item={e} key={index} image={image} />
               );
-            else return <></>;
+              else return <div key={index}></div>;
           })}
         </div>
       </div>

@@ -413,7 +413,10 @@ export default function OptionScreen() {
                   setTypeDialogColor(TYPE_DIALOG.CREATE);
                   setOpenColor(!openColor);
                 }}
-                setTextFilter={setTextFilterColor}
+                setTextFilter={(text: string) => {
+                  setPageColor(0);
+                  setTextFilterColor(text);
+                }}
                 textFilter={textFilterColor}
               />
               <Paper className={classes.paper}>
@@ -586,7 +589,10 @@ export default function OptionScreen() {
                   setTypeDialogSize(TYPE_DIALOG.CREATE);
                   setOpenSize(!openSize);
                 }}
-                setTextFilter={setTextFilterSize}
+                setTextFilter={(text: string) => {
+                  setPageSize(0);
+                  setTextFilterSize(text);
+                }}
                 textFilter={textFilterSize}
               />
               <Paper className={classes.paper}>

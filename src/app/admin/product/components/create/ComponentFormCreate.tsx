@@ -335,8 +335,8 @@ const ComponentFormCreate = (props: Props) => {
                         e?.categoryChildren &&
                         e?.categoryChildren?.length > 0
                     )
-                    .map((option) => (
-                      <option key={option.id} value={option.id}>
+                    .map((option,index) => (
+                      <option key={index} value={option.id}>
                         {option.categoryName}
                       </option>
                     ))}
@@ -381,9 +381,9 @@ const ComponentFormCreate = (props: Props) => {
                   input={<Input id="select-multiple-chip" />}
                   renderValue={(selected) => (
                     <div className={classes.chips}>
-                      {(selected as string[]).map((value) => (
+                      {(selected as string[]).map((value,index) => (
                         <Chip
-                          key={value}
+                          key={index}
                           label={value}
                           className={classes.chip}
                         />
