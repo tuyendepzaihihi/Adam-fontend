@@ -25,12 +25,22 @@ import { TYPE_DIALOG } from "../../contant/Contant";
 import { ResultApi, VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
-import FormDialog from "./components/FormDialog";
-import { changeLoading, deleteVoucher, incrementAsyncVoucherAdmin, updateVoucher } from "././slice/VoucherAdminSlice";
+import FormDialog, { DiscountOrder } from "./components/FormDialog";
+import {
+  changeLoading,
+  deleteVoucher,
+  incrementAsyncVoucherAdmin,
+  updateVoucher,
+} from "././slice/VoucherAdminSlice";
 import { colors } from "../../utils/color";
 import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 import LoadingProgress from "../../component/LoadingProccess";
-import { requestDeleteEvent, requestPutUpdateEvent, UpdateDto } from "./VoucherApi";
+import {
+  requestDeleteEvent,
+  requestGetDiscountByEventId,
+  requestPutUpdateEvent,
+  UpdateDto,
+} from "./VoucherApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,34 +80,42 @@ export default function VoucherScreen() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [textFilter,setTextFilter] = useState('')
+  const [textFilter, setTextFilter] = useState("");
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: VoucherAdmin;
   }>(null);
+  const [discountOrder, setDiscountOrder] = useState<DiscountOrder[]>();
 
-  useEffect(()=>{
-    const timer = setTimeout(()=>{
-      getData()
-    },500)
-    return ()=>clearTimeout(timer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[textFilter])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getData();
+    }, 500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textFilter]);
 
-  const getData = async() =>{
-      await dispatch(incrementAsyncVoucherAdmin(textFilter))
-    
-  }
+  const getData = async () => {
+    await dispatch(incrementAsyncVoucherAdmin(textFilter));
+  };
+
+  const getDisountOrder = async (event_id: number) => {
+    dispatch(changeLoading(true));
+    const res: ResultApi<{ discountOrders: DiscountOrder[] }> =
+      await requestGetDiscountByEventId({ event_id: event_id });
+    setDiscountOrder(res.data.discountOrders);
+    dispatch(changeLoading(false));
+  };
 
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data,isLoading } = useAppSelector((state) => state.voucherAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.voucherAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
     setAnchorElData(null);
-    setTypeDialog(TYPE_DIALOG.CREATE)
+    setTypeDialog(TYPE_DIALOG.CREATE);
   };
 
   const createSortHandler =
@@ -126,7 +144,7 @@ export default function VoucherScreen() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setAnchorElData(null);
-    setTypeDialog(TYPE_DIALOG.CREATE)
+    setTypeDialog(TYPE_DIALOG.CREATE);
   };
 
   const handleProfileMenuOpen = (
@@ -148,7 +166,7 @@ export default function VoucherScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-         onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -159,7 +177,8 @@ export default function VoucherScreen() {
         <p>Xoá</p>
       </MenuItem>
       <MenuItem
-        onClick={() => {
+        onClick={async () => {
+          anchorElData && (await getDisountOrder(anchorElData?.item.id));
           setTypeDialog(TYPE_DIALOG.UPDATE);
           setOpen(!open);
         }}
@@ -201,7 +220,7 @@ export default function VoucherScreen() {
       dispatch(changeLoading(false));
     }
   };
-  
+
   return (
     <div className={classes.root}>
       <EnhancedTableToolbarHeder
@@ -211,7 +230,10 @@ export default function VoucherScreen() {
         }}
         label={"Quản lý khuyến mãi"}
         textFilter={textFilter}
-        setTextFilter={setTextFilter}
+        setTextFilter={(text: string) => {
+          setPage(0);
+          setTextFilter(text);
+        }}
       />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
@@ -352,6 +374,14 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
+                          {row.salePrice}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          style={{
+                            borderBottomColor: colors.white,
+                          }}
+                        >
                           <Switch
                             checked={row.isActive}
                             onChange={() => handleUpdate(row)}
@@ -371,7 +401,7 @@ export default function VoucherScreen() {
                           <img
                             alt=""
                             src={row.image}
-                            style={{ width: 120,height: 100 }}
+                            style={{ width: 120, maxHeight: 100 }}
                           />
                         </TableCell>
                         <TableCell
@@ -416,6 +446,8 @@ export default function VoucherScreen() {
         anchorElData={anchorElData}
         type={typeDialog}
         data={data}
+        discountOrder={discountOrder}
+        setDiscountOrder={setDiscountOrder}
       />
       {isLoading && <LoadingProgress />}
     </div>

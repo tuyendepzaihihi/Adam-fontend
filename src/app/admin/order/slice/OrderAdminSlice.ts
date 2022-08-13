@@ -15,7 +15,7 @@ export const incrementAsyncOrderAdminAdmin = createAsyncThunk(
   "order/admin",
   async (payload: GetOrderAdminDto) => {
     // call api here
-    const res: ResultApi<{ content: OrderDto[]; totalElements: number }> =
+    const res: ResultApi<OrderDto[]> =
       await requestGetOrderAdminAll(payload);
     return res;
   }
@@ -69,8 +69,8 @@ export const orderAdminSlice = createSlice({
       .addCase(incrementAsyncOrderAdminAdmin.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
-        state.data = action.payload.data.content;
-        state.count = action.payload.data.totalElements;
+        state.data = action.payload.data;
+        state.count = action.payload.data.length;
       })
       .addCase(incrementAsyncOrderAdminAdmin.rejected, (state) => {
         state.isError = true;

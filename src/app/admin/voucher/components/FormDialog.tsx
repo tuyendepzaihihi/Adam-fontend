@@ -5,10 +5,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
 import { Formik } from "formik";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as Yup from "yup";
 import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
@@ -27,7 +31,6 @@ import {
 import {
   CreateDiscountDto,
   CreateDto,
-  requestGetDiscountByEventId,
   requestPostCreateDiscount,
   requestPostCreateEvent,
   requestPutUpdateDiscount,
@@ -40,7 +43,8 @@ interface Props {
   anchorElData?: { item: VoucherAdmin } | null;
   type: number;
   data: VoucherAdmin[];
-  
+  discountOrder?: DiscountOrder[];
+  setDiscountOrder: any;
 }
 const validateVoucher = Yup.object({
   title: Yup.string().required("Vui lòng nhập title").trim(),
@@ -80,21 +84,20 @@ const initDataDate = {
   },
 };
 export interface DiscountOrder extends VoucherAdmin {
-  salePrice: number,
-      orderMinRange: number,
-      orderMaxRange: number
+  salePrice: number;
+  orderMinRange: number;
+  orderMaxRange: number;
 }
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((state) => state.voucherAdmin);
-  const { handleClose, open, anchorElData, type } = props;
+  const { handleClose, open, anchorElData, type, discountOrder } = props;
   const [image, setImage] = useState<any>(null);
   const [time, setTime] = useState<any>(initDataDate);
-  const [discountOrder , setDiscountOrder] = useState<DiscountOrder[]>()
+  const [typeDiscount, setTypeDiscount] = useState(0); // 0: giảm theo % 1: giảm theo tiền
 
   useEffect(() => {
     if (type === TYPE_DIALOG.UPDATE && anchorElData) {
-      getDisountOrder()
       let startTimeValue = DateUtil.formatTime(anchorElData?.item.startTime);
       let startDateValue = DateUtil.formatShortsDate(
         anchorElData?.item.startTime
@@ -113,48 +116,89 @@ const FormDialog = (props: Props) => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anchorElData]);
-
-  const getDisountOrder = async() =>{
-    const res: ResultApi<{discountOrders: DiscountOrder[]}> = await requestGetDiscountByEventId({event_id: anchorElData?.item.id})
-    setDiscountOrder(res.data.discountOrders)
-  }
+  }, [anchorElData, type]);
 
   const onSubmit = async (data: PropsCreateVoucher) => {
     try {
-      
-      const { title ,discount_max,discount_min,discount_persent} = data;
+      const {
+        title,
+        discount_max,
+        discount_min,
+        discount_persent,
+        description,
+      } = data;
       if (!checkTime()) {
         return;
       }
       dispatch(changeLoading(true));
       if (anchorElData) {
+        let urlImage = null;
+        if (image) {
+          urlImage = await handleUploadImage(image);
+        }
+
         const payload: UpdateDto = {
           eventName: title,
           id: anchorElData.item.id,
-          image: image ? image : anchorElData.item.image,
+          image: urlImage ? urlImage : anchorElData.item.image,
           isActive: anchorElData.item.isActive,
         };
+
         const res: ResultApi<VoucherAdmin> = await requestPutUpdateEvent(
           payload
         );
 
-        const resDiscount: ResultApi<DiscountOrder> = await requestPutUpdateDiscount({
-          discountName: title,
-          id: discountOrder  && discountOrder.length>0 ? discountOrder[0].id :0,
-          isActive: discountOrder && discountOrder.length>0 ? discountOrder[0].isActive : true,
-          orderMaxRange: discount_max,
-          orderMinRange: discount_min,
-          salePrice: discount_persent
-        })
+        if (discountOrder && discountOrder?.length > 0) {
+          const resDiscount: ResultApi<DiscountOrder> =
+            await requestPutUpdateDiscount({
+              discountName: title,
+              id:
+                discountOrder && discountOrder.length > 0
+                  ? discountOrder[0].id
+                  : 0,
+              isActive:
+                discountOrder && discountOrder.length > 0
+                  ? discountOrder[0].isActive
+                  : true,
+              orderMaxRange: discount_max,
+              orderMinRange: discount_min,
+              salePrice: discount_persent,
+            });
+          dispatch(
+            updateVoucher({
+              item: { ...res.data, salePrice: resDiscount.data.salePrice },
+            })
+          );
+        } else {
+          const payloadDisount: CreateDiscountDto = {
+            description: description,
+            endTime: checkTime()?.endTime,
+            startTime: checkTime()?.startTime,
+            discountName: title,
+            eventId: res.data.id,
+            orderMaxRange: +discount_max,
+            orderMinRange: +discount_min,
+            salePrice: +discount_persent,
+          };
+          const dataDisount = await createDiscountOrder(payloadDisount);
+          dispatch(
+            updateVoucher({
+              item: { ...res.data, salePrice: dataDisount.salePrice },
+            })
+          );
+        }
         setImage(null);
-        dispatch(updateVoucher({ item: {...res.data,salePrice: resDiscount.data.salePrice} }));
         handleClose();
       }
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
     }
+  };
+  const createDiscountOrder = async (payloadDisount: CreateDiscountDto) => {
+    const resDisount: ResultApi<DiscountOrder> =
+      await requestPostCreateDiscount(payloadDisount);
+    return resDisount.data;
   };
   const checkTime = () => {
     if (
@@ -200,8 +244,13 @@ const FormDialog = (props: Props) => {
 
   const onSubmitCreate = async (dataCreate: PropsCreateVoucher) => {
     try {
-     
-      const { title, description,discount_max,discount_min,discount_persent } = dataCreate;
+      const {
+        title,
+        description,
+        discount_max,
+        discount_min,
+        discount_persent,
+      } = dataCreate;
       if (!checkTime()) {
         return;
       }
@@ -221,7 +270,7 @@ const FormDialog = (props: Props) => {
         startTime: checkTime()?.startTime,
         eventName: title,
         image: urlImage,
-        type: false,
+        type: typeDiscount === 0 ? false : true,
       };
       const res: ResultApi<VoucherAdmin> = await requestPostCreateEvent(
         payload
@@ -232,12 +281,16 @@ const FormDialog = (props: Props) => {
         startTime: checkTime()?.startTime,
         discountName: title,
         eventId: res.data.id,
-        orderMaxRange: discount_max,
-        orderMinRange: discount_min,
-        salePrice: discount_persent
-      }
-      const resDisount: ResultApi<DiscountOrder> = await requestPostCreateDiscount(payloadDisount)
-      dispatch(createVoucher({ item: {...res.data,salePrice:resDisount.data.salePrice } }));
+        orderMaxRange: +discount_max,
+        orderMinRange: +discount_min,
+        salePrice: +discount_persent,
+      };
+      const dataDisount = await createDiscountOrder(payloadDisount);
+      dispatch(
+        createVoucher({
+          item: { ...res.data, salePrice: dataDisount.salePrice },
+        })
+      );
       setImage(null);
       dispatch(changeLoading(false));
       handleClose();
@@ -298,7 +351,6 @@ const FormDialog = (props: Props) => {
   const onChangeTime = (event: any, isStart?: boolean) => {
     if (event.currentTarget.value) {
       let timeS = event.currentTarget.value;
-
       if (isStart) setTime({ ...time, start: { ...time.start, time: timeS } });
       else setTime({ ...time, end: { ...time.end, time: timeS } });
     }
@@ -307,7 +359,6 @@ const FormDialog = (props: Props) => {
   const onChangeDate = (event: any, isStart?: boolean) => {
     if (event.currentTarget.value) {
       let date = event.currentTarget.value;
-      console.log("date", date);
       if (isStart) setTime({ ...time, start: { ...time.start, date: date } });
       else setTime({ ...time, end: { ...time.end, date: date } });
     }
@@ -319,16 +370,13 @@ const FormDialog = (props: Props) => {
     return date ? res : "";
   };
 
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-      style={{ width: "100%" }}
-    >
-      <DialogTitle id="form-dialog-title">
-        {TYPE_DIALOG.CREATE === type ? "Tạo mới Voucher" : `Cập nhật Voucher`}
-      </DialogTitle>
+  const handleChangeRole = (event: any) => {
+    const value = (event.target as HTMLInputElement).value;
+    setTypeDiscount(Number(value));
+  };
+
+  const FormData = () => {
+    return (
       <Formik
         initialValues={
           type === TYPE_DIALOG.CREATE
@@ -337,8 +385,14 @@ const FormDialog = (props: Props) => {
                 title: anchorElData?.item.eventName ?? "",
                 description: anchorElData?.item.description ?? "",
                 discount_persent: anchorElData?.item.salePrice ?? 0,
-                discount_max: discountOrder && discountOrder.length>0 ? discountOrder[0]?.orderMaxRange : 0,
-                discount_min: discountOrder && discountOrder.length>0  ? discountOrder[0]?.orderMinRange : 0
+                discount_max:
+                  discountOrder && discountOrder.length > 0
+                    ? discountOrder[0]?.orderMaxRange
+                    : 0,
+                discount_min:
+                  discountOrder && discountOrder.length > 0
+                    ? discountOrder[0]?.orderMinRange
+                    : 0,
               }
         }
         onSubmit={(data) => {
@@ -412,6 +466,26 @@ const FormDialog = (props: Props) => {
                 onBlur={handleBlur("discount_max")}
                 isRequire
               />
+              <FormControl component="fieldset">
+                <RadioGroup
+                  aria-label="role"
+                  value={`${typeDiscount}`}
+                  onChange={handleChangeRole}
+                  row
+                  defaultValue={`${typeDiscount}`}
+                >
+                  <FormControlLabel
+                    value="0"
+                    control={<Radio size="small" />}
+                    label="Percent Discount (%)"
+                  />
+                  <FormControlLabel
+                    value="1"
+                    control={<Radio size="small" />}
+                    label="Money Discount(VND)"
+                  />
+                </RadioGroup>
+              </FormControl>
               <TextInputComponent
                 error={errors.discount_persent}
                 touched={touched.discount_persent}
@@ -504,6 +578,22 @@ const FormDialog = (props: Props) => {
           </div>
         )}
       </Formik>
+    );
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+      style={{ width: "100%" }}
+    >
+      <DialogTitle id="form-dialog-title">
+        {TYPE_DIALOG.CREATE === type ? "Tạo mới Voucher" : `Cập nhật Voucher`}
+      </DialogTitle>
+      {FormData()}
     </Dialog>
   );
 };

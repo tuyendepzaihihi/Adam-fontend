@@ -25,7 +25,7 @@ import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCells } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { UserAdmin } from "../../contant/IntefaceContaint";
+import { ResultApi, UserAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
@@ -35,7 +35,7 @@ import {
   incrementAsyncUserAdmin,
   updateUser,
 } from "./slice/UserAdminSlice";
-import { requestDeleteUser } from "./UserApi";
+import { requestDeleteUser, requestPutUpdateUser, UpdateDto } from "./UserApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -140,6 +140,21 @@ export default function UserScreen() {
       dispatch(deleteUser({ array: array.map((e) => e.toString()) }));
       setSelected([]);
       handleMenuClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
+  const handleUpdate = async (row: any) => {
+    const payload: UpdateDto = {
+      ...row,
+      isActive: !row.isActive,
+    };
+    try {
+      dispatch(changeLoading(true));
+      const res: ResultApi<UserAdmin> = await requestPutUpdateUser(payload);
+      dispatch(updateUser({ item: res.data }));
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
@@ -272,13 +287,7 @@ export default function UserScreen() {
                         <TableCell align="right">
                           <Switch
                             checked={row.isActive}
-                            onChange={() => {
-                              let item = {
-                                ...row,
-                                isActive: !row.isActive,
-                              };
-                              dispatch(updateUser({ item: item }));
-                            }}
+                            onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}
                             color="primary"

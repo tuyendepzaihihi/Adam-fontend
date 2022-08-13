@@ -195,11 +195,6 @@ const ProductScreen = () => {
       ...payload,
       topPrice: value[1] * 100000,
       bottomPrice: value[0],
-      listCategoryId: [0],
-      listColorId: [0],
-      listMaterialId: [0],
-      listSizeId: [0],
-      listTagId: [0],
     };
     dispatch(incrementAsyncProduct(payloadGetList));
   };
@@ -530,7 +525,7 @@ const ProductScreen = () => {
                 label={`${e}`}
                 onDelete={() => {
                   onChangeValueFilter({
-                    key: "listMaterialId",
+                    key: "listCategoryId",
                     status: false,
                     id: e,
                   });

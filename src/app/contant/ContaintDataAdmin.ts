@@ -221,12 +221,12 @@ export const headCellsVoucher: HeadCell<VoucherAdmin>[] = [
     disablePadding: false,
     label: "Thời gian tạo",
   },
-  // {
-  //   id: "discountPersent",
-  //   numeric: true,
-  //   disablePadding: false,
-  //   label: "Giảm (% hoặc VND)",
-  // },
+  {
+    id: "salePrice",
+    numeric: true,
+    disablePadding: false,
+    label: "Giảm (% hoặc VND)",
+  },
   { id: "isActive", numeric: true, disablePadding: false, label: "Trạng thái" },
 ];
 
