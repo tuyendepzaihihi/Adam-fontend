@@ -57,6 +57,7 @@ export interface VoucherAdmin {
   isDelete: boolean
   startTime: string
   type: boolean
+  salePrice: number
 }
 
 export interface AddressOrderInterface {

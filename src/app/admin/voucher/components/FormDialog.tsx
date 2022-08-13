@@ -8,19 +8,29 @@ import {
 } from "@material-ui/core";
 import { Formik } from "formik";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
+import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
 import { TYPE_DIALOG } from "../../../contant/Contant";
 import { ResultApi, VoucherAdmin } from "../../../contant/IntefaceContaint";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { handleUploadImage } from "../../../service/Services";
 import { colors } from "../../../utils/color";
+import DateUtil from "../../../utils/DateUtil";
 import { createNotification } from "../../../utils/MessageUtil";
-import { createVoucher, updateVoucher } from "../slice/VoucherAdminSlice";
 import {
+  changeLoading,
+  createVoucher,
+  updateVoucher,
+} from "../slice/VoucherAdminSlice";
+import {
+  CreateDiscountDto,
   CreateDto,
+  requestGetDiscountByEventId,
+  requestPostCreateDiscount,
   requestPostCreateEvent,
+  requestPutUpdateDiscount,
   requestPutUpdateEvent,
   UpdateDto,
 } from "../VoucherApi";
@@ -30,29 +40,33 @@ interface Props {
   anchorElData?: { item: VoucherAdmin } | null;
   type: number;
   data: VoucherAdmin[];
+  
 }
 const validateVoucher = Yup.object({
   title: Yup.string().required("Vui lòng nhập title").trim(),
   description: Yup.string().required("Vui lòng nhập description").trim(),
+  discount_min: Yup.number().min(0, "min 1").required("Vui lòng nhập"),
   discount_persent: Yup.number()
-    .min(1, "Tối thiểu 1%")
-    .max(100, "Tối đa 100%")
+    .min(0, "Tối thiểu 0")
     .required("Vui lòng nhập"),
-  // discount_min: Yup.number().min(0, "min 1").required("Vui lòng nhập"),
-  // discount_max: Yup.number()
-  //   .min(0, "min 1")
-  //   .moreThan(Yup.ref("discount_min"), "Giá max lớn hơn giá min")
-  //   .required("Vui lòng nhập"),
+  discount_max: Yup.number()
+    .min(0, "min 1")
+    .moreThan(Yup.ref("discount_min"), "Giá max lớn hơn giá min")
+    .required("Vui lòng nhập"),
 });
 
 interface PropsCreateVoucher {
   title: string;
   description: string;
+  discount_max: number;
+  discount_min: number;
   discount_persent: number;
 }
 const initialValues: PropsCreateVoucher = {
   title: "",
   description: "",
+  discount_max: 0,
+  discount_min: 0,
   discount_persent: 0,
 };
 const initDataDate = {
@@ -65,28 +79,81 @@ const initDataDate = {
     time: null,
   },
 };
+export interface DiscountOrder extends VoucherAdmin {
+  salePrice: number,
+      orderMinRange: number,
+      orderMaxRange: number
+}
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector((state) => state.voucherAdmin);
   const { handleClose, open, anchorElData, type } = props;
   const [image, setImage] = useState<any>(null);
-  const [time, setTime] = useState(initDataDate);
+  const [time, setTime] = useState<any>(initDataDate);
+  const [discountOrder , setDiscountOrder] = useState<DiscountOrder[]>()
+
+  useEffect(() => {
+    if (type === TYPE_DIALOG.UPDATE && anchorElData) {
+      getDisountOrder()
+      let startTimeValue = DateUtil.formatTime(anchorElData?.item.startTime);
+      let startDateValue = DateUtil.formatShortsDate(
+        anchorElData?.item.startTime
+      );
+      let endTimeValue = DateUtil.formatTime(anchorElData?.item.endTime);
+      let endDateValue = DateUtil.formatShortsDate(anchorElData?.item.endTime);
+      setTime({
+        end: {
+          date: endDateValue,
+          time: endTimeValue,
+        },
+        start: {
+          date: startDateValue,
+          time: startTimeValue,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anchorElData]);
+
+  const getDisountOrder = async() =>{
+    const res: ResultApi<{discountOrders: DiscountOrder[]}> = await requestGetDiscountByEventId({event_id: anchorElData?.item.id})
+    setDiscountOrder(res.data.discountOrders)
+  }
 
   const onSubmit = async (data: PropsCreateVoucher) => {
-    const { title } = data;
-    if (!checkTime()) {
-      return;
-    }
-    if (anchorElData) {
-      const payload: UpdateDto = {
-        eventName: title,
-        id: anchorElData.item.id,
-        image: image ? image : anchorElData.item.image,
-        isActive: anchorElData.item.isActive,
-      };
-      const res: ResultApi<VoucherAdmin> = await requestPutUpdateEvent(payload);
-      setImage(null);
-      dispatch(updateVoucher({ item: res.data }));
-      handleClose();
+    try {
+      
+      const { title ,discount_max,discount_min,discount_persent} = data;
+      if (!checkTime()) {
+        return;
+      }
+      dispatch(changeLoading(true));
+      if (anchorElData) {
+        const payload: UpdateDto = {
+          eventName: title,
+          id: anchorElData.item.id,
+          image: image ? image : anchorElData.item.image,
+          isActive: anchorElData.item.isActive,
+        };
+        const res: ResultApi<VoucherAdmin> = await requestPutUpdateEvent(
+          payload
+        );
+
+        const resDiscount: ResultApi<DiscountOrder> = await requestPutUpdateDiscount({
+          discountName: title,
+          id: discountOrder  && discountOrder.length>0 ? discountOrder[0].id :0,
+          isActive: discountOrder && discountOrder.length>0 ? discountOrder[0].isActive : true,
+          orderMaxRange: discount_max,
+          orderMinRange: discount_min,
+          salePrice: discount_persent
+        })
+        setImage(null);
+        dispatch(updateVoucher({ item: {...res.data,salePrice: resDiscount.data.salePrice} }));
+        handleClose();
+      }
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
     }
   };
   const checkTime = () => {
@@ -132,31 +199,51 @@ const FormDialog = (props: Props) => {
   };
 
   const onSubmitCreate = async (dataCreate: PropsCreateVoucher) => {
-    const { title, description, discount_persent } = dataCreate;
-    if (!checkTime()) {
-      return;
-    }
-    if (!image) {
-      createNotification({
-        type: "warning",
-        message: "Bạn cần chọn ảnh!",
-      });
-      return;
-    }
-    const urlImage = await handleUploadImage(image);
+    try {
+     
+      const { title, description,discount_max,discount_min,discount_persent } = dataCreate;
+      if (!checkTime()) {
+        return;
+      }
+      if (!image) {
+        createNotification({
+          type: "warning",
+          message: "Bạn cần chọn ảnh!",
+        });
+        return;
+      }
+      dispatch(changeLoading(true));
+      const urlImage = await handleUploadImage(image);
 
-    const payload: CreateDto = {
-      description: description,
-      endTime: checkTime()?.endTime,
-      startTime: checkTime()?.startTime,
-      eventName: title,
-      image: urlImage,
-      type: false,
-    };
-    const res: ResultApi<VoucherAdmin> = await requestPostCreateEvent(payload);
-    dispatch(createVoucher({ item: res.data }));
-    setImage(null);
-    handleClose();
+      const payload: CreateDto = {
+        description: description,
+        endTime: checkTime()?.endTime,
+        startTime: checkTime()?.startTime,
+        eventName: title,
+        image: urlImage,
+        type: false,
+      };
+      const res: ResultApi<VoucherAdmin> = await requestPostCreateEvent(
+        payload
+      );
+      const payloadDisount: CreateDiscountDto = {
+        description: description,
+        endTime: checkTime()?.endTime,
+        startTime: checkTime()?.startTime,
+        discountName: title,
+        eventId: res.data.id,
+        orderMaxRange: discount_max,
+        orderMinRange: discount_min,
+        salePrice: discount_persent
+      }
+      const resDisount: ResultApi<DiscountOrder> = await requestPostCreateDiscount(payloadDisount)
+      dispatch(createVoucher({ item: {...res.data,salePrice:resDisount.data.salePrice } }));
+      setImage(null);
+      dispatch(changeLoading(false));
+      handleClose();
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const onImageChange = (event: any) => {
@@ -211,13 +298,16 @@ const FormDialog = (props: Props) => {
   const onChangeTime = (event: any, isStart?: boolean) => {
     if (event.currentTarget.value) {
       let timeS = event.currentTarget.value;
+
       if (isStart) setTime({ ...time, start: { ...time.start, time: timeS } });
       else setTime({ ...time, end: { ...time.end, time: timeS } });
     }
   };
+
   const onChangeDate = (event: any, isStart?: boolean) => {
     if (event.currentTarget.value) {
       let date = event.currentTarget.value;
+      console.log("date", date);
       if (isStart) setTime({ ...time, start: { ...time.start, date: date } });
       else setTime({ ...time, end: { ...time.end, date: date } });
     }
@@ -246,7 +336,9 @@ const FormDialog = (props: Props) => {
             : {
                 title: anchorElData?.item.eventName ?? "",
                 description: anchorElData?.item.description ?? "",
-                discount_persent: 0,
+                discount_persent: anchorElData?.item.salePrice ?? 0,
+                discount_max: discountOrder && discountOrder.length>0 ? discountOrder[0]?.orderMaxRange : 0,
+                discount_min: discountOrder && discountOrder.length>0  ? discountOrder[0]?.orderMinRange : 0
               }
         }
         onSubmit={(data) => {
@@ -265,7 +357,7 @@ const FormDialog = (props: Props) => {
           handleSubmit,
           touched,
         }) => (
-          <>
+          <div style={{ position: "relative" }}>
             <DialogContent style={{ width: "100%" }}>
               <DialogContentText>
                 Cập nhật thông tin của Voucher, vui lòng điền tất cả thông tin
@@ -273,7 +365,11 @@ const FormDialog = (props: Props) => {
               </DialogContentText>
               <div>
                 <img
-                  src={image ? URL.createObjectURL(image) : anchorElData?.item.image}
+                  src={
+                    image
+                      ? URL.createObjectURL(image)
+                      : anchorElData?.item.image
+                  }
                   alt=""
                   style={{ width: 300 }}
                 />
@@ -299,10 +395,28 @@ const FormDialog = (props: Props) => {
                 isRequire
               />
               <TextInputComponent
+                error={errors.discount_min}
+                touched={touched.discount_min}
+                value={`${values.discount_min}`}
+                label={"Discount Min Voucher"}
+                onChange={handleChange("discount_min")}
+                onBlur={handleBlur("discount_min")}
+                isRequire
+              />
+              <TextInputComponent
+                error={errors.discount_max}
+                touched={touched.discount_max}
+                value={`${values.discount_max}`}
+                label={"Discount Max Voucher"}
+                onChange={handleChange("discount_max")}
+                onBlur={handleBlur("discount_max")}
+                isRequire
+              />
+              <TextInputComponent
                 error={errors.discount_persent}
                 touched={touched.discount_persent}
                 value={`${values.discount_persent}`}
-                label={"Discount Persent Voucher"}
+                label={"Discount Price Voucher"}
                 onChange={handleChange("discount_persent")}
                 onBlur={handleBlur("discount_persent")}
                 isRequire
@@ -386,7 +500,8 @@ const FormDialog = (props: Props) => {
                 Submit
               </Button>
             </DialogActions>
-          </>
+            {isLoading && <LoadingProgress />}
+          </div>
         )}
       </Formik>
     </Dialog>

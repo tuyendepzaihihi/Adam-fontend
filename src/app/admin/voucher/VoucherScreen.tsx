@@ -22,14 +22,15 @@ import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCellsVoucher } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { VoucherAdmin } from "../../contant/IntefaceContaint";
+import { ResultApi, VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
-import { deleteVoucher, incrementAsyncVoucherAdmin, updateVoucher } from "././slice/VoucherAdminSlice";
+import { changeLoading, deleteVoucher, incrementAsyncVoucherAdmin, updateVoucher } from "././slice/VoucherAdminSlice";
 import { colors } from "../../utils/color";
 import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
 import LoadingProgress from "../../component/LoadingProccess";
+import { requestDeleteEvent, requestPutUpdateEvent, UpdateDto } from "./VoucherApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,11 +84,8 @@ export default function VoucherScreen() {
   },[textFilter])
 
   const getData = async() =>{
-    try {
       await dispatch(incrementAsyncVoucherAdmin(textFilter))
-    } catch (e) {
-      
-    }
+    
   }
 
   const isMenuOpen = Boolean(anchorEl);
@@ -99,6 +97,7 @@ export default function VoucherScreen() {
     setOpen(false);
     setAnchorEl(null);
     setAnchorElData(null);
+    setTypeDialog(TYPE_DIALOG.CREATE)
   };
 
   const createSortHandler =
@@ -127,6 +126,7 @@ export default function VoucherScreen() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setAnchorElData(null);
+    setTypeDialog(TYPE_DIALOG.CREATE)
   };
 
   const handleProfileMenuOpen = (
@@ -148,9 +148,7 @@ export default function VoucherScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          // console.log({ anchorElData });
-        }}
+         onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -176,6 +174,34 @@ export default function VoucherScreen() {
     </Menu>
   );
 
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteEvent({ listEventId: array });
+      dispatch(deleteVoucher({ array: array.map((e) => e.toString()) }));
+      setSelected([]);
+      handleMenuClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
+  const handleUpdate = async (row: any) => {
+    const payload: UpdateDto = {
+      ...row,
+      isActive: !row.isActive,
+    };
+    try {
+      dispatch(changeLoading(true));
+      const res: ResultApi<VoucherAdmin> = await requestPutUpdateEvent(payload);
+      dispatch(updateVoucher({ item: res.data }));
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+  
   return (
     <div className={classes.root}>
       <EnhancedTableToolbarHeder
@@ -194,10 +220,7 @@ export default function VoucherScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteVoucher({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete(selected.map((e) => +e))}
           label={"Quản lý khuyến mãi"}
         />
         <TableContainer>
@@ -331,13 +354,7 @@ export default function VoucherScreen() {
                         >
                           <Switch
                             checked={row.isActive}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                isActive: !row.isActive,
-                              };
-                              dispatch(updateVoucher({ item: item }));
-                            }}
+                            onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}
                             color="primary"
@@ -354,7 +371,7 @@ export default function VoucherScreen() {
                           <img
                             alt=""
                             src={row.image}
-                            style={{ width: 120 }}
+                            style={{ width: 120,height: 100 }}
                           />
                         </TableCell>
                         <TableCell

@@ -22,8 +22,41 @@ import { ApiClient } from "../../service/ApiService";
 export const requestPutUpdateEvent = (payload: UpdateDto) =>
   ApiClient.put("/admin/event/update", payload);
 
-export const requestDeleteEvent = (payload: { eventIdList: number[] }) =>
-  ApiClient.put("/admin/event/deleteByArrayId", payload);
+export const requestDeleteEvent = (payload: { listEventId: number[] }) =>
+  ApiClient.put("/admin/event/deleteByListId", payload);
 
 export const requestPostCreateEvent = (payload: CreateDto) =>
   ApiClient.post("/admin/event/create", payload);
+
+
+  export interface CreateDiscountDto {
+    description?: string,
+    discountName?: string,
+    endTime?: string,
+    eventId?: number,
+    orderMaxRange?: number,
+    orderMinRange?: number,
+    salePrice?: number,
+    startTime?: string
+  }
+  export interface UpdateDiscountDto{
+    discountName?: string,
+    id?: number,
+    isActive?: boolean,
+    orderMaxRange?: number,
+    orderMinRange?: number,
+    salePrice?: number
+  }
+  
+  // function
+  export const requestGetDiscountByEventId = (payload?: {event_id: any}) =>
+  ApiClient.get("/admin/discountOrder/findByEventId", {params: payload});
+
+export const requestPutUpdateDiscount = (payload: UpdateDiscountDto) =>
+  ApiClient.put("/admin/discountOrder/update", payload);
+
+export const requestDeleteDiscount = (payload: { listDiscountId: number[] }) =>
+  ApiClient.put("/admin/discountOrder/deleteByListId", payload);
+
+export const requestPostCreateDiscount = (payload: CreateDto) =>
+  ApiClient.post("/admin/discountOrder/create", payload);

@@ -53,6 +53,9 @@ export const voucherAdminSlice = createSlice({
         message: "Xoá thành công",
       });
     },
+    changeLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -71,6 +74,6 @@ export const voucherAdminSlice = createSlice({
       });
   },
 });
-export const { createVoucher, updateVoucher, deleteVoucher } =
+export const { createVoucher, updateVoucher, deleteVoucher,changeLoading } =
   voucherAdminSlice.actions;
 export default voucherAdminSlice.reducer;
