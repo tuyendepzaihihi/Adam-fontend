@@ -110,13 +110,13 @@ const CartOrderAdmin = () => {
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
-      <VoucherOrder
+      {/* <VoucherOrder
         onPress={() => {
           setOpenVoucher(!openVoucher);
         }}
         itemVoucher={selectedVoucher}
         total={checkTotal()}
-      />
+      /> */}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>

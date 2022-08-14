@@ -94,10 +94,6 @@ const CartScreen = () => {
   };
 
   const checkDiscount = () => {
-    // let res: number = !!selectedVoucher?.discountPersent
-    //   ? (checkTotal() * selectedVoucher?.discountPersent) / 100
-    //   : 0;
-      
     return 0;
   };
 
@@ -129,13 +125,13 @@ const CartScreen = () => {
           setOpenAddress(!openAddress);
         }}
       />
-      <VoucherOrder
+      {/* <VoucherOrder
         onPress={() => {
           setOpenVoucher(!openVoucher);
         }}
         itemVoucher={selectedVoucher}
         total={checkTotal()}
-      />
+      /> */}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>
