@@ -126,6 +126,7 @@ const FormDialogColor = (props: Props) => {
                 label={"color name"}
                 onChange={handleChange("color_name")}
                 onBlur={handleBlur("color_name")}
+                isRequire={true}
               />
             </DialogContent>
             <DialogActions>

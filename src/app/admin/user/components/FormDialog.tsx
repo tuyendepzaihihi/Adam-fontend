@@ -186,6 +186,7 @@ const FormDialog = (props: Props) => {
                 label={"Email"}
                 onChange={handleChange("email")}
                 onBlur={handleBlur("email")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.phone}
@@ -195,6 +196,7 @@ const FormDialog = (props: Props) => {
                 onChange={handleChange("phone")}
                 onBlur={handleBlur("phone")}
                 disabled={TYPE_DIALOG.CREATE === type ? false : true}
+                isRequire
               />
               <TextInputComponent
                 error={errors.fullname}
@@ -203,6 +205,7 @@ const FormDialog = (props: Props) => {
                 label={"Tên họ đầy đủ"}
                 onChange={handleChange("fullname")}
                 onBlur={handleBlur("fullname")}
+                isRequire
               />
               <TextInputComponent
                 error={errors.userName}
@@ -212,6 +215,7 @@ const FormDialog = (props: Props) => {
                 onChange={handleChange("userName")}
                 onBlur={handleBlur("userName")}
                 disabled={TYPE_DIALOG.CREATE === type ? false : true}
+                isRequire
               />
               <TextInputComponent
                 error={errors.password}
@@ -221,6 +225,7 @@ const FormDialog = (props: Props) => {
                 onChange={handleChange("password")}
                 onBlur={handleBlur("password")}
                 type={!showPass ? "text" : "password"}
+                isRequire
               />
              <FormControl component="fieldset">
                 <FormLabel component="legend">Role</FormLabel>
@@ -231,7 +236,6 @@ const FormDialog = (props: Props) => {
                   onChange={handleChangeRole}
                   row
                   defaultValue={position}
-                  
                 >
                   <FormControlLabel
                     value="1"

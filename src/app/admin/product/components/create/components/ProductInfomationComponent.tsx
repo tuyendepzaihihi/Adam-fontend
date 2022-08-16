@@ -20,7 +20,7 @@ const ProductInfomation = (props: { item: any | null }) => {
       <div>
         <img
           alt=""
-          src={R.images.img_product}
+          src={item.image ? item.image : R.images.img_product}
           style={{ width: 150, marginRight: 20 }}
         />
       </div>

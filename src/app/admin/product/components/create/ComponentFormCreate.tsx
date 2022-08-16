@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import { Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
+import R from "../../../../assets/R";
 import TextInputComponent from "../../../../component/TextInputComponent";
 import { IMAGE_URL_DEFAULT, TYPE_DIALOG } from "../../../../contant/Contant";
 import {
@@ -23,6 +24,7 @@ import {
   ResultApi,
 } from "../../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { handleUploadImage } from "../../../../service/Services";
 import { colors } from "../../../../utils/color";
 import { createNotification } from "../../../../utils/MessageUtil";
 import {
@@ -178,8 +180,9 @@ const ComponentFormCreate = (props: Props) => {
       let res = personTag?.find((m) => m.includes(`${e.tagName}`));
       if (res !== undefined) tagsList = tagsList.concat([e.id]);
     });
+    dispatch(changeLoading(true));
+    const urlImage = await handleUploadImage(selectedFile);
     try {
-      dispatch(changeLoading(true));
       if (type === TYPE_DIALOG.CREATE) {
         const itemCreate: CreateProductDto = {
           categoryId: Number(categoryChildren) ?? 0,
@@ -187,8 +190,7 @@ const ComponentFormCreate = (props: Props) => {
           productName: product_name,
           tagProductIdList: tagsList,
           materialProductIdList: materialList,
-          image:
-            "https://us.123rf.com/450wm/kiuikson/kiuikson1610/kiuikson161000021/63802708-man-posing.jpg?ver=6",
+          image: urlImage,
         };
         const res: ResultApi<ProductAdmin> = await requestPostCreateProduct(
           itemCreate
@@ -200,9 +202,7 @@ const ComponentFormCreate = (props: Props) => {
           categoryId: Number(categoryChildren) ?? 0,
           description: description,
           id: dataProduct.id,
-          image:
-            dataProduct.productImage ??
-            "https://us.123rf.com/450wm/kiuikson/kiuikson1610/kiuikson161000021/63802708-man-posing.jpg?ver=6",
+          image: dataProduct.productImage ?? urlImage,
           productName: product_name,
           isActive: dataProduct.isActive,
           materialProductIds: materialList,
@@ -223,6 +223,8 @@ const ComponentFormCreate = (props: Props) => {
       dispatch(changeLoading(false));
     }
   };
+  console.log("dataProduct?.image",dataProduct?.image);
+  
   return (
     <Formik
       initialValues={
@@ -266,8 +268,8 @@ const ComponentFormCreate = (props: Props) => {
                   position: "relative",
                 }}
               >
-                {preview ? (
-                  <img alt="" src={preview} />
+                {(dataProduct?.image || preview) ? (
+                  <img alt="" src={preview ?? dataProduct?.image ??  R.images.img_product} />
                 ) : (
                   <p style={{ marginTop: 40, marginBottom: 40 }}>
                     Choose Image
@@ -301,6 +303,7 @@ const ComponentFormCreate = (props: Props) => {
               label={"product name"}
               onChange={handleChange("product_name")}
               onBlur={handleBlur("product_name")}
+              isRequire
             />
             <TextInputComponent
               error={errors.description}
@@ -309,6 +312,7 @@ const ComponentFormCreate = (props: Props) => {
               label={"description"}
               onChange={handleChange("description")}
               onBlur={handleBlur("description")}
+              isRequire
             />
             <TextInputComponent
               label="Category"
@@ -317,6 +321,7 @@ const ComponentFormCreate = (props: Props) => {
                 const value = event.target.value;
                 setCategory(value);
               }}
+              isRequire
               isSelected={true}
               childrentSeleted={
                 <>
@@ -330,8 +335,8 @@ const ComponentFormCreate = (props: Props) => {
                         e?.categoryChildren &&
                         e?.categoryChildren?.length > 0
                     )
-                    .map((option) => (
-                      <option key={option.id} value={option.id}>
+                    .map((option,index) => (
+                      <option key={index} value={option.id}>
                         {option.categoryName}
                       </option>
                     ))}
@@ -347,6 +352,7 @@ const ComponentFormCreate = (props: Props) => {
                   setCategoryChilren(value);
                 }}
                 isSelected={true}
+                isRequire
                 childrentSeleted={
                   <>
                     <option key={0} value={0}>
@@ -375,9 +381,9 @@ const ComponentFormCreate = (props: Props) => {
                   input={<Input id="select-multiple-chip" />}
                   renderValue={(selected) => (
                     <div className={classes.chips}>
-                      {(selected as string[]).map((value) => (
+                      {(selected as string[]).map((value,index) => (
                         <Chip
-                          key={value}
+                          key={index}
                           label={value}
                           className={classes.chip}
                         />

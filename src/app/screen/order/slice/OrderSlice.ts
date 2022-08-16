@@ -27,7 +27,7 @@ export interface OrderDto {
   totalPrice: number;
   addressDetail: string;
   cartItems: ItemCart[];
-  order_code: string;
+  orderCode: string;
   address: {
     id: number;
     addressDetail: string;

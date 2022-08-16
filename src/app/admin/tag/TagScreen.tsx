@@ -213,7 +213,10 @@ export default function TagScreen() {
           setOpen(!open);
         }}
         label={"Quản lý Tag"}
-        setTextFilter={setTextFilter}
+        setTextFilter={(text: string) => {
+          setPage(0);
+          setTextFilter(text);
+        }}
         textFilter={textFilter}
       />
 

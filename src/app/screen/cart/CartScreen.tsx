@@ -94,10 +94,7 @@ const CartScreen = () => {
   };
 
   const checkDiscount = () => {
-    let res: number = !!selectedVoucher?.discountPersent
-      ? (checkTotal() * selectedVoucher?.discountPersent) / 100
-      : 0;
-    return res;
+    return 0;
   };
 
   const handlePayment = async () => {
@@ -109,8 +106,6 @@ const CartScreen = () => {
       cartItemIdList: selected.map((e) => Number(e)),
       fullName: address.dataSelected?.fullName,
       phoneNumber: address.dataSelected?.phoneNumber,
-      salePrice: checkDiscount(),
-      // totalPrice: checkTotal(),
     };
     try {
       dispatch(changeLoading(true));
@@ -130,13 +125,13 @@ const CartScreen = () => {
           setOpenAddress(!openAddress);
         }}
       />
-      <VoucherOrder
+      {/* <VoucherOrder
         onPress={() => {
           setOpenVoucher(!openVoucher);
         }}
         itemVoucher={selectedVoucher}
         total={checkTotal()}
-      />
+      /> */}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>

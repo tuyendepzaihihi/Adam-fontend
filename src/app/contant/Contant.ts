@@ -6,6 +6,7 @@ import {
   AccountBalance,
   BrandingWatermark,
   ColorLens,
+  FavoriteBorder,
   LocationCity,
   PermMediaOutlined,
   SettingsApplications,
@@ -325,7 +326,7 @@ export const TYPE_ACCOUNT = {
   PROFILE: "PROFILE",
   ADDRESS: "ADDRESS",
   ORDER: "ORDER",
-  SETTING: "SETTING",
+  FAVORITE: "FAVORITE",
 };
 
 export const DEFINE_TYPE_ACCOUNT = {
@@ -345,9 +346,9 @@ export const DEFINE_TYPE_ACCOUNT = {
     icon: AccountBalance,
     index: 2,
   },
-  [TYPE_ACCOUNT.SETTING]: {
-    name: "Cài đặt",
-    icon: SettingsApplications,
+  [TYPE_ACCOUNT.FAVORITE]: {
+    name: "Sản phẩm yêu thích",
+    icon: FavoriteBorder,
     index: 3,
   },
 };

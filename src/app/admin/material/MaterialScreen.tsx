@@ -212,7 +212,10 @@ export default function MaterialScreen() {
           setOpen(!open);
         }}
         label={"Quản lý Material"}
-        setTextFilter={setTextFilter}
+        setTextFilter={(text: string) => {
+          setPage(0);
+          setTextFilter(text);
+        }}
         textFilter={textFilter}
       />
 

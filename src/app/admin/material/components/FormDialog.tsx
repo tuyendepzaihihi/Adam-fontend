@@ -127,6 +127,7 @@ const FormDialog = (props: Props) => {
                 label={"Material name"}
                 onChange={handleChange("materialName")}
                 onBlur={handleBlur("materialName")}
+                isRequire={true}
               />
             </DialogContent>
             <DialogActions>
