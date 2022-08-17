@@ -260,6 +260,7 @@ const ProductScreen = () => {
     }
     const newData = {
       ...payload,
+      page: 0,
       [key]: newArray,
     };
     setPayLoad(newData);

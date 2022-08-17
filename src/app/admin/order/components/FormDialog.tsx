@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   createStyles,
   Dialog,
   DialogActions,
@@ -12,7 +13,9 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
+import { useState } from "react";
 import LoadingProgress from "../../../component/LoadingProccess";
+import TextInputComponent from "../../../component/TextInputComponent";
 import { ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
@@ -24,7 +27,7 @@ import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { createNotification } from "../../../utils/MessageUtil";
-import { requestPutUpdateOrder } from "../OrderApi";
+import { PayloadOrderCallBack, requestPostOrderCallBack, requestPutUpdateOrder } from "../OrderApi";
 import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
 interface Props {
   open: any;
@@ -100,7 +103,9 @@ const RenderInfoOrder = (params: {
                     className={classes.itemStatus}
                     style={{ backgroundColor: DEFINE_ORDER[e].color }}
                   >
-                    <Typography style={{fontSize: 14}}>{DEFINE_ORDER[e].title}</Typography>
+                    <Typography style={{ fontSize: 14 }}>
+                      {DEFINE_ORDER[e].title}
+                    </Typography>
                   </div>
                 </MenuItem>
               );
@@ -123,13 +128,60 @@ const RenderInfoOrder = (params: {
   );
 };
 
+const initReason ={
+  reason: "",
+  price: 30000,
+  detailCode: [],
+}
+
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((e) => e.orderAdmin);
   const { handleClose, open, anchorElData, setAnchorElData } = props;
+  const [openReason, setOpenReason] = useState(false);
+  const [reason, setReason] = useState<{reason: string, price: number,detailCode: any[]}>(initReason);
+
+  const handleCallBackOrder = async () => {
+    if(reason.reason.length < 8 ) {
+      createNotification({type:'warning',title:"Bạn cần nhâp lý do (>10 ký tự)"})
+      return
+    }
+
+    if(reason.price < 30000 ) {
+      createNotification({type:'warning',title:"Bạn cần nhập giá hoàn (> 30k)"})
+      return
+    }
+
+    if(reason.detailCode.length === 0){
+      createNotification({type:'warning',title:"Bạn cần chọn sản phẩm hoàn"})
+      return
+    }
+    dispatch(changeLoading(true));
+    try {
+      const payload: PayloadOrderCallBack = {
+        detailCode: reason.detailCode,
+        orderCode:  anchorElData?.item.orderCode,
+        reason: reason.reason,
+        returnPrice: reason.price,
+        status: TYPE_ORDER.PAYBACK,
+        totalPrice: anchorElData?.item.totalPrice,
+      };
+      await requestPostOrderCallBack(payload)
+      setOpenReason(false)
+      setReason(initReason)
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
 
   const handleChange = async (params: { value: any; row: OrderDto }) => {
     const { row, value } = params;
+    if(+value === TYPE_ORDER.PAYBACK){
+      setOpenReason(true)
+      return
+    }
+
     if (row.status === TYPE_ORDER.DONE && value !== TYPE_ORDER.CANCEL) {
       createNotification({
         type: "warning",
@@ -163,6 +215,63 @@ const FormDialog = (props: Props) => {
     }
   };
 
+  const DialogReason = () => {
+    return (
+      <div style={{ position: "absolute", width:"100%",top: 20,display:'flex',justifyContent:'center' }}>
+        <div style={{ padding: 30,backgroundColor:colors.white,borderRadius: 5,width:"50%",borderColor:colors.gray59,borderWidth: 0.5 }}>
+          <TextInputComponent
+            value={""}
+            onChange={(event: any) => {
+              setReason({
+                ...reason,
+                reason: `${event.target.value}`,
+              });
+            }}
+            label="Nhập lý do hoàn đơn"
+          />
+          <TextInputComponent
+            value={reason.price}
+            onChange={(event: any) => {
+              setReason({
+                ...reason,
+                price: Number(event.target.value),
+              });
+            }}
+            label={"Nhập giá truy thu"}
+          />
+          {anchorElData?.item?.cartItems?.map((e, index) => {
+            const exist = reason.detailCode.find(value=> value === e )
+            const isSelected = exist ? true : false
+            return (
+              <div key={index}>
+                <Checkbox value={isSelected} onChange={()=>{
+                  if(isSelected){
+                    setReason({
+                      ...reason,
+                      detailCode: reason.detailCode.filter((val)=>val !== e)
+                    })
+                  }else{
+                    setReason({
+                      ...reason,
+                      detailCode: reason.detailCode.concat([e])
+                    })
+                  }
+                  
+                }}/>
+                <ItemProduct item={e} inList />
+              </div>
+            );
+          })}
+          <div style={{display:'flex',justifyContent:'flex-end',width:"100%"}}>
+          <Button onClick={handleCallBackOrder} variant="contained" > 
+            Hoàn thành
+          </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Dialog
       open={open}
@@ -173,11 +282,12 @@ const FormDialog = (props: Props) => {
       fullWidth={true}
     >
       <DialogTitle id="form-dialog-title">{"Địa chỉ đơn hàng"}</DialogTitle>
-      <DialogContent style={{ width: "100%" }}>
+      <DialogContent style={{ width: "100%",position:'relative' }}>
         <RenderInfoOrder
           item={anchorElData?.item}
           handleChange={handleChange}
         />
+        {openReason && DialogReason()}
         {isLoading && <LoadingProgress />}
       </DialogContent>
       <DialogActions>
