@@ -23,7 +23,7 @@ import {
   ItemProduct,
   TYPE_ORDER,
 } from "../../../screen/order/components/ItemOrderComponent";
-import { OrderDto } from "../../../screen/order/slice/OrderSlice";
+import { OrderDetailPayload, OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { createNotification } from "../../../utils/MessageUtil";
@@ -120,7 +120,7 @@ const RenderInfoOrder = (params: {
         Danh sách sản phẩm
       </Typography>
       <div style={{ paddingLeft: "5%" }}>
-        {item?.cartItems.map((e) => {
+        {item?.detailOrders?.map((e) => {
           return <ItemProduct item={e} inList />;
         })}
       </div>
@@ -139,7 +139,7 @@ const FormDialog = (props: Props) => {
   const { isLoading } = useAppSelector((e) => e.orderAdmin);
   const { handleClose, open, anchorElData, setAnchorElData } = props;
   const [openReason, setOpenReason] = useState(false);
-  const [reason, setReason] = useState<{reason: string, price: number,detailCode: any[]}>(initReason);
+  const [reason, setReason] = useState<{reason: string, price: number,detailCode: OrderDetailPayload[]}>(initReason);
 
   const handleCallBackOrder = async () => {
     if(reason.reason.length < 8 ) {
@@ -159,7 +159,7 @@ const FormDialog = (props: Props) => {
     dispatch(changeLoading(true));
     try {
       const payload: PayloadOrderCallBack = {
-        detailCode: reason.detailCode,
+        detailCode: reason.detailCode.map((e)=>e.detailOrderCode),
         orderCode:  anchorElData?.item.orderCode,
         reason: reason.reason,
         returnPrice: reason.price,
@@ -239,8 +239,8 @@ const FormDialog = (props: Props) => {
             }}
             label={"Nhập giá truy thu"}
           />
-          {anchorElData?.item?.cartItems?.map((e, index) => {
-            const exist = reason.detailCode.find(value=> value === e )
+          {anchorElData?.item?.detailOrders?.map((e, index) => {
+            const exist = reason.detailCode.find(value=> value.id === e.id )
             const isSelected = exist ? true : false
             return (
               <div key={index}>
@@ -248,7 +248,7 @@ const FormDialog = (props: Props) => {
                   if(isSelected){
                     setReason({
                       ...reason,
-                      detailCode: reason.detailCode.filter((val)=>val !== e)
+                      detailCode: reason.detailCode.filter((val)=>val.id !== e.id)
                     })
                   }else{
                     setReason({
