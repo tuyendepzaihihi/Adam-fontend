@@ -23,11 +23,18 @@ import {
   ItemProduct,
   TYPE_ORDER,
 } from "../../../screen/order/components/ItemOrderComponent";
-import { OrderDetailPayload, OrderDto } from "../../../screen/order/slice/OrderSlice";
+import {
+  OrderDetailPayload,
+  OrderDto,
+} from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { createNotification } from "../../../utils/MessageUtil";
-import { PayloadOrderCallBack, requestPostOrderCallBack, requestPutUpdateOrder } from "../OrderApi";
+import {
+  PayloadOrderCallBack,
+  requestPostOrderCallBack,
+  requestPutUpdateOrder,
+} from "../OrderApi";
 import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
 interface Props {
   open: any;
@@ -128,47 +135,60 @@ const RenderInfoOrder = (params: {
   );
 };
 
-const initReason ={
+const initReason = {
   reason: "",
   price: 30000,
   detailCode: [],
-}
+};
 
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((e) => e.orderAdmin);
   const { handleClose, open, anchorElData, setAnchorElData } = props;
   const [openReason, setOpenReason] = useState(false);
-  const [reason, setReason] = useState<{reason: string, price: number,detailCode: OrderDetailPayload[]}>(initReason);
+  const [reason, setReason] = useState<{
+    reason: string;
+    price: number;
+    detailCode: OrderDetailPayload[];
+  }>(initReason);
 
   const handleCallBackOrder = async () => {
-    if(reason.reason.length < 8 ) {
-      createNotification({type:'warning',title:"Bạn cần nhâp lý do (>10 ký tự)"})
-      return
+    if (reason.reason.length < 8) {
+      createNotification({
+        type: "warning",
+        title: "Bạn cần nhâp lý do (>10 ký tự)",
+      });
+      return;
     }
 
-    if(reason.price < 30000 ) {
-      createNotification({type:'warning',title:"Bạn cần nhập giá hoàn (> 30k)"})
-      return
+    if (reason.price < 30000) {
+      createNotification({
+        type: "warning",
+        title: "Bạn cần nhập giá hoàn (> 30k)",
+      });
+      return;
     }
 
-    if(reason.detailCode.length === 0){
-      createNotification({type:'warning',title:"Bạn cần chọn sản phẩm hoàn"})
-      return
+    if (reason.detailCode.length === 0) {
+      createNotification({
+        type: "warning",
+        title: "Bạn cần chọn sản phẩm hoàn",
+      });
+      return;
     }
     dispatch(changeLoading(true));
     try {
       const payload: PayloadOrderCallBack = {
-        detailCode: reason.detailCode.map((e)=>e.detailOrderCode),
-        orderCode:  anchorElData?.item.orderCode,
+        detailCode: reason.detailCode.map((e) => e.detailOrderCode),
+        orderCode: anchorElData?.item.orderCode,
         reason: reason.reason,
         returnPrice: reason.price,
         status: TYPE_ORDER.PAYBACK,
         totalPrice: anchorElData?.item.totalPrice,
       };
-      await requestPostOrderCallBack(payload)
-      setOpenReason(false)
-      setReason(initReason)
+      await requestPostOrderCallBack(payload);
+      setOpenReason(false);
+      setReason(initReason);
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
@@ -177,9 +197,9 @@ const FormDialog = (props: Props) => {
 
   const handleChange = async (params: { value: any; row: OrderDto }) => {
     const { row, value } = params;
-    if(+value === TYPE_ORDER.PAYBACK){
-      setOpenReason(true)
-      return
+    if (+value === TYPE_ORDER.PAYBACK) {
+      setOpenReason(true);
+      return;
     }
 
     if (row.status === TYPE_ORDER.DONE && value !== TYPE_ORDER.CANCEL) {
@@ -217,8 +237,26 @@ const FormDialog = (props: Props) => {
 
   const DialogReason = () => {
     return (
-      <div style={{ position: "absolute", width:"100%",top: 20,display:'flex',justifyContent:'center' }}>
-        <div style={{ padding: 30,backgroundColor:colors.white,borderRadius: 5,width:"50%",borderColor:colors.gray59,borderWidth: 0.5 }}>
+      <div
+        style={{
+          position: "absolute",
+          width: "100%",
+          top: 20,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            padding: 30,
+            backgroundColor: colors.white,
+            borderRadius: 5,
+            width: "50%",
+            borderColor: colors.gray59,
+            borderWidth: 0.5,
+            position: "relative",
+          }}
+        >
           <TextInputComponent
             value={""}
             onChange={(event: any) => {
@@ -240,33 +278,44 @@ const FormDialog = (props: Props) => {
             label={"Nhập giá truy thu"}
           />
           {anchorElData?.item?.detailOrders?.map((e, index) => {
-            const exist = reason.detailCode.find(value=> value.id === e.id )
-            const isSelected = exist ? true : false
+            const exist = reason.detailCode.find((value) => value.id === e.id);
+            const isSelected = exist ? true : false;
             return (
               <div key={index}>
-                <Checkbox value={isSelected} onChange={()=>{
-                  if(isSelected){
-                    setReason({
-                      ...reason,
-                      detailCode: reason.detailCode.filter((val)=>val.id !== e.id)
-                    })
-                  }else{
-                    setReason({
-                      ...reason,
-                      detailCode: reason.detailCode.concat([e])
-                    })
-                  }
-                  
-                }}/>
+                <Checkbox
+                  value={isSelected}
+                  onChange={() => {
+                    if (isSelected) {
+                      setReason({
+                        ...reason,
+                        detailCode: reason.detailCode.filter(
+                          (val) => val.id !== e.id
+                        ),
+                      });
+                    } else {
+                      setReason({
+                        ...reason,
+                        detailCode: reason.detailCode.concat([e]),
+                      });
+                    }
+                  }}
+                />
                 <ItemProduct item={e} inList />
               </div>
             );
           })}
-          <div style={{display:'flex',justifyContent:'flex-end',width:"100%"}}>
-          <Button onClick={handleCallBackOrder} variant="contained" > 
-            Hoàn thành
-          </Button>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              width: "100%",
+            }}
+          >
+            <Button onClick={handleCallBackOrder} variant="contained">
+              Hoàn thành
+            </Button>
           </div>
+          {isLoading && <LoadingProgress />}
         </div>
       </div>
     );
@@ -282,7 +331,7 @@ const FormDialog = (props: Props) => {
       fullWidth={true}
     >
       <DialogTitle id="form-dialog-title">{"Địa chỉ đơn hàng"}</DialogTitle>
-      <DialogContent style={{ width: "100%",position:'relative' }}>
+      <DialogContent style={{ width: "100%", position: "relative" }}>
         <RenderInfoOrder
           item={anchorElData?.item}
           handleChange={handleChange}
