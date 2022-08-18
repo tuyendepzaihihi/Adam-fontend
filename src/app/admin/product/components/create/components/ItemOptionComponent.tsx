@@ -153,6 +153,7 @@ const RenderItemOption = (props: PropsRenderOption) => {
         onChange={(event: any) => chaneOption(event)}
         isSelected={true}
         childrentSeleted={<ChildrenOption list={LIST_OPTION} />}
+        isRequire
       />
       <Typography style={{ fontSize: 15, color: colors.gray59, marginTop: 10 }}>
         Option value
@@ -169,6 +170,7 @@ const RenderItemOption = (props: PropsRenderOption) => {
                 childrentSeleted={
                   <ChildrenOption list={listOption} isNoOption={true} />
                 }
+                isRequire
               />
               <div style={{}}>
                 <IconButton onClick={() => deleteOptionValue(index)}>

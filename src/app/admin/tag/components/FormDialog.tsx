@@ -123,6 +123,7 @@ const FormDialog = (props: Props) => {
                 label={"tag name"}
                 onChange={handleChange("tag_name")}
                 onBlur={handleBlur("tag_name")}
+                isRequire
               />
             </DialogContent>
             <DialogActions>

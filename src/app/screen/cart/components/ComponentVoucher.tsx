@@ -24,24 +24,24 @@ const ComponentVoucher = (props: Props) => {
       }}
     >
       <div className={classes.containerInfo}>
-        <p className={classes.textTitle}>{item.title}</p>
+        <p className={classes.textTitle}>{item.eventName}</p>
         <p className={classes.textDescrition}>{item.description}</p>
         {inList && (
           <div className={classes.containerTime}>
             <div>
               <p>start time</p>
-              <p className={classes.textTime}>{item.startDate}</p>
+              <p className={classes.textTime}>{item.startTime}</p>
             </div>
             {"-->"}
             <div>
               <p>end time</p>
-              <p className={classes.textTime}>{item.endDate}</p>
+              <p className={classes.textTime}>{item.endTime}</p>
             </div>
           </div>
         )}
-        <p className={classes.textDiscountPercent}>
+        {/* <p className={classes.textDiscountPercent}>
           Discount: {item.discountPersent} %
-        </p>
+        </p> */}
       </div>
       <div>
         {isSelected ? (

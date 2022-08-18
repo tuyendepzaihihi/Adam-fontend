@@ -30,7 +30,7 @@ const ListOrderComponent = (props: Props) => {
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, status, page, rowsPerPage]);
+  }, [value, status]);
 
   const getData = async () => {
     try {
@@ -42,9 +42,11 @@ const ListOrderComponent = (props: Props) => {
     <div style={{ position: "relative" }}>
       {data.length > 0 ? (
         <Paper>
-          {data.map((e, index) => {
-            return <ItemOrderComponent key={index} item={e} />;
-          })}
+          {data
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((e, index) => {
+              return <ItemOrderComponent key={index} item={e} />;
+            })}
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"

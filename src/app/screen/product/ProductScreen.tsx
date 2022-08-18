@@ -31,6 +31,8 @@ import { incrementAsyncProduct } from "./slice/ProductCustomerSlice";
 import { incrementAsyncFilter } from "./slice/FilterValueSlice";
 import R from "../../assets/R";
 import { ProductSkeleton } from "../../component/Skeleton";
+import { useLocation } from "react-router";
+import { Material, Tag } from "../../contant/IntefaceContaint";
 
 const RenderChipFilter = (params: {
   keyValue: string;
@@ -38,8 +40,9 @@ const RenderChipFilter = (params: {
   listId: any[];
   onDelete: (id: number) => void;
   color: string;
+  label?: string
 }) => {
-  const { arrayFind, keyValue, listId, onDelete, color } = params;
+  const { arrayFind, keyValue, listId, onDelete, color,label } = params;
   return (
     <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
       {listId.length > 0 && (
@@ -47,7 +50,7 @@ const RenderChipFilter = (params: {
           variant="caption"
           style={{ color: color, fontWeight: "bolder" }}
         >
-          {keyValue ? keyValue : "Fvalue"} {":"}
+          {label ? label : "Fvalue"} {":"}
         </Typography>
       )}
       {listId.map((e, index) => {
@@ -150,10 +153,17 @@ const useStyles = makeStyles((theme: Theme) =>
     rootAccordionDetails: { display: "flex", flexDirection: "column" },
   })
 );
+interface ParamsFilter {
+  material?: Material
+  tag?:Tag
+}
 
 const ProductScreen = () => {
   const className = useStyles();
   const dispatch = useAppDispatch();
+  const paramsLocation: any = useLocation().state
+  
+  
   const [value, setValue] = useState([0, 1500]);
   const loadingProduct = useAppSelector(
     (state) => state.productCustomer
@@ -175,6 +185,19 @@ const ProductScreen = () => {
     listTagId: [],
   });
 
+  useEffect(()=>{
+    if(paramsLocation){
+      const param: ParamsFilter = paramsLocation
+      const newPayload = {
+        ...payload,
+        listTagId: param.tag ? [param.tag?.id] : payload.listTagId,
+        listMaterialId: param.material ? [param.material?.id] : payload.listMaterialId
+      }
+      setPayLoad(newPayload)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[paramsLocation])
+
   useEffect(() => {
     const timer = setTimeout(() => {
       getData();
@@ -195,11 +218,6 @@ const ProductScreen = () => {
       ...payload,
       topPrice: value[1] * 100000,
       bottomPrice: value[0],
-      listCategoryId: [0],
-      listColorId: [0],
-      listMaterialId: [0],
-      listSizeId: [0],
-      listTagId: [0],
     };
     dispatch(incrementAsyncProduct(payloadGetList));
   };
@@ -242,6 +260,7 @@ const ProductScreen = () => {
     }
     const newData = {
       ...payload,
+      page: 0,
       [key]: newArray,
     };
     setPayLoad(newData);
@@ -530,7 +549,7 @@ const ProductScreen = () => {
                 label={`${e}`}
                 onDelete={() => {
                   onChangeValueFilter({
-                    key: "listMaterialId",
+                    key: "listCategoryId",
                     status: false,
                     id: e,
                   });
@@ -555,11 +574,13 @@ const ProductScreen = () => {
             });
           }}
           color={"red"}
+          label={"Màu Sắc"}
         />
         <RenderChipFilter
           arrayFind={dataFilter.sizes ?? []}
           keyValue={"sizeName"}
           listId={payload.listSizeId}
+          label={"Kích thước"}
           onDelete={(id: number) => {
             onChangeValueFilter({
               key: "listSizeId",
@@ -580,6 +601,7 @@ const ProductScreen = () => {
               id: id,
             });
           }}
+          label={"Chất liệu"}
           color={colors.orange}
         />
         <RenderChipFilter
@@ -593,6 +615,7 @@ const ProductScreen = () => {
               id: id,
             });
           }}
+          label={"Thẻ gắn"}
           color={"green"}
         />
         <div className={className.listImage}>

@@ -14,6 +14,7 @@ import { useLocation } from "react-router";
 import R from "../../../assets/R";
 import { DEFINE_TYPE_ACCOUNT, TYPE_ACCOUNT } from "../../../contant/Contant";
 import { colors } from "../../../utils/color";
+import FavoriteScreen from "../../favorite/FavoriteScreen";
 import OrderScreen from "../../order/OrderScreen";
 import AddressUser from "../address/AddressUser";
 import InformationScreen from "../information/InformationScreen";
@@ -28,9 +29,9 @@ const RenderScreen = (params: { index: number }) => {
     case 2:
       return <OrderScreen />;
     case 3:
-      return <AddressUser />;
+      return <FavoriteScreen />;
     default:
-      return <AddressUser />;
+      return <InformationScreen />;
   }
 };
 const AccountScreen = () => {
@@ -83,6 +84,7 @@ const AccountScreen = () => {
                 setSelected(index);
               }}
               button
+              key={index}
             >
               <ListItemIcon>
                 <Icon />

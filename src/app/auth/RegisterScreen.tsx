@@ -162,6 +162,7 @@ const RegisterScreen = () => {
             label={"Email"}
             onChange={formik.handleChange("email")}
             onBlur={formik.handleBlur("email")}
+            isRequire
           />
           <TextInputComponent
             error={formik.errors.phone}
@@ -170,6 +171,7 @@ const RegisterScreen = () => {
             label={"Số điện thoại"}
             onChange={formik.handleChange("phone")}
             onBlur={formik.handleBlur("phone")}
+            isRequire
           />
           <TextInputComponent
             error={formik.errors.username}
@@ -178,6 +180,8 @@ const RegisterScreen = () => {
             label={"Tên đăng nhập"}
             onChange={formik.handleChange("username")}
             onBlur={formik.handleBlur("username")}
+            isRequire
+
           />
           <TextInputComponent
             error={formik.errors.fullname}
@@ -186,6 +190,8 @@ const RegisterScreen = () => {
             label={"Tên họ đầy đủ"}
             onChange={formik.handleChange("fullname")}
             onBlur={formik.handleBlur("fullname")}
+            isRequire
+
           />
           <TextInputComponent
             error={formik.errors.password}
@@ -195,6 +201,8 @@ const RegisterScreen = () => {
             onChange={formik.handleChange("password")}
             onBlur={formik.handleBlur("password")}
             type={!showPass ? "text" : "password"}
+            isRequire
+
           />
           <TextInputComponent
             error={formik.errors.re_password}
@@ -204,6 +212,8 @@ const RegisterScreen = () => {
             onChange={formik.handleChange("re_password")}
             onBlur={formik.handleBlur("re_password")}
             type={!showRePass ? "text" : "password"}
+            isRequire
+
           />
 
           <Button

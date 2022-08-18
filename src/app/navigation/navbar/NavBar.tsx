@@ -14,7 +14,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Cart from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React, { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { updateSwitchRole } from "../../admin/sliceSwitchRole/switchRoleSlice";
 import R from "../../assets/R";
 import FooterComponent from "../../component/footer/FooterComponent";
@@ -24,13 +24,13 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   requestDeleteCart,
   requestPutUpdateCart,
-  UpdateCartDto,
+  UpdateCartDto
 } from "../../screen/cart/CartApi";
 import {
   changeLoading,
   deleteItemCart,
   incrementAsyncCart,
-  updateQuantity,
+  updateQuantity
 } from "../../screen/cart/slice/CartSlice";
 import { incrementAsyncFilter } from "../../screen/product/slice/FilterValueSlice";
 import { getAdmin, getIdAccount } from "../../service/StorageService";
@@ -354,6 +354,7 @@ export default function NavBar() {
       </MenuItem>
     </Menu>
   );
+  const {materials,tags} = useAppSelector((state) => state.filterCustomer).data
   const isAdmin = getAdmin();
   const location = useLocation();
 
@@ -410,12 +411,7 @@ export default function NavBar() {
           }}
         >
           <div className={classes.grow}>
-            <AppBar
-              position="fixed"
-              className={clsx(classes.appBar, {
-                // [classes.appBarShift]: open,
-              })}
-            >
+            <AppBar position="fixed" className={clsx(classes.appBar, {})}>
               <Toolbar>
                 <Button
                   className={classes.title}
@@ -428,26 +424,36 @@ export default function NavBar() {
                   className={classes.button}
                   onClick={() => navigate(ROUTE.PRODUCT)}
                 >
-                  Áo
+                  Sản phẩm
                 </Button>
-                <Button
-                  className={classes.button}
-                  onClick={() => navigate(ROUTE.PRODUCT)}
-                >
-                  <Link to={"/product"}>Quần</Link>
-                </Button>
-                <Button
-                  className={classes.button}
-                  onClick={() => navigate(ROUTE.PRODUCT)}
-                >
-                  Phụ kiện
-                </Button>
-                <Button
-                  className={classes.button}
-                  onClick={() => navigate(ROUTE.PRODUCT)}
-                >
-                  Ưu đãi
-                </Button>
+                {materials?.map((e, index) => {
+                  if(index<2){
+                    return (
+                      <Button
+                        className={classes.button}
+                        key={index}
+                        onClick={() => navigate(ROUTE.PRODUCT,{state: {material: e}})}
+                      >
+                        {e.materialName}
+                      </Button>
+                    );
+                  }
+                  return null
+                })}
+                {tags?.map((e, index) => {
+                  if(index<2){
+                    return (
+                      <Button
+                        className={classes.button}
+                        key={index}
+                        onClick={() => navigate(ROUTE.PRODUCT,{state: {tag: e}})}
+                      >
+                        {e.tagName}
+                      </Button>
+                    );
+                  }
+                  return null
+                })}
                 <Button
                   className={classes.button}
                   onClick={() => navigate(ROUTE.PRODUCT)}

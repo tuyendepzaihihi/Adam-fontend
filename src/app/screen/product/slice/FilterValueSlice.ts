@@ -51,8 +51,6 @@ export const incrementAsyncFilter = createAsyncThunk(
       sizes: resSize.data,
       tags: resTag.data,
     };
-    console.log({ res });
-
     return res;
   }
 );

@@ -112,6 +112,7 @@ const ForgotPasswordScreen = () => {
             onRightIcon={() => {
               setShowPass(!showPass);
             }}
+            isRequire
           />
           <TextInputComponent
             error={formik.errors.re_password}
@@ -125,6 +126,7 @@ const ForgotPasswordScreen = () => {
             onRightIcon={() => {
               setShowRePass(!showRePass);
             }}
+            isRequire
           />
 
           <Grid container>

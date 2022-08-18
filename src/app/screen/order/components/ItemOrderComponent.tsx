@@ -172,7 +172,7 @@ export default function ItemOrderComponent(props: Props) {
               }}
             >
               <Typography className={classes.heading}>
-                {`${item.order_code}`.slice(0, 10)}
+                {`${item.orderCode}`.slice(0, 10)}
               </Typography>
               <Typography className={classes.secondaryHeading}>
                 {item.createDate}

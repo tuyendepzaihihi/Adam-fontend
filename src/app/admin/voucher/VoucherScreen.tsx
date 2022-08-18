@@ -17,18 +17,30 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import EnhancedTableToolbar from "../../component/EnhancedTableToolbar";
 import { headCellsVoucher } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { VoucherAdmin } from "../../contant/IntefaceContaint";
+import { ResultApi, VoucherAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
-import FormDialog from "./components/FormDialog";
-import { deleteVoucher, updateVoucher } from "././slice/VoucherAdminSlice";
+import FormDialog, { DiscountOrder } from "./components/FormDialog";
+import {
+  changeLoading,
+  deleteVoucher,
+  incrementAsyncVoucherAdmin,
+  updateVoucher,
+} from "././slice/VoucherAdminSlice";
 import { colors } from "../../utils/color";
 import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder";
+import LoadingProgress from "../../component/LoadingProccess";
+import {
+  requestDeleteEvent,
+  requestGetDiscountByEventId,
+  requestPutUpdateEvent,
+  UpdateDto,
+} from "./VoucherApi";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,18 +80,42 @@ export default function VoucherScreen() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [textFilter, setTextFilter] = useState("");
   const [anchorElData, setAnchorElData] = React.useState<null | {
     item: VoucherAdmin;
   }>(null);
+  const [discountOrder, setDiscountOrder] = useState<DiscountOrder[]>();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getData();
+    }, 500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textFilter]);
+
+  const getData = async () => {
+    await dispatch(incrementAsyncVoucherAdmin(textFilter));
+  };
+
+  const getDisountOrder = async (event_id: number) => {
+    dispatch(changeLoading(true));
+    const res: ResultApi<{ discountOrders: DiscountOrder[] }> =
+      await requestGetDiscountByEventId({ event_id: event_id });
+    setDiscountOrder(res.data.discountOrders);
+    dispatch(changeLoading(false));
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "primary-search-account-menu";
 
-  const { data } = useAppSelector((state) => state.voucherAdmin);
+  const { data, isLoading } = useAppSelector((state) => state.voucherAdmin);
   const [typeDialog, setTypeDialog] = useState(TYPE_DIALOG.CREATE);
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
     setAnchorElData(null);
+    setTypeDialog(TYPE_DIALOG.CREATE);
   };
 
   const createSortHandler =
@@ -108,6 +144,7 @@ export default function VoucherScreen() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setAnchorElData(null);
+    setTypeDialog(TYPE_DIALOG.CREATE);
   };
 
   const handleProfileMenuOpen = (
@@ -129,9 +166,7 @@ export default function VoucherScreen() {
       onClose={handleMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          // console.log({ anchorElData });
-        }}
+        onClick={() => handleDelete([anchorElData?.item.id ?? 0])}
         button
       >
         <Tooltip title="Delete">
@@ -142,7 +177,8 @@ export default function VoucherScreen() {
         <p>Xoá</p>
       </MenuItem>
       <MenuItem
-        onClick={() => {
+        onClick={async () => {
+          anchorElData && (await getDisountOrder(anchorElData?.item.id));
           setTypeDialog(TYPE_DIALOG.UPDATE);
           setOpen(!open);
         }}
@@ -157,6 +193,34 @@ export default function VoucherScreen() {
     </Menu>
   );
 
+  const handleDelete = async (array: number[]) => {
+    try {
+      dispatch(changeLoading(true));
+      await requestDeleteEvent({ listEventId: array });
+      dispatch(deleteVoucher({ array: array.map((e) => e.toString()) }));
+      setSelected([]);
+      handleMenuClose();
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
+  const handleUpdate = async (row: any) => {
+    const payload: UpdateDto = {
+      ...row,
+      isActive: !row.isActive,
+    };
+    try {
+      dispatch(changeLoading(true));
+      const res: ResultApi<VoucherAdmin> = await requestPutUpdateEvent(payload);
+      dispatch(updateVoucher({ item: res.data }));
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
+  };
+
   return (
     <div className={classes.root}>
       <EnhancedTableToolbarHeder
@@ -165,6 +229,11 @@ export default function VoucherScreen() {
           setOpen(!open);
         }}
         label={"Quản lý khuyến mãi"}
+        textFilter={textFilter}
+        setTextFilter={(text: string) => {
+          setPage(0);
+          setTextFilter(text);
+        }}
       />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
@@ -173,10 +242,7 @@ export default function VoucherScreen() {
             setTypeDialog(TYPE_DIALOG.CREATE);
             setOpen(!open);
           }}
-          onDelete={() => {
-            dispatch(deleteVoucher({ array: selected }));
-            setSelected([]);
-          }}
+          onDelete={() => handleDelete(selected.map((e) => +e))}
           label={"Quản lý khuyến mãi"}
         />
         <TableContainer>
@@ -268,7 +334,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.title}
+                          {row.eventName}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -284,7 +350,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.startDate}
+                          {row.startTime}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -292,7 +358,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.endDate}
+                          {row.endTime}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -300,7 +366,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {row.create_date}
+                          {row.createDate}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -308,7 +374,7 @@ export default function VoucherScreen() {
                             borderBottomColor: colors.white,
                           }}
                         >
-                          {`${row.discountPersent}%`}
+                          {row.salePrice}
                         </TableCell>
                         <TableCell
                           align="right"
@@ -317,14 +383,8 @@ export default function VoucherScreen() {
                           }}
                         >
                           <Switch
-                            checked={row.status === 1 ? true : false}
-                            onChange={(data) => {
-                              let item = {
-                                ...row,
-                                status: row.status === 1 ? 0 : 1,
-                              };
-                              dispatch(updateVoucher({ item: item }));
-                            }}
+                            checked={row.isActive}
+                            onChange={() => handleUpdate(row)}
                             name={labelId}
                             inputProps={{ "aria-label": labelId }}
                             color="primary"
@@ -340,8 +400,8 @@ export default function VoucherScreen() {
                         >
                           <img
                             alt=""
-                            src={`${row.url}`}
-                            style={{ width: 120 }}
+                            src={row.image}
+                            style={{ width: 120, maxHeight: 100 }}
                           />
                         </TableCell>
                         <TableCell
@@ -386,7 +446,10 @@ export default function VoucherScreen() {
         anchorElData={anchorElData}
         type={typeDialog}
         data={data}
+        discountOrder={discountOrder}
+        setDiscountOrder={setDiscountOrder}
       />
+      {isLoading && <LoadingProgress />}
     </div>
   );
 }

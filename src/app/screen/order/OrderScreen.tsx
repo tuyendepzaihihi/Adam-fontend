@@ -118,7 +118,7 @@ export default function OrderScreen() {
         <ListOrderComponent
           data={dataOrder.confirm.data}
           status={TYPE_ORDER.CONFIRM}
-          loading={dataOrder.pedding.isLoading}
+          loading={dataOrder.confirm.isLoading}
           value={value}
         />
       </TabPanel>
@@ -126,7 +126,7 @@ export default function OrderScreen() {
         <ListOrderComponent
           data={dataOrder.delivery.data}
           status={TYPE_ORDER.DELIVETY}
-          loading={dataOrder.pedding.isLoading}
+          loading={dataOrder.delivery.isLoading}
           value={value}
         />
       </TabPanel>
@@ -134,7 +134,7 @@ export default function OrderScreen() {
         <ListOrderComponent
           data={dataOrder.adrived.data}
           status={TYPE_ORDER.RECEIVED}
-          loading={dataOrder.pedding.isLoading}
+          loading={dataOrder.adrived.isLoading}
           value={value}
         />
       </TabPanel>
@@ -142,7 +142,7 @@ export default function OrderScreen() {
         <ListOrderComponent
           data={dataOrder.done.data}
           status={TYPE_ORDER.DONE}
-          loading={dataOrder.pedding.isLoading}
+          loading={dataOrder.done.isLoading}
           value={value}
         />
       </TabPanel>
@@ -150,7 +150,7 @@ export default function OrderScreen() {
         <ListOrderComponent
           data={dataOrder.cancel.data}
           status={TYPE_ORDER.CANCEL}
-          loading={dataOrder.pedding.isLoading}
+          loading={dataOrder.cancel.isLoading}
           value={value}
         />
       </TabPanel>
@@ -158,7 +158,7 @@ export default function OrderScreen() {
         <ListOrderComponent
           data={dataOrder.roll_back.data}
           status={TYPE_ORDER.DELAY}
-          loading={dataOrder.pedding.isLoading}
+          loading={dataOrder.roll_back.isLoading}
           value={value}
         />
       </TabPanel>

@@ -1,10 +1,9 @@
 import {
-  CardMedia,
   createStyles,
   makeStyles,
   Paper,
   Theme,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import clsx from "clsx";
 import { useState } from "react";

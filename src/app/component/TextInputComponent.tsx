@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
+import { colors } from "../utils/color";
 interface Props {
   label?: string;
   color?: any;
@@ -30,6 +31,7 @@ interface Props {
   childrentSeleted?: any;
   helperText?: string;
   disabled?: boolean
+  isRequire?: boolean
 }
 const TextInputComponent = (props: Props) => {
   const {
@@ -48,7 +50,8 @@ const TextInputComponent = (props: Props) => {
     isSelected,
     childrentSeleted,
     helperText,
-    disabled
+    disabled,
+    isRequire,
   } = props;
   const className = useStyles();
   return (
@@ -57,7 +60,7 @@ const TextInputComponent = (props: Props) => {
         <TextField
           id="outlined-select-currency-native"
           select
-          label={label}
+          label={<p style={{display:'flex'}}>{label} <p style={{color:colors.red,marginLeft: 5}}>{isRequire ? "*":''}</p></p>}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
@@ -78,8 +81,8 @@ const TextInputComponent = (props: Props) => {
           variant="outlined"
         >
           {label && (
-            <InputLabel htmlFor={id ?? "outlined-adornment-amount"}>
-              {label}
+            <InputLabel htmlFor={id ?? "outlined-adornment-amount"} style={{display:'flex'}}>
+              {label}<p style={{color:colors.red,marginLeft: 5}}>{isRequire ? "*":''}</p>
             </InputLabel>
           )}
           <OutlinedInput

@@ -83,10 +83,10 @@ const CartOrderAdmin = () => {
   };
 
   const checkDiscount = () => {
-    let res: number = !!selectedVoucher?.discountPersent
-      ? (checkTotal() * selectedVoucher?.discountPersent) / 100
-      : 0;
-    return res;
+    // let res: number = !!selectedVoucher?.discountPersent
+    //   ? (checkTotal() * selectedVoucher?.discountPersent) / 100
+    //   : 0;
+    return 0;
   };
 
   const handlePayment = async () => {
@@ -99,7 +99,6 @@ const CartOrderAdmin = () => {
         cartItemIdList: data.map((e) => Number(e.id)),
         fullName: DEFAULT_ADDRESS_ORDER.fullName,
         phoneNumber: DEFAULT_ADDRESS_ORDER.phoneNumber,
-        salePrice: checkDiscount(),
       };
       const res: ResultApi<OrderDto> = await requestPostCreateOrder(payload);
       dispatch(createOrderAdmin({ item: res.data }));
@@ -111,13 +110,13 @@ const CartOrderAdmin = () => {
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
-      <VoucherOrder
+      {/* <VoucherOrder
         onPress={() => {
           setOpenVoucher(!openVoucher);
         }}
         itemVoucher={selectedVoucher}
         total={checkTotal()}
-      />
+      /> */}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>
