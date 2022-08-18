@@ -11,6 +11,15 @@ export interface GetOrderAdminDto {
   status?: number | null 
 }
 
+export interface PayloadOrderCallBack {
+  detailCode?: any[],
+  orderCode?: string,
+  reason?: string,
+  returnPrice?: number,
+  status?: number,
+  totalPrice?: number
+}
+
 // function
 export const requestGetOrderAdminAll = (payload?: GetOrderAdminDto) =>
   ApiClient.get("/admin/order/findAllByPageble", { params: payload });
@@ -22,3 +31,5 @@ export const requestPutUpdateOrder = (payload: UpdateDto) =>
   );
 export const requestGetOrderStatistic = (payload?: any) =>
   ApiClient.get("/admin/order/orderSatistic", payload);
+
+export const requestPostOrderCallBack = (payload: PayloadOrderCallBack) => ApiClient.post("admin/order/updateReturnOrder",payload)

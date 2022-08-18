@@ -142,11 +142,6 @@ const FormDialogCreate = (props: Props) => {
       ...payload,
       topPrice: 1000000000,
       bottomPrice: 0,
-      listCategoryId: [0],
-      listColorId: [0],
-      listMaterialId: [0],
-      listSizeId: [0],
-      listTagId: [0],
     };
     await dispatch(incrementAsyncProduct(payloadGetList));
   };

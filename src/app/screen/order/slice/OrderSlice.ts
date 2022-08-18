@@ -16,6 +16,10 @@ export interface History {
   updateTime: string;
 }
 
+export interface OrderDetailPayload extends ItemCart {
+  detailOrderCode : string
+}
+
 export interface OrderDto {
   id: number;
   createDate: string;
@@ -39,6 +43,7 @@ export interface OrderDto {
     isActive: boolean;
   };
   historyOrders: History[];
+  detailOrders?: OrderDetailPayload[]
 }
 export interface DataOrder {
   id: number;
