@@ -126,7 +126,20 @@ export const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    updateOrder: (state, action) => {},
+    updateOrder: (state, action) => {
+      const {item,status,key}:{item: OrderDto,status: number, key: keyof DataOrderList } = action.payload
+
+      let array = state[key].data;
+      let deleteArray: OrderDto[] = [item];
+      deleteArray.forEach((e: any) => {
+        array = array.filter((v) => e !== `${v.id}`);
+      });
+      const data: DataState<OrderDto[]> = {
+        isLoading: false,
+        isError: false,
+        data: array,
+      };
+    },
     createOrder: (state, action) => {},
   },
   extraReducers: (builder) => {

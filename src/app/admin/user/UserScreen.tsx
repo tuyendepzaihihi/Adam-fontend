@@ -153,8 +153,8 @@ export default function UserScreen() {
     };
     try {
       dispatch(changeLoading(true));
-      const res: ResultApi<UserAdmin> = await requestPutUpdateUser(payload);
-      dispatch(updateUser({ item: res.data }));
+      await requestPutUpdateUser(payload);
+      dispatch(updateUser({ item: {...row,isActive: !row.isActive} }));
       dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));

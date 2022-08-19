@@ -2,7 +2,7 @@ import { ApiClient } from "../../service/ApiService";
 // interface
 export interface UpdateDto {
   order_id: number;
-  status: boolean;
+  status: number;
 }
 
 export interface GetOrderAdminDto {

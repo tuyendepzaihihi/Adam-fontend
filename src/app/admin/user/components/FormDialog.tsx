@@ -102,7 +102,7 @@ const FormDialog = (props: Props) => {
         };
         const res: ResultApi<UserAdmin> = await requestPutUpdateUser(payload);
         dispatch(updateUser({ item: res.data }));
-        dispatch(changeLoading(true));
+        dispatch(changeLoading(false));
         handleClose();
       } catch (e) {
         dispatch(changeLoading(false));

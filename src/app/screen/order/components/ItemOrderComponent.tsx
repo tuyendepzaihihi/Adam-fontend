@@ -16,6 +16,7 @@ import TimeLineComponent from "./TimeLineComponent";
 
 interface Props {
   item: OrderDto;
+  handleCancel?: Function
 }
 
 export const TYPE_ORDER = {
@@ -135,7 +136,7 @@ export const ItemProduct = (props: { item?: ItemCart; inList?: boolean }) => {
 };
 
 export default function ItemOrderComponent(props: Props) {
-  const { item } = props;
+  const { item ,handleCancel} = props;
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState<string | false>(false);
 
@@ -245,7 +246,9 @@ export default function ItemOrderComponent(props: Props) {
               flexDirection: "column",
             }}
           >
-            <Button variant="outlined" color="secondary">
+            <Button variant="outlined" color="secondary" onClick={()=>{
+              handleCancel && handleCancel()
+            }}>
               Huỷ
             </Button>
           </div>

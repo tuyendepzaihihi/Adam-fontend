@@ -1,10 +1,13 @@
 import { Paper, TablePagination } from "@material-ui/core";
 import { useEffect, useState } from "react";
+import { requestPutUpdateOrder } from "../../../admin/order/OrderApi";
 import EmptyComponent from "../../../component/EmptyComponent";
 import LoadingProgress from "../../../component/LoadingProccess";
+import { ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch } from "../../../hooks";
+import { createNotification } from "../../../utils/MessageUtil";
 import { getOrderInfo, OrderDto } from "../slice/OrderSlice";
-import ItemOrderComponent from "./ItemOrderComponent";
+import ItemOrderComponent, { TYPE_ORDER } from "./ItemOrderComponent";
 interface Props {
   data: OrderDto[];
   status: number;
@@ -38,6 +41,21 @@ const ListOrderComponent = (props: Props) => {
     } catch (e) {}
   };
 
+  const handleCancel = async(row: OrderDto) =>{
+    try {
+      await requestPutUpdateOrder({
+        order_id: row.id,
+        status: TYPE_ORDER.PAYBACK,
+      });
+      createNotification({
+        type:"success",
+        title:"Huỷ đơn thành công"
+      })
+      getData()
+    } catch (e) {
+    }
+  }
+
   return (
     <div style={{ position: "relative" }}>
       {data.length > 0 ? (
@@ -45,7 +63,7 @@ const ListOrderComponent = (props: Props) => {
           {data
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((e, index) => {
-              return <ItemOrderComponent key={index} item={e} />;
+              return <ItemOrderComponent key={index} item={e} handleCancel={()=>handleCancel(e)} />;
             })}
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
