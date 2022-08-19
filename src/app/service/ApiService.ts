@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router";
 import { createNotification } from "../utils/MessageUtil";
-import { ROUTE } from "./../contant/Contant";
+import { BaseUrl, ROUTE } from "./../contant/Contant";
 import { getToken } from "./StorageService";
 
-const BASE_URL_DEV = "https://adam-store.herokuapp.com/";
 export interface ResponseType<T> {
   status: number;
   code: number;
@@ -13,7 +12,7 @@ export interface ResponseType<T> {
 
 const createAPI = () => {
   const APIInstant = require("axios").default.create();
-  APIInstant.defaults.baseURL = BASE_URL_DEV;
+  APIInstant.defaults.baseURL = BaseUrl;
   APIInstant.defaults.timeout = 100000;
   APIInstant.defaults.headers = { "Content-Type": "application/json" };
   APIInstant.interceptors.request.use(async (config: any) => {
