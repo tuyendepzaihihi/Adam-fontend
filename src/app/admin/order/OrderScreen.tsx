@@ -4,7 +4,7 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
@@ -16,27 +16,29 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import UpdateIcon from "@material-ui/icons/UpdateOutlined";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import LoadingProgress from "../../component/LoadingProccess";
-import TextInputComponent from "../../component/TextInputComponent";
 import { headCellsOrderAdmin } from "../../contant/ContaintDataAdmin";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { DEFINE_ORDER } from "../../screen/order/components/ItemOrderComponent";
+import { DEFINE_ORDER, TYPE_ORDER } from "../../screen/order/components/ItemOrderComponent";
 import { OrderDto } from "../../screen/order/slice/OrderSlice";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil, Order } from "../../utils/function";
+import { createNotification } from "../../utils/MessageUtil";
 import EnhancedTableToolbarOrder from "./components/EnhancedTableToolbar";
-import FormDialog from "./components/FormDialog";
+import FormDialog, { initReasonPayback, ReasonPayback } from "./components/FormDialog";
 import FormDialogCreate from "./components/FormDialogCreate";
-import { GetOrderAdminDto } from "./OrderApi";
-import { incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
+import FormDialogPayback from "./components/FormDialogPayback";
+import { DetailOrderAdminPayBack, GetOrderAdminDto, PayloadOrderCallBack, PayloadUpdateOrderPayback, requestPostOrderCallBack, requestPutUpdateOrderPayback } from "./OrderApi";
+import { changeLoading, incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
+      position:'relative'
     },
     paper: {
       width: "100%",
@@ -68,16 +70,18 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function OrderScreen() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof OrderDto>("id");
-  const [selected, setSelected] = React.useState<string[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [open, setOpen] = React.useState(false);
-  const [openCreateForm, setOpenCreateForm] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [statusSearch, setStatusSearch] = React.useState(10);
-  const [anchorElData, setAnchorElData] = React.useState<null | {
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState<keyof OrderDto>("id");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = useState(false);
+  const [openCreateForm, setOpenCreateForm] = useState(false);
+  const [openCreatePayback, setOpenCreatePayback] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [statusSearch, setStatusSearch] = useState(10);
+  const [reason, setReason] = useState<ReasonPayback>(initReasonPayback);
+  const [anchorElData, setAnchorElData] = useState<null | {
     item: OrderDto;
   }>(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -86,6 +90,7 @@ export default function OrderScreen() {
   const { data, isLoading, count } = useAppSelector(
     (state) => state.orderAdmin
   );
+  const carts = useAppSelector(state=>state.cart).data
   useEffect(() => {
     const timer= setTimeout(()=>{
       getData();
@@ -95,11 +100,9 @@ export default function OrderScreen() {
   }, [page, rowsPerPage,statusSearch]);
 
   const getData = async () => {
-    
       let payload:GetOrderAdminDto = {
         page: page,
         size: rowsPerPage,
-        
       };
       if(statusSearch!==10){
         payload ={
@@ -108,7 +111,66 @@ export default function OrderScreen() {
         }
       }
       await dispatch(incrementAsyncOrderAdminAdmin(payload));
-   
+  };
+
+  const handleCallBackOrder = async () => {
+    if(carts.length < reason.detailCode.length){
+      createNotification({
+        type: "warning",
+        title: "Cảnh báo",
+        message: "Chưa chọn đủ sản phẩm để thay đổi",
+      });
+      return;
+    }
+
+    if (reason.reason.length < 8) {
+      createNotification({
+        type: "warning",
+        title: "Cảnh báo",
+        message: "Bạn cần nhâp lý do (>10 ký tự)",
+      });
+      return;
+    }
+
+    if (reason.detailCode.length === 0) {
+      createNotification({
+        type: "warning",
+        title: "Cảnh báo",
+        message: "Bạn cần chọn sản phẩm hoàn",
+      });
+      return;
+    }
+    dispatch(changeLoading(true));
+    try {
+      const payload: PayloadOrderCallBack = {
+        detailOrderAdminPayBacks: reason.detailCode.map((e) => {
+          const res: DetailOrderAdminPayBack={
+            detailOrderCode: e.detailOrderCode,
+            quantity: e.quantity
+          }
+          return res
+        }),
+        orderCode: anchorElData?.item.orderCode,
+        reason: reason.reason,
+        status: TYPE_ORDER.PAYBACK,
+      };
+      const payloadUpdate: PayloadUpdateOrderPayback ={
+        cartItemIds: carts.map((e)=>e.id),
+        orderId: anchorElData?.item.id
+      }
+      await requestPostOrderCallBack(payload);
+      await requestPutUpdateOrderPayback(payloadUpdate)
+      createNotification({
+        type:"success",
+        message:'Thay đổi đơn hàng thành công'
+      })
+      setReason(initReasonPayback);
+      setOpen(false)
+      setOpenCreatePayback(false)
+      dispatch(changeLoading(false));
+    } catch (e) {
+      dispatch(changeLoading(false));
+    }
   };
 
   const handleClose = () => {
@@ -119,6 +181,10 @@ export default function OrderScreen() {
 
   const handleCloseCreateForm = () => {
     setOpenCreateForm(false);
+  };
+
+  const handleCloseCreatePayback = () => {
+    setOpenCreatePayback(false);
   };
 
   const createSortHandler =
@@ -145,6 +211,7 @@ export default function OrderScreen() {
     setAnchorEl(null);
     setAnchorElData(null);
   };
+
   const handleProfileMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     item: any
@@ -339,10 +406,26 @@ export default function OrderScreen() {
         handleClose={handleClose}
         anchorElData={anchorElData}
         setAnchorElData={setAnchorElData}
+        openCreatePayback={openCreatePayback}
+        setOpenCreatePayback={setOpenCreatePayback}
+        handleCallBackOrder={()=>{
+          createNotification({
+            type:"info",
+            message:"Bạn cần chọn sản phẩm khác thay thế."
+          })
+          setOpenCreatePayback(true)
+        }}
+        reason={reason}
+        setReason={setReason}
       />
       <FormDialogCreate
         open={openCreateForm}
         handleClose={handleCloseCreateForm}
+      />
+      <FormDialogPayback 
+        open={openCreatePayback}
+        handleClose={handleCloseCreatePayback}
+        handleSubmit={handleCallBackOrder}
       />
       {isLoading && <LoadingProgress />}
     </div>

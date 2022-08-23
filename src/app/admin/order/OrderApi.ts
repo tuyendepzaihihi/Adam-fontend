@@ -11,13 +11,21 @@ export interface GetOrderAdminDto {
   status?: number | null 
 }
 
+export interface DetailOrderAdminPayBack {
+  detailOrderCode: string,
+  quantity: number
+}
+
 export interface PayloadOrderCallBack {
-  detailCode?: any[],
+  detailOrderAdminPayBacks?: DetailOrderAdminPayBack[],
   orderCode?: string,
   reason?: string,
-  returnPrice?: number,
   status?: number,
-  totalPrice?: number
+}
+
+export interface PayloadUpdateOrderPayback {
+  cartItemIds?: number[],
+  orderId?: number
 }
 
 // function
@@ -31,5 +39,7 @@ export const requestPutUpdateOrder = (payload: UpdateDto) =>
   );
 export const requestGetOrderStatistic = (payload?: any) =>
   ApiClient.get("/admin/order/orderSatistic", payload);
+export const requestPutUpdateOrderPayback = (payload: PayloadUpdateOrderPayback) =>
+  ApiClient.put("/admin/order/updateOrderPayback", payload);
 
 export const requestPostOrderCallBack = (payload: PayloadOrderCallBack) => ApiClient.post("admin/order/updateReturnOrder",payload)

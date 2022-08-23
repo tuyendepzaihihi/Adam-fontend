@@ -11,7 +11,7 @@ import {
   MenuItem,
   Select,
   Theme,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import { useState } from "react";
 import LoadingProgress from "../../../component/LoadingProccess";
@@ -21,26 +21,42 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   DEFINE_ORDER,
   ItemProduct,
-  TYPE_ORDER,
+  TYPE_ORDER
 } from "../../../screen/order/components/ItemOrderComponent";
 import {
   OrderDetailPayload,
-  OrderDto,
+  OrderDto
 } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { createNotification } from "../../../utils/MessageUtil";
 import {
-  PayloadOrderCallBack,
-  requestPostOrderCallBack,
-  requestPutUpdateOrder,
+  requestPutUpdateOrder
 } from "../OrderApi";
 import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
+
+
+export interface ReasonPayback {
+  reason: string;
+  price: number;
+  detailCode: OrderDetailPayload[];
+}
+
+export const initReasonPayback:ReasonPayback = {
+  reason: "",
+  price: 30000,
+  detailCode: [],
+};
 interface Props {
   open: any;
   handleClose: () => void;
   anchorElData: { item: OrderDto } | null;
   setAnchorElData: any;
+  openCreatePayback: boolean
+  setOpenCreatePayback: any
+  reason: ReasonPayback
+  setReason: any
+  handleCallBackOrder: ()=>void
 }
 
 const RenderLabel = (params: { label: string; value?: string }) => {
@@ -135,65 +151,13 @@ const RenderInfoOrder = (params: {
   );
 };
 
-const initReason = {
-  reason: "",
-  price: 30000,
-  detailCode: [],
-};
+
 
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((e) => e.orderAdmin);
-  const { handleClose, open, anchorElData, setAnchorElData } = props;
+  const { handleClose, open, anchorElData, setAnchorElData,reason,setReason ,handleCallBackOrder} = props;
   const [openReason, setOpenReason] = useState(false);
-  const [reason, setReason] = useState<{
-    reason: string;
-    price: number;
-    detailCode: OrderDetailPayload[];
-  }>(initReason);
-
-  const handleCallBackOrder = async () => {
-    if (reason.reason.length < 8) {
-      createNotification({
-        type: "warning",
-        title: "Bạn cần nhâp lý do (>10 ký tự)",
-      });
-      return;
-    }
-
-    if (reason.price < 30000) {
-      createNotification({
-        type: "warning",
-        title: "Bạn cần nhập giá hoàn (> 30k)",
-      });
-      return;
-    }
-
-    if (reason.detailCode.length === 0) {
-      createNotification({
-        type: "warning",
-        title: "Bạn cần chọn sản phẩm hoàn",
-      });
-      return;
-    }
-    dispatch(changeLoading(true));
-    try {
-      const payload: PayloadOrderCallBack = {
-        detailCode: reason.detailCode.map((e) => e.detailOrderCode),
-        orderCode: anchorElData?.item.orderCode,
-        reason: reason.reason,
-        returnPrice: reason.price,
-        status: TYPE_ORDER.PAYBACK,
-        totalPrice: anchorElData?.item.totalPrice,
-      };
-      await requestPostOrderCallBack(payload);
-      setOpenReason(false);
-      setReason(initReason);
-      dispatch(changeLoading(false));
-    } catch (e) {
-      dispatch(changeLoading(false));
-    }
-  };
 
   const handleChange = async (params: { value: any; row: OrderDto }) => {
     const { row, value } = params;
@@ -265,17 +229,7 @@ const FormDialog = (props: Props) => {
                 reason: `${event.target.value}`,
               });
             }}
-            label="Nhập lý do hoàn đơn"
-          />
-          <TextInputComponent
-            value={reason.price}
-            onChange={(event: any) => {
-              setReason({
-                ...reason,
-                price: Number(event.target.value),
-              });
-            }}
-            label={"Nhập giá truy thu"}
+            label="Nhập lý do hoàn/thay đổi đơn hàng"
           />
           {anchorElData?.item?.detailOrders?.map((e, index) => {
             const exist = reason.detailCode.find((value) => value.id === e.id);
@@ -311,7 +265,10 @@ const FormDialog = (props: Props) => {
               width: "100%",
             }}
           >
-            <Button onClick={handleCallBackOrder} variant="contained">
+            <Button onClick={()=>{
+              setOpenReason(false)
+              handleCallBackOrder()
+            }} variant="contained">
               Hoàn thành
             </Button>
           </div>

@@ -26,6 +26,7 @@ const useStyles = makeStyles(() =>
       justifyContent: "center",
       alignItems: "center",
       left: 0,
+      borderRadius: 5
     },
   })
 );

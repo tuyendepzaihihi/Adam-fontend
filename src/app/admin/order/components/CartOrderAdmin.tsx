@@ -8,28 +8,25 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Delete from "@material-ui/icons/Delete";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LoadingProgress from "../../../component/LoadingProccess";
-import { LIST_VOUCHER } from "../../../contant/ContaintDataAdmin";
 import { DEFAULT_ADDRESS_ORDER, ItemCart } from "../../../contant/Contant";
-import { ResultApi, VoucherAdmin } from "../../../contant/IntefaceContaint";
+import { ResultApi } from "../../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   requestDeleteCart,
   requestPutUpdateCart,
-  UpdateCartDto,
+  UpdateCartDto
 } from "../../../screen/cart/CartApi";
-import FormDialogVoucher from "../../../screen/cart/components/FormDialogVoucher";
-import VoucherOrder from "../../../screen/cart/components/VoucherOrder";
 import {
   changeLoading,
   deleteItemCart,
   incrementAsyncCart,
-  updateQuantity,
+  updateQuantity
 } from "../../../screen/cart/slice/CartSlice";
 import {
   CreateOrderDto,
-  requestPostCreateOrder,
+  requestPostCreateOrder
 } from "../../../screen/order/OrderApi";
 import { OrderDto } from "../../../screen/order/slice/OrderSlice";
 import { getIdAccount } from "../../../service/StorageService";
@@ -61,11 +58,6 @@ function subtotal(items: ItemCart[]) {
 const CartOrderAdmin = () => {
   const classes = useStyles();
   const { data, isLoading } = useAppSelector((state) => state.cart);
-
-  const [openVoucher, setOpenVoucher] = useState(false);
-  const [selectedVoucher, setSelectedVoucher] = useState<VoucherAdmin | null>(
-    null
-  );
   const dispatch = useAppDispatch();
   const accountId = getIdAccount();
 
@@ -110,13 +102,6 @@ const CartOrderAdmin = () => {
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
-      {/* <VoucherOrder
-        onPress={() => {
-          setOpenVoucher(!openVoucher);
-        }}
-        itemVoucher={selectedVoucher}
-        total={checkTotal()}
-      /> */}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>
@@ -233,13 +218,6 @@ const CartOrderAdmin = () => {
             </TableRow>
             <TableRow>
               <TableCell colSpan={4} />
-              <TableCell colSpan={2}>Giảm giá</TableCell>
-              <TableCell align="right">
-                {formatPrice(checkDiscount())}đ
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={4} />
               <TableCell colSpan={2}>Thành tiền</TableCell>
               <TableCell align="right">
                 {formatPrice(checkTotal() - checkDiscount())}đ
@@ -271,16 +249,6 @@ const CartOrderAdmin = () => {
           </Button>
         )}
       </div>
-      <FormDialogVoucher
-        data={LIST_VOUCHER}
-        handleClose={() => {
-          setOpenVoucher(!openVoucher);
-        }}
-        open={openVoucher}
-        description={"Hãy chọn voucher để nhận được những ưu đãi lớn nhất"}
-        selected={selectedVoucher}
-        setSelected={setSelectedVoucher}
-      />
       {isLoading && <LoadingProgress />}
     </div>
   );

@@ -23,18 +23,17 @@ import { getAddressInfo } from "../setting/address/slice/AddressSlice";
 import {
   requestDeleteCart,
   requestPutUpdateCart,
-  UpdateCartDto,
+  UpdateCartDto
 } from "./CartApi";
 import AddressOrder from "./components/AddressOrder";
 import FormDialogAddress from "./components/FormDialogAddress";
 import FormDialogVoucher from "./components/FormDialogVoucher";
-import VoucherOrder from "./components/VoucherOrder";
 import {
   changeLoading,
   deleteItemCart,
   deleteMoreCart,
   incrementAsyncCart,
-  updateQuantity,
+  updateQuantity
 } from "./slice/CartSlice";
 
 const useStyles = makeStyles({
@@ -290,13 +289,6 @@ const CartScreen = () => {
               <TableCell colSpan={4} />
               <TableCell colSpan={2}>Tổng tiền</TableCell>
               <TableCell align="right">{formatPrice(checkTotal())}đ</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={4} />
-              <TableCell colSpan={2}>Giảm giá</TableCell>
-              <TableCell align="right">
-                {formatPrice(checkDiscount())}đ
-              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={4} />
