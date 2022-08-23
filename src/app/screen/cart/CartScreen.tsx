@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { getIdAccount } from "../../service/StorageService";
 import { colors } from "../../utils/color";
 import { formatPrice, FunctionUtil } from "../../utils/function";
+import { createNotification } from "../../utils/MessageUtil";
 import { CreateOrderDto, requestPostCreateOrder } from "../order/OrderApi";
 import { getAddressInfo } from "../setting/address/slice/AddressSlice";
 import {
@@ -109,6 +110,10 @@ const CartScreen = () => {
     try {
       dispatch(changeLoading(true));
       await requestPostCreateOrder(payload);
+      createNotification({
+        type:"success",
+        message: "Tạo mới đơn hàng thành công"
+      })
       navigate(ROUTE.ACCOUNT, { state: { type: TYPE_ACCOUNT.ORDER } });
       dispatch(changeLoading(false));
     } catch (e) {

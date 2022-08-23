@@ -40,6 +40,10 @@ export const orderAdminSlice = createSlice({
     createOrderAdmin: (state, action) => {
       let item: OrderDto = action.payload?.item;
       state.data = [item].concat(state.data);
+      createNotification({
+        type: "success",
+        message: "Tạo mới đơn hàng thành công!",
+      });
     },
     deleteOrderAdmin: (state, action) => {
       let array = state.data;

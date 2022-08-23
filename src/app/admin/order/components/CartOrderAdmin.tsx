@@ -95,6 +95,7 @@ const CartOrderAdmin = () => {
       const res: ResultApi<OrderDto> = await requestPostCreateOrder(payload);
       dispatch(createOrderAdmin({ item: res.data }));
       dispatch(changeLoading(false));
+      
     } catch (e) {
       dispatch(changeLoading(false));
     }
