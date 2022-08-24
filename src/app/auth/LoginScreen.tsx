@@ -186,34 +186,6 @@ const LoginScreen = () => {
           >
             Login
           </Button>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {}}
-            className={className.button}
-            style={{
-              backgroundColor: "red",
-              borderColor: "red",
-              color: "white",
-            }}
-          >
-            Google
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {}}
-            className={className.button}
-            style={{
-              backgroundColor: "blue",
-              borderColor: "blue",
-              color: "white",
-            }}
-          >
-            Fb
-          </Button>
           <Button
             variant="outlined"
             color="primary"

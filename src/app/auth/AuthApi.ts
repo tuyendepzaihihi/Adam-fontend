@@ -21,6 +21,7 @@ export interface RegisterDto {
   phoneNumber: string;
   role: string;
   username: string;
+  code: number,
 }
 
 // function
@@ -28,4 +29,7 @@ export const requestLoginApp = (payload: LoginRequest) =>
   ApiClient.post("/auth/authenticate", payload);
 
 export const requestPostRegister = (payload: RegisterDto) =>
-  ApiClient.post("/admin/account/createAdminAccount", payload);
+  ApiClient.post("/admin/account/createAccount", payload);
+
+export const requestVerifyPhone = (payload: {phone: string}) =>
+ApiClient.post(`/admin/account/verify?phone_number=${payload.phone}`, {});

@@ -23,7 +23,7 @@ import { ResultApi } from "../contant/IntefaceContaint";
 import { setIdAccount, setToken } from "../service/StorageService";
 import { colors } from "../utils/color";
 import { createNotification } from "../utils/MessageUtil";
-import { RegisterDto, requestPostRegister, ResultLogin } from "./AuthApi";
+import { RegisterDto, requestPostRegister, requestVerifyPhone, ResultLogin } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -127,6 +127,8 @@ const RegisterScreen = () => {
 
   const handleSubmit = async (data: RegisterInterface) => {
     try {
+      setLoading(true);
+      const resultCode: ResultApi<any> = await requestVerifyPhone({phone: `+84${Number(data.phone)}`}) 
       const payload: RegisterDto = {
         email: data.email,
         fullName: data.fullname,
@@ -134,8 +136,8 @@ const RegisterScreen = () => {
         phoneNumber: data.phone,
         role: "User",
         username: data.username,
+        code: resultCode.data
       };
-      setLoading(true);
       const res: ResultApi<ResultLogin> = await requestPostRegister(payload);
       setToken(res.data.token);
       setIdAccount(`${res.data.id}`);
@@ -228,7 +230,7 @@ const RegisterScreen = () => {
             variant="outlined"
             color="primary"
             onClick={() => {
-              navigate("/Register");
+              navigate(ROUTE.LOGIN);
             }}
             className={className.button}
             style={{
