@@ -222,7 +222,7 @@ const FormDialog = (props: Props) => {
           }}
         >
           <TextInputComponent
-            value={""}
+            value={reason.reason}
             onChange={(event: any) => {
               setReason({
                 ...reason,
