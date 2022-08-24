@@ -38,13 +38,13 @@ import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
 
 export interface ReasonPayback {
   reason: string;
-  price: number;
+  quantity: number[];
   detailCode: OrderDetailPayload[];
 }
 
 export const initReasonPayback:ReasonPayback = {
   reason: "",
-  price: 30000,
+  quantity: [],
   detailCode: [],
 };
 interface Props {
@@ -155,6 +155,7 @@ const RenderInfoOrder = (params: {
 
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
+  const classes = useStyles()
   const { isLoading } = useAppSelector((e) => e.orderAdmin);
   const { handleClose, open, anchorElData, setAnchorElData,reason,setReason ,handleCallBackOrder} = props;
   const [openReason, setOpenReason] = useState(false);
@@ -235,7 +236,7 @@ const FormDialog = (props: Props) => {
             const exist = reason.detailCode.find((value) => value.id === e.id);
             const isSelected = exist ? true : false;
             return (
-              <div key={index}>
+              <div key={index} style={{display:'flex'}}>
                 <Checkbox
                   value={isSelected}
                   onChange={() => {
@@ -249,12 +250,53 @@ const FormDialog = (props: Props) => {
                     } else {
                       setReason({
                         ...reason,
-                        detailCode: reason.detailCode.concat([e]),
+                        detailCode: reason.detailCode.concat([{...e,quantity: 1}]),
                       });
                     }
                   }}
                 />
                 <ItemProduct item={e} inList />
+                {isSelected && exist && <div style={{display:'flex'}}>
+                    <button
+                        className={classes.buttonQuantity}
+                        onClick={async () => {
+                          if (exist.quantity > 1) {
+                            setReason({
+                              ...reason,
+                              detailCode: reason.detailCode.map(
+                                (val) => {
+                                  if(val.id === exist.id){
+                                    return {...val,quantity: val.quantity-1}
+                                  }else return val
+                                }
+                              ),
+                            });
+                          }
+                        }}
+                      >
+                        -
+                      </button>
+                      {exist.quantity}
+                      <button
+                        className={classes.buttonQuantity}
+                        onClick={async () => {
+                          if(exist.quantity <  e.quantity){
+                            setReason({
+                              ...reason,
+                              detailCode: reason.detailCode.map(
+                                (val) => {
+                                  if(val.id === exist.id){
+                                    return {...val,quantity: val.quantity+1}
+                                  }else return val
+                                }
+                              ),
+                            });
+                          }
+                        }}
+                      >
+                        +
+                      </button>
+                </div>}
               </div>
             );
           })}
@@ -349,6 +391,15 @@ const useStyles = makeStyles((theme: Theme) =>
     selectedStyle: {
       color: colors.white,
       height: 45,
+    },
+    buttonQuantity: {
+      width: 25,
+      height: 25,
+      borderColor: colors.grayC4,
+      borderWidth: 0.8,
+      borderRadius: 5,
+      marginRight: 10,
+      marginLeft: 10,
     },
   })
 );
