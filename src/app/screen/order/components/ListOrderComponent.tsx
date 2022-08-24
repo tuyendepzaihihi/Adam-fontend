@@ -45,7 +45,7 @@ const ListOrderComponent = (props: Props) => {
     try {
       await requestPutUpdateOrder({
         order_id: row.id,
-        status: TYPE_ORDER.PAYBACK,
+        status: TYPE_ORDER.CANCEL,
       });
       createNotification({
         type:"success",
