@@ -21,6 +21,7 @@ import EmptyComponent from "../../component/EmptyComponent";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCellsOrderAdmin } from "../../contant/ContaintDataAdmin";
+import { ResultApi } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { DEFINE_ORDER, TYPE_ORDER } from "../../screen/order/components/ItemOrderComponent";
 import { OrderDto } from "../../screen/order/slice/OrderSlice";
@@ -32,7 +33,7 @@ import FormDialog, { initReasonPayback, ReasonPayback } from "./components/FormD
 import FormDialogCreate from "./components/FormDialogCreate";
 import FormDialogPayback from "./components/FormDialogPayback";
 import { DetailOrderAdminPayBack, GetOrderAdminDto, PayloadOrderCallBack, PayloadUpdateOrderPayback, requestPostOrderCallBack, requestPutUpdateOrderPayback } from "./OrderApi";
-import { changeLoading, incrementAsyncOrderAdminAdmin } from "./slice/OrderAdminSlice";
+import { changeLoading, incrementAsyncOrderAdminAdmin, updateOrderAdmin } from "./slice/OrderAdminSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -159,11 +160,12 @@ export default function OrderScreen() {
         orderId: anchorElData?.item.id
       }
       await requestPostOrderCallBack(payload);
-      await requestPutUpdateOrderPayback(payloadUpdate)
+      const res: ResultApi<OrderDto> =  await requestPutUpdateOrderPayback(payloadUpdate)
       createNotification({
         type:"success",
         message:'Thay đổi đơn hàng thành công'
       })
+      dispatch(updateOrderAdmin({item: res.data}))
       setReason(initReasonPayback);
       setOpen(false)
       setOpenCreatePayback(false)
