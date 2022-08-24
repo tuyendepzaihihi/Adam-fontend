@@ -11,8 +11,9 @@ import {
   MenuItem,
   Select,
   Theme,
-  Typography
+  Typography,
 } from "@material-ui/core";
+import moment from "moment";
 import { useState } from "react";
 import LoadingProgress from "../../../component/LoadingProccess";
 import TextInputComponent from "../../../component/TextInputComponent";
@@ -21,20 +22,17 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   DEFINE_ORDER,
   ItemProduct,
-  TYPE_ORDER
+  TYPE_ORDER,
 } from "../../../screen/order/components/ItemOrderComponent";
 import {
   OrderDetailPayload,
-  OrderDto
+  OrderDto,
 } from "../../../screen/order/slice/OrderSlice";
 import { colors } from "../../../utils/color";
 import { formatPrice } from "../../../utils/function";
 import { createNotification } from "../../../utils/MessageUtil";
-import {
-  requestPutUpdateOrder
-} from "../OrderApi";
+import { requestPutUpdateOrder } from "../OrderApi";
 import { changeLoading, updateOrderAdmin } from "../slice/OrderAdminSlice";
-
 
 export interface ReasonPayback {
   reason: string;
@@ -42,7 +40,7 @@ export interface ReasonPayback {
   detailCode: OrderDetailPayload[];
 }
 
-export const initReasonPayback:ReasonPayback = {
+export const initReasonPayback: ReasonPayback = {
   reason: "",
   quantity: [],
   detailCode: [],
@@ -52,11 +50,11 @@ interface Props {
   handleClose: () => void;
   anchorElData: { item: OrderDto } | null;
   setAnchorElData: any;
-  openCreatePayback: boolean
-  setOpenCreatePayback: any
-  reason: ReasonPayback
-  setReason: any
-  handleCallBackOrder: ()=>void
+  openCreatePayback: boolean;
+  setOpenCreatePayback: any;
+  reason: ReasonPayback;
+  setReason: any;
+  handleCallBackOrder: () => void;
 }
 
 const RenderLabel = (params: { label: string; value?: string }) => {
@@ -151,18 +149,35 @@ const RenderInfoOrder = (params: {
   );
 };
 
-
-
 const FormDialog = (props: Props) => {
   const dispatch = useAppDispatch();
-  const classes = useStyles()
+  const classes = useStyles();
   const { isLoading } = useAppSelector((e) => e.orderAdmin);
-  const { handleClose, open, anchorElData, setAnchorElData,reason,setReason ,handleCallBackOrder} = props;
+  const {
+    handleClose,
+    open,
+    anchorElData,
+    setAnchorElData,
+    reason,
+    setReason,
+    handleCallBackOrder,
+  } = props;
   const [openReason, setOpenReason] = useState(false);
 
   const handleChange = async (params: { value: any; row: OrderDto }) => {
     const { row, value } = params;
     if (+value === TYPE_ORDER.PAYBACK) {
+      const start = moment(row?.createDate, "YYYY-MM-DD");
+      const end = moment(new Date(), "YYYY-MM-DD");
+      const pTimes = moment.duration(end.diff(start)).asDays();
+      if (pTimes > 3) {
+        createNotification({
+          type: "warning",
+          message: "Đơn hàng đã quá hạn 3 ngày để bạn có thể xử lý",
+          title: "Cảnh báo",
+        });
+        return;
+      }
       setOpenReason(true);
       return;
     }
@@ -236,7 +251,7 @@ const FormDialog = (props: Props) => {
             const exist = reason.detailCode.find((value) => value.id === e.id);
             const isSelected = exist ? true : false;
             return (
-              <div key={index} style={{display:'flex'}}>
+              <div key={index} style={{ display: "flex" }}>
                 <Checkbox
                   value={isSelected}
                   onChange={() => {
@@ -250,53 +265,53 @@ const FormDialog = (props: Props) => {
                     } else {
                       setReason({
                         ...reason,
-                        detailCode: reason.detailCode.concat([{...e,quantity: 1}]),
+                        detailCode: reason.detailCode.concat([
+                          { ...e, quantity: 1 },
+                        ]),
                       });
                     }
                   }}
                 />
                 <ItemProduct item={e} inList />
-                {isSelected && exist && <div style={{display:'flex'}}>
+                {isSelected && exist && (
+                  <div style={{ display: "flex" }}>
                     <button
-                        className={classes.buttonQuantity}
-                        onClick={async () => {
-                          if (exist.quantity > 1) {
-                            setReason({
-                              ...reason,
-                              detailCode: reason.detailCode.map(
-                                (val) => {
-                                  if(val.id === exist.id){
-                                    return {...val,quantity: val.quantity-1}
-                                  }else return val
-                                }
-                              ),
-                            });
-                          }
-                        }}
-                      >
-                        -
-                      </button>
-                      {exist.quantity}
-                      <button
-                        className={classes.buttonQuantity}
-                        onClick={async () => {
-                          if(exist.quantity <  e.quantity){
-                            setReason({
-                              ...reason,
-                              detailCode: reason.detailCode.map(
-                                (val) => {
-                                  if(val.id === exist.id){
-                                    return {...val,quantity: val.quantity+1}
-                                  }else return val
-                                }
-                              ),
-                            });
-                          }
-                        }}
-                      >
-                        +
-                      </button>
-                </div>}
+                      className={classes.buttonQuantity}
+                      onClick={async () => {
+                        if (exist.quantity > 1) {
+                          setReason({
+                            ...reason,
+                            detailCode: reason.detailCode.map((val) => {
+                              if (val.id === exist.id) {
+                                return { ...val, quantity: val.quantity - 1 };
+                              } else return val;
+                            }),
+                          });
+                        }
+                      }}
+                    >
+                      -
+                    </button>
+                    {exist.quantity}
+                    <button
+                      className={classes.buttonQuantity}
+                      onClick={async () => {
+                        if (exist.quantity < e.quantity) {
+                          setReason({
+                            ...reason,
+                            detailCode: reason.detailCode.map((val) => {
+                              if (val.id === exist.id) {
+                                return { ...val, quantity: val.quantity + 1 };
+                              } else return val;
+                            }),
+                          });
+                        }
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -307,10 +322,13 @@ const FormDialog = (props: Props) => {
               width: "100%",
             }}
           >
-            <Button onClick={()=>{
-              setOpenReason(false)
-              handleCallBackOrder()
-            }} variant="contained">
+            <Button
+              onClick={() => {
+                setOpenReason(false);
+                handleCallBackOrder();
+              }}
+              variant="contained"
+            >
               Hoàn thành
             </Button>
           </div>
