@@ -16,8 +16,8 @@ import R from "../assets/R";
 import { DataAddress } from "../screen/setting/address/slice/AddressSlice";
 import { LIST_PRODUCT_DETAIL } from "./ContaintDataAdmin";
 import { DetailProductAdmin } from "./IntefaceContaint";
-// export const BaseUrl = "https://adam-store.herokuapp.com/";
-export const BaseUrl = "https://localhost:9000/";
+export const BaseUrl = "https://adam-store.herokuapp.com/";
+// export const BaseUrl = "https://localhost:9000/";
 
 export const REG_EMAIL =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

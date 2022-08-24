@@ -10,9 +10,12 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as Yup from "yup";
+import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
 import { ROUTE, textValidate } from "../contant/Contant";
 import { colors } from "../utils/color";
+import { createNotification } from "../utils/MessageUtil";
+import { ForgotPassword, requestForgotPassword } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -54,11 +57,11 @@ const initValuesLogin: LoginInterface = {
 
 const ForgotPasswordScreen = () => {
   const className = useStyles();
-  const location = useLocation();
-
+  const locationValue = useLocation().state;
   const navigate = useNavigate();
   const [showPass, setShowPass] = useState(true);
   const [showRePass, setShowRePass] = useState(true);
+  const [loading,setLoading] = useState(false)
   const validateLogin = Yup.object({
     password: Yup.string()
       .min(6, textValidate.pass.short)
@@ -81,19 +84,35 @@ const ForgotPasswordScreen = () => {
   });
 
   const handleSubmit = async (data: LoginInterface) => {
-    // try {
-    //   const responseLogin: { data: { data: UserInterface } } =
-    //     await requestLogin(data);
-    //   if (responseLogin) {
-    //     // setToken(responseLogin.data.data.token);
-    //     navigate("/");
-    //   }
-    // } catch (e) {}
+    try {
+      setLoading(true)
+      const state: any = locationValue;
+      const { phone, code } = state;
+      console.log("state",state);
+      
+      const payload: ForgotPassword = {
+        code: code,
+        phone_number: `+84${Number(phone)}`,
+        password: data.password,
+        confirm: data.re_password,
+      };
+      await requestForgotPassword(payload);
+      createNotification({
+        type:"success",
+        message:"Đã đổi mật khẩu thành công, vui lòng đăng nhập lại!"
+      })
+      navigate(ROUTE.LOGIN)
+      setLoading(false)
+
+    } catch (e) {
+      setLoading(false)
+
+    }
   };
 
   return (
     <div className={className.root}>
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "100%",position:'relative' }}>
         <p className={className.title}>Đổi mật khẩu</p>
         <div>
           <p className={className.descriptionText}>
@@ -133,9 +152,7 @@ const ForgotPasswordScreen = () => {
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => {
-                navigate(ROUTE.LOGIN);
-              }}
+              onClick={()=>formik.handleSubmit()}
               className={className.button}
               style={{
                 backgroundColor: colors.black,
@@ -148,6 +165,7 @@ const ForgotPasswordScreen = () => {
           </Grid>
         </div>
       </div>
+      {loading && <LoadingProgress />}
     </div>
   );
 };

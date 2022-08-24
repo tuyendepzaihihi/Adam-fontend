@@ -10,11 +10,16 @@ import {
   Theme,
 } from "@material-ui/core";
 import { useFormik } from "formik";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
-import { REG_EMAIL, ROUTE, textValidate } from "../contant/Contant";
+import { PHONE_REGEX, REG_EMAIL, ROUTE, textValidate } from "../contant/Contant";
+import { ResultApi } from "../contant/IntefaceContaint";
 import { colors } from "../utils/color";
+import { createNotification } from "../utils/MessageUtil";
+import { requestSendPhone, requestVerifyPhone } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -55,20 +60,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 interface LoginInterface {
-  email: string;
+  phone: string;
 }
 const initValuesLogin: LoginInterface = {
-  email: "",
+  phone: "",
 };
 
 const EmailInputScreen = () => {
   const className = useStyles();
   const navigate = useNavigate();
+  const [loading,setLoading] = useState(false)
   const validateLogin = Yup.object({
-    email: Yup.string()
-      .matches(REG_EMAIL, textValidate.email.error_validate)
+    phone: Yup.string()
+      .matches(PHONE_REGEX, textValidate.phone.error_validate)
       .min(10, "Mininum 2 characters")
-      .max(100, "Maximum 15 characters")
+      .max(10, "Maximum 10 characters")
       .required("Required!"),
   });
 
@@ -81,8 +87,14 @@ const EmailInputScreen = () => {
   });
 
   const handleSubmit = async (data: LoginInterface) => {
-    console.log({ data });
-    navigate(ROUTE.FORGOT_PASS, { state: { email: data.email } });
+    setLoading(true)
+    const res: ResultApi<any> = await requestSendPhone({phone_number: `+84${Number(data.phone)}`})
+    createNotification({
+      type:"success",
+      message:"Số điện thoại đã đúng"
+    })
+    navigate(ROUTE.FORGOT_PASS, { state: { phone: data.phone, code: res.data },replace: true});
+    setLoading(false)
   };
 
   return (
@@ -91,15 +103,15 @@ const EmailInputScreen = () => {
         <p className={className.title}>Bạn quên mật khẩu</p>
         <div>
           <p className={className.descriptionText}>
-            Vui lòng nhập email đã đăng ký để đặt lại mật khẩu
+            Vui lòng nhập số điện thoại đã đăng ký để đặt lại mật khẩu
           </p>
           <TextInputComponent
-            error={formik.errors.email}
-            touched={formik.touched.email}
-            value={formik.values.email}
-            label={"Email"}
-            onChange={formik.handleChange("email")}
-            onBlur={formik.handleBlur("email")}
+            error={formik.errors.phone}
+            touched={formik.touched.phone}
+            value={formik.values.phone}
+            label={"Phone"}
+            onChange={formik.handleChange("phone")}
+            onBlur={formik.handleBlur("phone")}
             isRequire
           />
 
@@ -132,6 +144,7 @@ const EmailInputScreen = () => {
           </Grid>
         </div>
       </div>
+      {loading && <LoadingProgress />}
     </div>
   );
 };
