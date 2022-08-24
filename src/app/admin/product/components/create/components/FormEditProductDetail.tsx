@@ -28,7 +28,7 @@ const FormEditProductDetail = (props: Props) => {
       });
       return;
     }
-    let value = row[`${keyString}`];
+    let value = row[keyString];
 
     if (newText) {
       value = Number(newText);
