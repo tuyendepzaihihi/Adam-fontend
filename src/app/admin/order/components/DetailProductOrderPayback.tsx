@@ -157,7 +157,7 @@ const DetailProductOrderPayback = ({ product_id, handleClose, open }: Props) => 
                   <TableCell align="right" className={classes.rowHeader}>
                     Số lượng còn lại
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     align="right"
                     className={classes.rowHeader}
                     style={{
@@ -166,7 +166,7 @@ const DetailProductOrderPayback = ({ product_id, handleClose, open }: Props) => 
                     }}
                   >
                     Trạng thái
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell
                     align="right"
                     className={classes.rowHeader}
@@ -213,11 +213,11 @@ const DetailProductOrderPayback = ({ product_id, handleClose, open }: Props) => 
                           />
                         </TableCell>
                         <TableCell align="right">{row.quantity}</TableCell>
-                        <TableCell align="right">
+                        {/* <TableCell align="right">
                           <p style={{ fontSize: 12, color: colors.gray59 }}>
                             {row?.isActive ? "Hoạt động" : "Không hoạt động"}
                           </p>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="right">
                           <Button
                             variant="contained"
