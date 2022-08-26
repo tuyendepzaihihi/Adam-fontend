@@ -234,8 +234,7 @@ const ComponentFormCreate = (props: Props) => {
       dispatch(changeLoading(false));
     }
   };
-  console.log("dataProduct?.image",dataProduct?.image);
-  
+
   return (
     <Formik
       initialValues={

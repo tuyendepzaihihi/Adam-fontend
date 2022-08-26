@@ -128,11 +128,9 @@ export default function ProductScreen() {
         is_active: row.isActive ? 0 : 1,
         id: row.id,
       };
-      const res: ResultApi<ProductAdmin> = await requestPutUpdateProductStatus(
-        payload
-      );
-      dispatch(updateProduct({ item: res.data }));
-      dispatch(changeLoading(true));
+      await requestPutUpdateProductStatus(payload);
+      dispatch(updateProduct({ item: { ...row, isActive: !row.isActive } }));
+      dispatch(changeLoading(false));
     } catch (e) {
       dispatch(changeLoading(false));
     }

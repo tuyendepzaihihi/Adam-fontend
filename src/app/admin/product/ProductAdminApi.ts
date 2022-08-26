@@ -97,7 +97,7 @@ export const requestPutUpdateProduct = (payload: UpdateProductDto) =>
 export const requestPutUpdateProductStatus = (payload: {
   id: number;
   is_active: number;
-}) => ApiClient.put("/admin/product/updateIsActive", { params: payload });
+}) => ApiClient.put("/admin/product/updateIsActive",  payload );
 
 export const requestDeleteProduct = (payload?: { listProductId: number[] }) =>
   ApiClient.delete("/admin/product/deleteByListId", { data: payload });
