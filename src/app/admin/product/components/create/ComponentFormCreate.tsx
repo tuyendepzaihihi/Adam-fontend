@@ -181,9 +181,16 @@ const ComponentFormCreate = (props: Props) => {
       if (res !== undefined) tagsList = tagsList.concat([e.id]);
     });
     dispatch(changeLoading(true));
-    const urlImage = await handleUploadImage(selectedFile);
+    
     try {
       if (type === TYPE_DIALOG.CREATE) {
+        if(!selectedFile){
+          createNotification({
+            type:"warning",
+            message:"Bạn cần chọn ảnh"
+          })
+        }
+        const urlImage = await handleUploadImage(selectedFile);
         const itemCreate: CreateProductDto = {
           categoryId: Number(categoryChildren) ?? 0,
           description: description,
@@ -198,11 +205,15 @@ const ComponentFormCreate = (props: Props) => {
         onSubmit(res.data);
         dispatch(createProduct({ item: res.data }));
       } else if (type === TYPE_DIALOG.UPDATE && dataProduct) {
+        let urlImage = ''
+        if(selectedFile){
+           urlImage = await handleUploadImage(selectedFile);
+        }
         const payload: UpdateProductDto = {
           categoryId: Number(categoryChildren) ?? 0,
           description: description,
           id: dataProduct.id,
-          image: dataProduct.productImage ?? urlImage,
+          image: selectedFile ? urlImage : dataProduct.productImage,
           productName: product_name,
           isActive: dataProduct.isActive,
           materialProductIds: materialList,
@@ -271,8 +282,8 @@ const ComponentFormCreate = (props: Props) => {
                 {(dataProduct?.image || preview) ? (
                   <img alt="" src={preview ?? dataProduct?.image ??  R.images.img_product} />
                 ) : (
-                  <p style={{ marginTop: 40, marginBottom: 40 }}>
-                    Choose Image
+                  <p style={{ marginTop: 40, marginBottom: 40,display:'flex' }}>
+                    Choose Image <p style={{color:'red'}}>{`**`}</p>
                   </p>
                 )}
               </button>

@@ -190,7 +190,7 @@ const LoginScreen = () => {
             variant="outlined"
             color="primary"
             onClick={() => {
-              navigate(ROUTE.REGISTER);
+              navigate(ROUTE.VERIFY_CODE);
             }}
             className={className.button}
             style={{

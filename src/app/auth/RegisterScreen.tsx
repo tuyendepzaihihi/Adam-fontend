@@ -7,23 +7,17 @@ import {
 } from "@material-ui/core";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import R from "../assets/R";
 import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
-import {
-  NAME_REGEX,
-  PHONE_REGEX,
-  REG_EMAIL,
-  ROUTE,
-  textValidate,
-} from "../contant/Contant";
+import { NAME_REGEX, REG_EMAIL, ROUTE, textValidate } from "../contant/Contant";
 import { ResultApi } from "../contant/IntefaceContaint";
 import { setIdAccount, setToken } from "../service/StorageService";
 import { colors } from "../utils/color";
 import { createNotification } from "../utils/MessageUtil";
-import { RegisterDto, requestPostRegister, requestVerifyPhone, ResultLogin } from "./AuthApi";
+import { RegisterDto, requestPostRegister, ResultLogin } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -67,7 +61,7 @@ interface RegisterInterface {
   email: string;
   password: string;
   re_password: string;
-  phone: string;
+  code: string;
   fullname: string;
   username: string;
 }
@@ -75,7 +69,7 @@ const initValuesRegister: RegisterInterface = {
   password: "",
   email: "",
   fullname: "",
-  phone: "",
+  code: "",
   re_password: "",
   username: "",
 };
@@ -86,13 +80,9 @@ const RegisterScreen = () => {
   const [showPass, setShowPass] = useState(true);
   const [showRePass, setShowRePass] = useState(true);
   const [loading, setLoading] = useState(false);
+  const location = useLocation().state;
+
   const validateRegister = Yup.object({
-    phone: Yup.string()
-      .min(10, textValidate.phone.error_validate)
-      .max(11, textValidate.phone.error_validate)
-      .matches(PHONE_REGEX, textValidate.phone.error_validate)
-      .required()
-      .trim(),
     password: Yup.string()
       .min(6, textValidate.pass.short)
       .max(25, textValidate.pass.long)
@@ -102,14 +92,15 @@ const RegisterScreen = () => {
       .matches(REG_EMAIL, textValidate.email.error_validate)
       .required(textValidate.email.require)
       .trim(),
+    code: Yup.string()
+      .required("Vui lòng nhập code")
+      .length(6, "Gồm 6 ký tự")
+      .trim(),
     fullname: Yup.string()
       .required(textValidate.full_name.require)
       .matches(NAME_REGEX, textValidate.full_name.error_validate)
       .trim(),
-    username: Yup.string()
-      .required(textValidate.user_name.require)
-
-      .trim(),
+    username: Yup.string().required(textValidate.user_name.require).trim(),
     re_password: Yup.string()
       .min(6, textValidate.pass.short)
       .max(25, textValidate.pass.long)
@@ -126,17 +117,24 @@ const RegisterScreen = () => {
   });
 
   const handleSubmit = async (data: RegisterInterface) => {
+    const state: any = location;
+    if (state.code !== +data.code) {
+      createNotification({
+        type: "warning",
+        message: "Mã xác nhận không đúng",
+      });
+      return;
+    }
     try {
       setLoading(true);
-      const resultCode: ResultApi<any> = await requestVerifyPhone({phone: `+84${Number(data.phone)}`}) 
       const payload: RegisterDto = {
         email: data.email,
         fullName: data.fullname,
         password: data.password,
-        phoneNumber: data.phone,
+        phoneNumber: state.phone,
         role: "User",
         username: data.username,
-        code: resultCode.data
+        code: state.code,
       };
       const res: ResultApi<ResultLogin> = await requestPostRegister(payload);
       setToken(res.data.token);
@@ -167,12 +165,12 @@ const RegisterScreen = () => {
             isRequire
           />
           <TextInputComponent
-            error={formik.errors.phone}
-            touched={formik.touched.phone}
-            value={formik.values.phone}
-            label={"Số điện thoại"}
-            onChange={formik.handleChange("phone")}
-            onBlur={formik.handleBlur("phone")}
+            error={formik.errors.code}
+            touched={formik.touched.code}
+            value={formik.values.code}
+            label={"Mã được gửi về thiết bị"}
+            onChange={formik.handleChange("code")}
+            onBlur={formik.handleBlur("code")}
             isRequire
           />
           <TextInputComponent
@@ -183,7 +181,6 @@ const RegisterScreen = () => {
             onChange={formik.handleChange("username")}
             onBlur={formik.handleBlur("username")}
             isRequire
-
           />
           <TextInputComponent
             error={formik.errors.fullname}
@@ -193,7 +190,6 @@ const RegisterScreen = () => {
             onChange={formik.handleChange("fullname")}
             onBlur={formik.handleBlur("fullname")}
             isRequire
-
           />
           <TextInputComponent
             error={formik.errors.password}
@@ -204,8 +200,8 @@ const RegisterScreen = () => {
             onBlur={formik.handleBlur("password")}
             type={!showPass ? "text" : "password"}
             isRequire
-
           />
+
           <TextInputComponent
             error={formik.errors.re_password}
             touched={formik.touched.re_password}
@@ -215,7 +211,6 @@ const RegisterScreen = () => {
             onBlur={formik.handleBlur("re_password")}
             type={!showRePass ? "text" : "password"}
             isRequire
-
           />
 
           <Button

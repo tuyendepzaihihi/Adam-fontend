@@ -82,6 +82,7 @@ export const ROUTE = {
   ORDER: "/home/account/order",
   ACCOUNT: "/account",
   FAVORITE: "/account/favorite",
+  VERIFY_CODE: '/auth/verifyPhone'
 };
 
 export const ROUTE_ADMIN = {

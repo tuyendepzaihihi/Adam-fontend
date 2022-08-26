@@ -13,6 +13,7 @@ import AddressUser from "../app/screen/setting/address/AddressUser";
 import OrderScreen from "../app/screen/order/OrderScreen";
 import AccountScreen from "../app/screen/setting/account/AccountScreen";
 import FavoriteScreen from "../app/screen/favorite/FavoriteScreen";
+import PhoneVerifyScreen from "../app/auth/PhoneVerifyScreen";
 
 export const AUTH_ROUTE = [
   {
@@ -30,6 +31,10 @@ export const AUTH_ROUTE = [
   {
     route: ROUTE.FORGOT_PASS,
     screen: <ForgotPasswordScreen />,
+  },
+  {
+    route: ROUTE.VERIFY_CODE,
+    screen: <PhoneVerifyScreen />,
   },
 ];
 
