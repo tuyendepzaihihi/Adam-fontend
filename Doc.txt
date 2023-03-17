@@ -15,7 +15,7 @@ sudo yum install -y nodejs
 //delete cache/buff:
 sync; echo 1 > /proc/sys/vm/drop_caches
 //build pm2:
-pm2 serve build 80 --spa
+pm2 serve build 80 --name salon-app --spa
 //stop
 pm2 stop all 
 //connect SSH:
