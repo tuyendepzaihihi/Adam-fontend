@@ -1,5 +1,3 @@
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
@@ -12,7 +10,6 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Logout from "@material-ui/icons/ExitToApp";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
-import { updateSwitchRole } from "../admin/sliceSwitchRole/switchRoleSlice";
 import { LIST_MENU_DRAWER, ROUTE } from "../contant/Contant";
 import { useAppDispatch } from "../hooks";
 import { getDrawer, setDrawer } from "../service/StorageService";
@@ -175,7 +172,6 @@ export default function MiniDrawer(props: Props) {
             button
             onClick={() => {
               localStorage.clear();
-              dispatch(updateSwitchRole(false));
               navigate(ROUTE.LOGIN);
               setDrawer(`${LIST_MENU_DRAWER.length + 1}`);
             }}

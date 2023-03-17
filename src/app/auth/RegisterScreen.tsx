@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import R from "../assets/R";
 import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
-import { NAME_REGEX, REG_EMAIL, ROUTE, textValidate } from "../contant/Contant";
+import { NAME_REGEX, REG_EMAIL, ROUTE, ROUTE_ADMIN, textValidate } from "../contant/Contant";
 import { ResultApi } from "../contant/IntefaceContaint";
 import { setIdAccount, setToken } from "../service/StorageService";
 import { colors } from "../utils/color";
@@ -139,7 +139,7 @@ const RegisterScreen = () => {
       const res: ResultApi<ResultLogin> = await requestPostRegister(payload);
       setToken(res.data.token);
       setIdAccount(`${res.data.id}`);
-      navigate(ROUTE.HOME);
+      navigate(ROUTE_ADMIN.DASHBOARD);
       createNotification({ message: "Đăng ký thành công", type: "success" });
       setLoading(false);
     } catch (e) {

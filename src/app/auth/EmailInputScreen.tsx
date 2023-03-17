@@ -1,13 +1,9 @@
-// const EmailInputScreen = () => {
-//   return <div>cu</div>;
-// };
-// export default EmailInputScreen;
 import {
   Button,
   createStyles,
   Grid,
   makeStyles,
-  Theme,
+  Theme
 } from "@material-ui/core";
 import { useFormik } from "formik";
 import { useState } from "react";
@@ -15,11 +11,11 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import LoadingProgress from "../component/LoadingProccess";
 import TextInputComponent from "../component/TextInputComponent";
-import { PHONE_REGEX, REG_EMAIL, ROUTE, textValidate } from "../contant/Contant";
+import { PHONE_REGEX, ROUTE, textValidate } from "../contant/Contant";
 import { ResultApi } from "../contant/IntefaceContaint";
 import { colors } from "../utils/color";
 import { createNotification } from "../utils/MessageUtil";
-import { requestSendPhone, requestVerifyPhone } from "./AuthApi";
+import { requestSendPhone } from "./AuthApi";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {

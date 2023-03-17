@@ -4,7 +4,7 @@ import {
   Menu,
   MenuItem,
   Switch,
-  Tooltip,
+  Tooltip
 } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import Paper from "@material-ui/core/Paper";
@@ -25,7 +25,7 @@ import EnhancedTableToolbarHeder from "../../component/EnhancedTableToolbarHeder
 import LoadingProgress from "../../component/LoadingProccess";
 import { headCells } from "../../contant/ContaintDataAdmin";
 import { TYPE_DIALOG } from "../../contant/Contant";
-import { ResultApi, UserAdmin } from "../../contant/IntefaceContaint";
+import { UserAdmin } from "../../contant/IntefaceContaint";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { FunctionUtil, Order } from "../../utils/function";
 import FormDialog from "./components/FormDialog";
@@ -33,7 +33,7 @@ import {
   changeLoading,
   deleteUser,
   incrementAsyncUserAdmin,
-  updateUser,
+  updateUser
 } from "./slice/UserAdminSlice";
 import { requestDeleteUser, requestPutUpdateUser, UpdateDto } from "./UserApi";
 
